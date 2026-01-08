@@ -8,6 +8,32 @@ type GameInfo = dict[str, list[str], int, int]
 process_name: str= "DeSmuME_0.9.13_x64.exe"
 ram_start_addr: int = 0x02000000
 game_versions: dict = json.load(open("data/version-ram-data.json"))
+block_unshuffle = [
+    (0, 1, 2, 3), #00 ABCD
+    (0, 1, 3, 2), #01 ABDC
+    (0, 2, 1, 3), #02 ACBD
+    (0, 3, 1, 2), #03 ADBC
+    (0, 2, 3, 1), #04 ACDB
+    (0, 3, 2, 1), #05 ADCB
+    (1, 0, 2, 3), #06 BACD
+    (1, 0, 3, 2), #07 BADC
+    (2, 0, 1, 3), #08 CABD
+    (3, 0, 1, 2), #09 DABC
+    (2, 0, 3, 1), #10 CADB
+    (3, 0, 2, 1), #11 DACB
+    (1, 2, 0, 3), #12 BCAD
+    (1, 3, 0, 2), #13 BDAC
+    (2, 1, 0, 3), #14 CBAD
+    (3, 1, 0, 2), #15 DBAC
+    (2, 3, 0, 1), #16 CDAB
+    (3, 2, 0, 1), #17 DCAB
+    (1, 2, 3, 0), #18 BCDA
+    (1, 3, 2, 0), #19 BDCA
+    (2, 1, 3, 0), #20 CBDA
+    (3, 1, 2, 0), #21 DBCA
+    (2, 3, 1, 0), #22 CDBA
+    (3, 2, 1, 0)  #23 DCBA
+]
 
 def byte_pattern(words: list[str]) -> bytes:
     byte_array = bytearray()
@@ -63,12 +89,18 @@ def parse_party_pokemon(pm: pymem.Pymem, save_addr: int, pos: int):
         decrypted_value ^= (prng >> 16) & 0xFFFF
         decrypted_data[i:i+2] = struct.pack('<H', decrypted_value)
     
-    # # 3. Determine block order from PID
+    # 3. Determine block order from PID
     shift = ((pid & 0x3E000) >> 0xD) % 24
-    print(f"Block shift: {shift}")
     blocks = [0x00, 0x20, 0x40, 0x60]
+    block_order = block_unshuffle[shift]
+    
+    # 4. Read blocks
+    # 4.1 Block A
+    species = struct.unpack('<H', decrypted_data[blocks[block_order[0]]:blocks[block_order[0]]+2])[0]
+    print(f"Species: {species}")
     
     
+
     # pass
 
 def print_box_names(pm: pymem.Pymem, save_addr: int, char_set: dict):
@@ -101,6 +133,6 @@ print("Trainer ID: " + str(get_trainer_id(pm, save_addr)))
 print("Trainer Name: " + get_trainer_name(pm, save_addr, char_set))
 print("Party Size: " + str(get_party_size(pm, save_addr)))
 print("Box Names: " + str(print_box_names(pm, save_addr, char_set)))
-parse_party_pokemon(pm, save_addr, 0)
+parse_party_pokemon(pm, save_addr, 1)
 
 
