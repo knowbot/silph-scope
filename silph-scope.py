@@ -5,7 +5,8 @@ import re
 import json
 
 type GameInfo = dict[str, list[str], int, int]
-save_process: str= "DeSmuME_0.9.13_x64.exe"
+process_name: str= "DeSmuME_0.9.13_x64.exe"
+ram_start_addr: int = 0x02000000
 game_versions: dict = json.load(open("json/game-data.json"))
 
 def byte_pattern(words: list[str]) -> bytes:
@@ -28,7 +29,7 @@ def get_addresses(pm: pymem.Pymem, version: str) -> tuple[int, int]:
         raw_save_addr = pm.read_int(base_addr + int(game["save_pointer_offset"], 16))
         if raw_save_addr != 0:
             print("Save data address found.")
-            save_addr = (raw_save_addr - 0x02000000) + base_addr
+            save_addr = (raw_save_addr - ram_start_addr) + base_addr
             return base_addr, save_addr
     print('No valid addresses found. Returning.')
     return 0, 0
@@ -43,10 +44,8 @@ def get_trainer_id(pm: pymem.Pymem, save_addr: int) -> int:
 def get_party_size(pm: pymem.Pymem, save_addr: int) -> int:
    return int.from_bytes(pm.read_bytes(save_addr + 0xB0, 1), 'little')
 
-
-
-pm = pymem.Pymem(save_process)
-print(f"Attached to {save_process}")
+pm = pymem.Pymem(process_name)
+print(f"Attached to {process_name}")
 
 base_addr, save_addr = get_addresses(pm, "CPUE")
 print(get_money(pm, save_addr))
