@@ -22,6 +22,7 @@
                 {
                     "description": "Sequence of hex strings used to identify the live main RAM block",
                     "type": "array",
+                    "minItems": 1,
                     "items": 
                     {
                         "type": "string",

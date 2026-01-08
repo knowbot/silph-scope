@@ -1,0 +1,22 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "./gen4-char-set.schema.json",
+    "title": "Gen IV Character Set Schema",
+    "description": "Hex to char translation table for Generation IV games.",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "description": "Path/URI to the JSON schema",
+            "type": "string"
+        }
+    },
+    "patternProperties": 
+    {
+        "^0x[0-9A-Za-f]{4}$": {
+            "description": "Hex code representing a character.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2
+        }
+    }
+}
