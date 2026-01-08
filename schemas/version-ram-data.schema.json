@@ -1,0 +1,71 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "./version-ram-data.schema.json",
+    "title": "Version RAM Data Schema",
+    "description": "Collection of RAM data for different game versions identified by product ID.",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "description": "Path/URI to the JSON schema",
+            "type": "string"
+        }
+    },
+    "patternProperties": 
+    {
+        "^[0-9A-Z]{4}$":
+        {
+            "description": "Product ID that identifies game version",
+            "type": "object",
+            "properties": 
+            {
+                "anchor": 
+                {
+                    "description": "Sequence of hex strings used to identify the live main RAM block",
+                    "type": "array",
+                    "items": 
+                    {
+                        "type": "string",
+                        "pattern": "^[0-9A-Fa-f]{8}$"
+                    }
+                },
+                "anchor_offset":
+                {
+                    "description": "Hex offset between the anchor sequence and the beginning of the main RAM block",
+                    "type": "string",
+                    "pattern": "^0x[0-9A-Fa-f]+$"
+                },
+                "save_pointer_offset": 
+                {
+                    "description": "Hex offset between the address of the save data pointer and the beginning of the main RAM block",
+                    "type": "string",
+                    "pattern": "^0x[0-9A-Fa-f]+$"
+                },
+                "money_offset": {
+                    "description": "Hex offset between the beginning of the save data and the player's money value",
+                    "type": "string",
+                    "pattern": "^0x[0-9A-Fa-f]+$"
+                },
+                "trainer_id_offset": 
+                {
+                    "description": "Hex offset between the beginning of the save data and the player's trainer ID value",
+                    "type": "string",
+                    "pattern": "^0x[0-9A-Fa-f]+$"
+                },
+                "party_size_offset": 
+                {
+                    "description": "Hex offset between the beginning of the save data and the player's party size value",
+                    "type": "string",
+                    "pattern": "^0x[0-9A-Fa-f]+$"
+                }
+            },
+            "required": 
+            [
+                "anchor",
+                "anchor_offset",
+                "save_pointer_offset"
+            ],
+            "additionalProperties": false
+        }   
+    },
+    "additionalProperties": false
+}

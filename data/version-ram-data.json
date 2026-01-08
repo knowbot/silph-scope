@@ -1,0 +1,17 @@
+{
+    "$schema": "../schemas/version-ram-data.schema.json",
+    "CPUE": {
+        "anchor": [
+            "4B44535B",
+            "4E494E2B",
+            "444E4554",
+            "41423A4F",
+            "50554B43"
+        ],
+        "anchor_offset": "0xBFC",
+        "save_pointer_offset": "0x101D40",
+        "money_offset": "0x90",
+        "trainer_id_offset": "0x8C",
+        "party_size_offset": "0xB0"
+    }
+}
