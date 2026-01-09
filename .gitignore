@@ -375,3 +375,4 @@ local.properties
 Directory.Build.Override.props
 /SilphScope/SilphScope/obj/
 /SilphScope/SilphScope/bin/
+.vscode
