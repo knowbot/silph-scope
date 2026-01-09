@@ -373,3 +373,5 @@ local.properties
 
 # Directory Build overrides for local setups
 Directory.Build.Override.props
+/SilphScope/SilphScope/obj/
+/SilphScope/SilphScope/bin/
