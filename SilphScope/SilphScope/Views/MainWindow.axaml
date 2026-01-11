@@ -3,6 +3,7 @@
         xmlns:vm="using:SilphScope.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="using:SilphScope"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SilphScope.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -15,6 +16,18 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+	<DockPanel>
+		<TextBlock DockPanel.Dock="Left" Text="Selected Process: " VerticalAlignment="Center"/>
+
+		<CheckBox DockPanel.Dock="Right" IsChecked="{Binding ShowMore}" VerticalAlignment="Center" Margin="8 0 0 0">Show more</CheckBox>
+		
+		<ComboBox SelectedItem="{Binding SelectedProcess}" ItemsSource="{Binding Processes}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+			<ComboBox.ItemTemplate>
+				<DataTemplate DataType="vm:ProcessViewModel">
+					<local:ucProcess/>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+	</DockPanel>
 
 </Window>
