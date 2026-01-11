@@ -33,13 +33,13 @@ namespace SilphScope.Models
         [DllImport("kernel32.dll")]
         private static extern bool ReadProcessMemory(nint hProcess, nint lpBaseAddress, out byte[] lpBuffer, nuint dwSize, ref nuint lpNumberOfBytesRead);
         [DllImport("kernel32.dll")]
-        private static extern bool VirtualQueryEx(nint hProcess, nint lpBaseAddress, out MEMORY_BASIC_INFORMATION lpBuffer, nuint dwLength);
+        private static extern int VirtualQueryEx(nint hProcess, nint lpBaseAddress, out MEMORY_BASIC_INFORMATION lpBuffer, nuint dwLength);
 
 
         public static IEnumerable<ReadableMemoryRegion> GetMemoryRegions(Process process)
         {
             nint address = 0;
-            while (VirtualQueryEx(process.Handle, address, out MEMORY_BASIC_INFORMATION info, (nuint)Marshal.SizeOf<MEMORY_BASIC_INFORMATION>()))
+            while (VirtualQueryEx(process.Handle, address, out MEMORY_BASIC_INFORMATION info, (nuint)Marshal.SizeOf<MEMORY_BASIC_INFORMATION>()) != 0)
             {
                 if (info.State == MEM_COMMIT && PROTECT_READ_FLAGS.Contains(info.Protect))
                 {
@@ -63,10 +63,11 @@ namespace SilphScope.Models
             }
         }
 
-        public static byte[] ReadMemory(Process process, nint address, nint size)
+        public static byte[] ReadMemory(Process process, nint address, nuint size)
         {
             byte[] buffer = new byte[size];
-            ReadProcessMemory(process.Handle, address, out buffer, size, ref _);
+            nuint bytesRead = 0;
+            ReadProcessMemory(process.Handle, address, out buffer, size, ref bytesRead);
             return buffer;
         }
     }
