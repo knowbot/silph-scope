@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -39,7 +41,15 @@ public partial class MainWindowViewModel : ViewModelBase
 
     public MainWindowViewModel()
     {
-        MemoryScanner.ParsePattern("AA");
         RefreshProcesses();
+    }
+
+    static void PrintMatches(List<nint> matches, int expected)
+    {
+        Debug.WriteLine($"Count: {matches.Count}");
+        foreach (var m in matches)
+        {
+            Debug.WriteLine($"Found at: {m} - {(m == expected ? "PASS" : "FAIL")}");
+        }
     }
 }

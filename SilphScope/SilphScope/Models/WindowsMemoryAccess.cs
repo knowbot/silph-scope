@@ -41,7 +41,7 @@ namespace SilphScope.Models
             nint address = 0;
             while (VirtualQueryEx(process.Handle, address, out MEMORY_BASIC_INFORMATION info, (nuint)Marshal.SizeOf<MEMORY_BASIC_INFORMATION>()) != 0)
             {
-                if (info.State == MEM_COMMIT && PROTECT_READ_FLAGS.Contains(info.Protect))
+                if (info.State == MEM_COMMIT && !PROTECT_READ_FLAGS.Contains(info.Protect))
                 {
                     if (info.RegionSize == 0)
                     {
