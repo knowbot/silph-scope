@@ -17,8 +17,11 @@ namespace SilphScope.ViewModels
         [ObservableProperty]
         private string _MainWindowTitle;
 
+        public readonly Process Process;
+
         public ProcessViewModel(Process process)
         {
+            Process = process;
             Name = process.ProcessName;
             Pid = process.Id;
             MainWindowTitle = process.MainWindowTitle;

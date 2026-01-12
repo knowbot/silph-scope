@@ -35,11 +35,21 @@ public partial class MainWindowViewModel : ViewModelBase
         SelectedProcess = Processes.FirstOrDefault();
     }
 
+    partial void OnSelectedProcessChanged(ProcessViewModel? value)
+    {
+        if (value == null)
+        {
+            return;
+        }
+
+        MemoryManager<WindowsMemoryAccess> manager = new MemoryManager<WindowsMemoryAccess>(value.Process);
+        var patterns = manager.FindPatternAll([0x5b, 0x53, 0x44, 0x4b, 0x2b, 0x4e, 0x49, 0x4e, 0x54, 0x45, 0x4e, 0x44, 0x4f, 0x3a, 0x42, 0x41, 0x43, 0x4b, 0x55, 0x50]).ToList();
+    }
+
     #endregion Processes
 
     public MainWindowViewModel()
     {
-        MemoryScanner.ParsePattern("AA");
         RefreshProcesses();
     }
 }

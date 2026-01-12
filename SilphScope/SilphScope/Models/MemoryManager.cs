@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SilphScope.Models
 {
@@ -11,28 +9,39 @@ namespace SilphScope.Models
     {
         private readonly Process _process = process;
 
-        public byte[] ReadMemory(nint address, nuint size) => T.ReadMemory(_process, address, size);
-        // TODO: add other useful methods such as ReadInt, ReadBool, etc
-
         public nint FindPattern(ReadOnlySpan<byte> pattern)
         {
-            nint first = 0;
-            foreach (var region in T.GetMemoryRegions(_process))
-            {
-                ReadOnlySpan<byte> buffer = T.ReadMemory(_process, region.BaseAddress, region.Size);
-                // TODO: scan for pattern inside of buffer
-            }
-            return first;
+            return FindPatternAll(pattern).FirstOrDefault();
         }
 
         public List<nint> FindPatternAll(ReadOnlySpan<byte> pattern)
         {
-            List<nint> matches = [];
-            foreach (var region in T.GetMemoryRegions(_process))
+            List<nint> matches = new List<nint>();
+
+            foreach (ReadableMemoryRegion region in T.GetMemoryRegions(_process))
             {
-                ReadOnlySpan<byte> buffer = T.ReadMemory(_process, region.BaseAddress, region.Size);
-                // TODO: scan for pattern inside of buffer
+                byte[] buffer = T.ReadMemory(_process, region.BaseAddress, region.Size);
+
+                // Just perform brute force search (worst case quadratic).
+                for (int i = 0; i < buffer.Length - pattern.Length; i++)
+                {
+                    int j = 0;
+                    for (j = 0; j < pattern.Length; j++)
+                    {
+                        if (buffer[i + j] != pattern[j])
+                        {
+                            break;
+                        }
+                    }
+
+                    // Found match?
+                    if (j == pattern.Length)
+                    {
+                        matches.Add(region.BaseAddress + i);
+                    }
+                }
             }
+
             return matches;
         }
     }
