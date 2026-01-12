@@ -1,44 +1,23 @@
+using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
-using System.Threading.Tasks;
+using static System.MemoryExtensions;
 
 namespace SilphScope.Models
 {
-    struct PatternData
+    public static class MemoryScanner
     {
-        private static readonly char[] _wildcard = {'?', '?'};
-        public byte[] Bytes;
-        public byte[] Mask;
-        public readonly int LeadingWildcards = 0;
-
-        public PatternData(string pattern)
+        private const int REGISTER_SIZE = 32;
+        struct ScanData(byte[] patternBytes, byte[] maskBytes)
         {
-            List<byte> bytes = [];
-            List<byte> mask = [];
-            ReadOnlySpan<char> patternSpan = pattern.AsSpan();
-            foreach (Range range in patternSpan.Split(' '))
-            {
-                if(patternSpan[range].Equals(_wildcard, StringComparison.Ordinal))
-                {
-                    bytes.Add(0x0);
-                    mask.Add(0x0);
-                } 
-                else
-                {
-                    bytes.Add(byte.Parse(patternSpan[range], System.Globalization.NumberStyles.AllowHexSpecifier));
-                    mask.Add(0x1);
-                }
-            }
-            Bytes = [.. bytes];
-            Mask = [.. mask];
-            LeadingWildcards = Array.IndexOf(Mask, 0x1);
+            public byte[] PatternBytes = patternBytes;
+            public byte[] MaskBytes = maskBytes;
         }
-    }
 
-    public class MemoryScanner
-    {
         public static int FindPattern(ReadOnlySpan<byte> data, string pattern)
         {
             if (!Avx2.IsSupported)
@@ -46,44 +25,93 @@ namespace SilphScope.Models
                 throw new NotSupportedException("Current machine does not support AVX2 instructions.");
             }
 
-            PatternData patternData = new(pattern);
-
-            if(patternData.Bytes.Length == 1) // Single byte pattern
+            // Preprocessing
+            ParsePattern(pattern, out byte[] pBytes, out byte[] mBytes, out int firstByteIndex);
+            if(firstByteIndex >= pBytes.Length)
             {
-                throw new NotImplementedException("Single byte pattern scanning is not implemented yet.");
+                throw new ArgumentException("Pattern cannot be composed of just wildcards");
             }
 
-            if(patternData.Bytes.Length == patternData.LeadingWildcards) // All wildcards
-            {
-                return 0;
-            }
+            Vector256<byte> firstByteVec = Vector256.Create(pBytes[firstByteIndex]);
+            BuildMatchingVectors(ref pBytes[1], ref mBytes[1], pBytes.Length - 1, out Vector256<byte>[] patternVecs, out Vector256<byte>[] maskVecs);
 
-            // Make array with first non-wildcard byte
-            // Loop over memory in 32 byte chunks to find a match
-            // Once a match is found, check the rest of the pattern including wildcards
-            // Start of search = data start + leading wildcards
-            // End of search = data end - (pattern length - leading wildcards)
             
+            // Find match for first byte
+            // On match found, load data in 32bytes chunks
+            // data XOR pattern = 0 if match, non-0 if different
+            // result AND mask = if match, still 0; if wildcard, still 0; if not match not wildcard, different
+
+
             return 0;
         }
 
-        private static Span<ushort> GetNonWildcardIndices(PatternData pattern)
+        private static Vector256<byte>[] CreateMatchVectors(byte[] pBytes, int leadingWildcards)
         {
-            int maskLength = pattern.Mask.Length;
-            ushort[] nwTable = new ushort[maskLength];
-            int nwCount = 0;
-            for(int i = 1; i < maskLength; i ++)
-            {
-                if(pattern.Mask[i] != 0x1) // Wildcard
-                {
-                    continue;
-                }
-                nwTable[i] = (ushort)(i - 1); // Shift by 1 cause we skip the first byte
-                nwCount++;
-            }
-            return new Span<ushort>(nwTable)[..nwCount];
+            throw new NotImplementedException();
         }
-        
 
+        private static void ParsePattern(string pattern, out byte[] pBytes, out byte[] mBytes, out int leadingWildcards)
+        {
+            ReadOnlySpan<char> span = pattern.AsSpan().Trim();
+            ReadOnlySpan<char> wildcard = ['?', '?'];
+            int tokenCount = span.Count(' ') + 1;
+            pBytes = new byte[tokenCount];
+            mBytes = new byte[tokenCount];
+            leadingWildcards = 0;
+            bool foundMatch = false;
+            int i = 0;
+            foreach (Range range in span.Split(' '))
+            {
+                ReadOnlySpan<char> token = span[range];
+                if (token.IsEmpty) continue;
+                if (token.Equals(wildcard, StringComparison.Ordinal))
+                {
+                    if(!foundMatch)
+                    {
+                        leadingWildcards++;
+                    }
+                } else
+                {
+                    pBytes[i] = (byte)((CharToHex(token[0]) << 4) | CharToHex(token[1]));
+                    mBytes[i] = 0xFF;
+                    foundMatch = true;
+                }
+                i++;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void BuildMatchingVectors(ref byte pBytesRef, ref byte mBytesRef, int length, out Vector256<byte>[] patternVecs, out Vector256<byte>[] maskVecs)
+        {
+            int vecCount = (int)(Math.Ceiling(length / (double)REGISTER_SIZE));
+            patternVecs = new Vector256<byte>[vecCount];
+            maskVecs = new Vector256<byte>[vecCount];
+            Span<byte> paddedPattern = stackalloc byte[32];
+            Span<byte> paddedMask = stackalloc byte[32];
+
+            for (int i = 0; i < vecCount; i++)
+            {
+                int offset = i * REGISTER_SIZE;
+                if (i < vecCount - 1)
+                {
+                    patternVecs[i] = Unsafe.ReadUnaligned<Vector256<byte>>(ref Unsafe.Add(ref pBytesRef, offset));
+                    maskVecs[i] = Unsafe.ReadUnaligned<Vector256<byte>>(ref Unsafe.Add(ref mBytesRef, offset));
+                }
+                else
+                {
+                    int leftoverCount = length - i * 32;
+                    Unsafe.CopyBlock(ref MemoryMarshal.GetReference(paddedPattern), ref Unsafe.Add(ref pBytesRef, offset), (uint)leftoverCount);
+                    Unsafe.CopyBlock(ref MemoryMarshal.GetReference(paddedMask), ref Unsafe.Add(ref mBytesRef, offset), (uint)leftoverCount);
+                    patternVecs[i] = Unsafe.ReadUnaligned<Vector256<byte>>(ref MemoryMarshal.GetReference(paddedPattern));
+                    maskVecs[i] = Unsafe.ReadUnaligned<Vector256<byte>>(ref MemoryMarshal.GetReference(paddedMask));
+                }
+            }
+        }
+
+        private static byte CharToHex(char c)
+        {
+  
+            return (byte)((c & 0xF) + (c >> 6) * 9);
+        }
     }
 }
