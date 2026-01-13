@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models;
 using SilphScope.Models.Memory;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -7,7 +9,7 @@ using System.Linq;
 
 namespace SilphScope.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel : ViewModelBase, IDisposable
 {
     [ObservableProperty]
     private ObservableCollection<ProcessViewModel> _Processes = [];
@@ -31,14 +33,39 @@ public partial class MainWindowViewModel : ViewModelBase
 
         ProcessMemory<WindowsMemoryAccess> reader = new ProcessMemory<WindowsMemoryAccess>(value.Process);
         List<nint> aobRes = reader.PatternScanAll("5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50");
+
+        if (aobRes.Count == 0)
+        {
+            SilphScopeLogger.Log("No matches found.");
+        }
+
         foreach (nint res in aobRes)
         {
-            Debug.WriteLine("Found match at: " + res.ToString("X"));
+            var msg = "Found match at: " + res.ToString("X");
+            Debug.WriteLine(msg);
+            SilphScopeLogger.Log(msg);
         }
     }
+
+    [ObservableProperty]
+    private LogViewModel _Log = new LogViewModel();
 
     public MainWindowViewModel()
     {
         RefreshProcesses();
+    }
+
+    private bool isDisposed;
+
+    public void Dispose()
+    {
+        if (isDisposed)
+        {
+            return;
+        }
+
+        Log.Dispose();
+
+        isDisposed = true;
     }
 }
