@@ -12,7 +12,7 @@ namespace SilphScope.Models
 {
     public static class PatternScanner
     {
-        private const int REGISTER_SIZE = 32;
+        private const int AVX_REGISTER_SIZE = 32;
 
         /// <summary>
         /// Scan a byte array for a specific byte pattern, and return all offsets at which a match was found.
@@ -43,7 +43,7 @@ namespace SilphScope.Models
             long searchLength = data.Length - pattern.Length;
             int offset = 0;
 
-            while(offset <= searchLength - 32)
+            while(offset <= searchLength - AVX_REGISTER_SIZE)
             {
                 ref byte searchStart = ref Unsafe.Add(ref dataRef, offset + firstByteIndex);
                 Vector256<byte> firstChunk = Vector256.LoadUnsafe(ref searchStart);
@@ -61,7 +61,7 @@ namespace SilphScope.Models
                         }
                     }
                 }
-                offset += 32;
+                offset += AVX_REGISTER_SIZE;
             }
 
             while(offset <= searchLength)
@@ -70,7 +70,7 @@ namespace SilphScope.Models
                 {
                     for (int i = 0; i < pattern.Length; i++)
                     {
-                        if (MatchPatternScalar(ref dataRef, offset, pattern, mask))
+                        if (MatchPatternNaive(ref dataRef, offset, pattern, mask))
                         {
                             matches.Add(offset);
                         }
@@ -110,7 +110,7 @@ namespace SilphScope.Models
             long searchLength = data.Length - pattern.Length;
             int offset = 0;
 
-            while (offset <= searchLength - 32)
+            while (offset <= searchLength - AVX_REGISTER_SIZE)
             {
                 ref byte searchStart = ref Unsafe.Add(ref dataRef, offset + firstByteIndex);
                 Vector256<byte> firstChunk = Vector256.LoadUnsafe(ref searchStart);
@@ -129,7 +129,7 @@ namespace SilphScope.Models
                         }
                     }
                 }
-                offset += 32;
+                offset += AVX_REGISTER_SIZE;
             }
 
             while (offset <= searchLength)
@@ -138,7 +138,7 @@ namespace SilphScope.Models
                 {
                     for (int i = 0; i < pattern.Length; i++)
                     {
-                        if (MatchPatternScalar(ref dataRef, offset, pattern, mask))
+                        if (MatchPatternNaive(ref dataRef, offset, pattern, mask))
                         {
                             return offset;
                         }
@@ -149,22 +149,21 @@ namespace SilphScope.Models
 
             return 0;
         }
-        
 
         /// <summary>
         /// Check if there is a full match for the desired pattern starting at a certain offset using Avx2 instructions for speed.
         /// </summary>
         /// <param name="dataRef">Reference to the start of the byte array.</param>
         /// <param name="matchOffset">Offset of the potential match.</param>
-        /// <param name="patternVecs">Vectors containing the pattern bytes in 32byte chunks.</param>
-        /// <param name="maskVecs">Vectors containing the mask bytes in 32byte chunks.</param>
+        /// <param name="patternVecs">Vectors containing the pattern bytes in 32-byte chunks.</param>
+        /// <param name="maskVecs">Vectors containing the mask bytes in 32-byte chunks.</param>
         /// <returns>True if there is a full match starting at matchOffset, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool MatchPatternAvx2(ref byte dataRef, int matchOffset, Vector256<byte>[] patternVecs, Vector256<byte>[] maskVecs)
         {
             for (int i = 0; i < patternVecs.Length; i++)
             {
-                ref byte matchStart = ref Unsafe.Add(ref dataRef, matchOffset + (i * 32));
+                ref byte matchStart = ref Unsafe.Add(ref dataRef, matchOffset + (i * AVX_REGISTER_SIZE));
                 Vector256<byte> matchChunk = Vector256.LoadUnsafe(ref matchStart);
                 Vector256<byte> diff = Avx2.Xor(patternVecs[i], matchChunk);
                 if (!Avx2.TestZ(diff, maskVecs[i]))
@@ -176,7 +175,7 @@ namespace SilphScope.Models
         }
 
         /// <summary>
-        /// Check if there is a full match for the desired pattern starting at a certain offset, scalar approach.
+        /// Check if there is a full match for the desired pattern starting at a certain offset, naive approach.
         /// </summary>
         /// <param name="dataRef">Reference to the start of the byte array.</param>
         /// <param name="matchOffset">Offset of the potential match.</param>
@@ -184,9 +183,9 @@ namespace SilphScope.Models
         /// <param name="mask">Byte array representing the matching mask.</param>
         /// <returns>True if there is a full match starting at matchOffset, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool MatchPatternScalar(ref byte dataRef, int matchOffset, byte[] pattern, byte[] mask)
+        private static bool MatchPatternNaive(ref byte dataRef, int matchOffset, byte[] pattern, byte[] mask)
         {
-            for (int i = 0; i < pattern.Length; i++) // check entire pattern
+            for (int i = 0; i < pattern.Length; i++)
             {
                 if (mask[i] != 0 && Unsafe.Add(ref dataRef, matchOffset + i) != pattern[i])
                 {
@@ -234,7 +233,7 @@ namespace SilphScope.Models
         }
 
         /// <summary>
-        /// Load the pattern and the mask into 32 byte vectors for SIMD operations.
+        /// Load the pattern and the mask into 32-byte vectors for SIMD operations.
         /// </summary>
         /// <param name="patternRef">Reference to the start of the pattern byte array.</param>
         /// <param name="maskRef">Reference to the start of the mask byte array.</param>
@@ -244,15 +243,15 @@ namespace SilphScope.Models
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void BuildMatchingVectors(ref byte patternRef, ref byte maskRef, int length, out Vector256<byte>[] patternVecs, out Vector256<byte>[] maskVecs)
         {
-            int vecCount = (int)(Math.Ceiling(length / (double)REGISTER_SIZE));
+            int vecCount = (int)(Math.Ceiling(length / (float)AVX_REGISTER_SIZE));
             patternVecs = new Vector256<byte>[vecCount];
             maskVecs = new Vector256<byte>[vecCount];
-            Span<byte> paddedPattern = stackalloc byte[32];
-            Span<byte> paddedMask = stackalloc byte[32];
+            Span<byte> paddedPattern = stackalloc byte[AVX_REGISTER_SIZE];
+            Span<byte> paddedMask = stackalloc byte[AVX_REGISTER_SIZE];
 
             for (int i = 0; i < vecCount; i++)
             {
-                int offset = i * REGISTER_SIZE;
+                int offset = i * AVX_REGISTER_SIZE;
                 if (i < vecCount - 1)
                 {
                     patternVecs[i] = Vector256.LoadUnsafe(ref Unsafe.Add(ref patternRef, offset));
@@ -260,7 +259,7 @@ namespace SilphScope.Models
                 }
                 else
                 {
-                    int leftoverCount = length - i * 32;
+                    int leftoverCount = length - i * AVX_REGISTER_SIZE;
                     paddedPattern.Clear();
                     paddedMask.Clear();
                     Unsafe.CopyBlock(ref MemoryMarshal.GetReference(paddedPattern), ref Unsafe.Add(ref patternRef, offset), (uint)leftoverCount);
