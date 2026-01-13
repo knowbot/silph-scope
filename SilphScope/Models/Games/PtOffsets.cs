@@ -1,0 +1,22 @@
+﻿using SilphScope.Models.GameData;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SilphScope.Models.Games
+{
+    public record PtOffsets : IGameOffsets
+    {
+        public string AnchorString => "5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50";
+        public int Anchor => 0xBFC;
+        public int SavePointer => 0x101D40;
+        public int TrainerName => 0x7C;
+        public int TrainerID => 0x8C;
+        public int Money => 0x90;
+        public int PartySize => 0xB0;
+        public int BoxData => 0x11EE4;
+        public int BigBlock => 0xCF40;
+    }
+}
