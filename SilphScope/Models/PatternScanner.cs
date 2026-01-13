@@ -10,10 +10,18 @@ using static System.MemoryExtensions;
 
 namespace SilphScope.Models
 {
-    public static class AOBScanner
+    public static class PatternScanner
     {
         private const int REGISTER_SIZE = 32;
 
+        /// <summary>
+        /// Scan a byte array for a specific byte pattern, and return all offsets at which a match was found.
+        /// </summary>
+        /// <param name="data">Byte array to scan.</param>
+        /// <param name="patternString">Pattern to find.</param>
+        /// <returns>List of offsets from the start of the byte array at whoch a full match starts.</returns>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static List<nint> FindAll(ReadOnlySpan<byte> data, string patternString)
         {
             if (!Avx2.IsSupported)
@@ -74,6 +82,14 @@ namespace SilphScope.Models
             return matches;
         }
 
+        /// <summary>
+        /// Scan a byte array for a specific byte pattern, and return first offset at which a match was found.
+        /// </summary>
+        /// <param name="data">Byte array to scan.</param>
+        /// <param name="patternString">Pattern to find.</param>
+        /// <returns>First offset from the start of the byte array at whoch a full match starts.</returns>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static nint FindFirst(ReadOnlySpan<byte> data, string patternString)
         {
             if (!Avx2.IsSupported)
@@ -134,6 +150,15 @@ namespace SilphScope.Models
             return 0;
         }
         
+
+        /// <summary>
+        /// Check if there is a full match for the desired pattern starting at a certain offset using Avx2 instructions for speed.
+        /// </summary>
+        /// <param name="dataRef">Reference to the start of the byte array.</param>
+        /// <param name="matchOffset">Offset of the potential match.</param>
+        /// <param name="patternVecs">Vectors containing the pattern bytes in 32byte chunks.</param>
+        /// <param name="maskVecs">Vectors containing the mask bytes in 32byte chunks.</param>
+        /// <returns>True if there is a full match starting at matchOffset, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool MatchPatternAvx2(ref byte dataRef, int matchOffset, Vector256<byte>[] patternVecs, Vector256<byte>[] maskVecs)
         {
@@ -150,6 +175,14 @@ namespace SilphScope.Models
             return true;
         }
 
+        /// <summary>
+        /// Check if there is a full match for the desired pattern starting at a certain offset, scalar approach.
+        /// </summary>
+        /// <param name="dataRef">Reference to the start of the byte array.</param>
+        /// <param name="matchOffset">Offset of the potential match.</param>
+        /// <param name="pattern">Byte array representing the pattern.</param>
+        /// <param name="mask">Byte array representing the matching mask.</param>
+        /// <returns>True if there is a full match starting at matchOffset, false otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static bool MatchPatternScalar(ref byte dataRef, int matchOffset, byte[] pattern, byte[] mask)
         {
@@ -163,13 +196,20 @@ namespace SilphScope.Models
             return true;
         }
 
-        private static void ParsePattern(string pattern, out byte[] pBytes, out byte[] mBytes, out int leadingWildcards)
+        /// <summary>
+        /// Parse a string into a byte pattern and a matching mask.
+        /// </summary>
+        /// <param name="patternString">Input string to parse.</param>
+        /// <param name="pattern">Byte array representing the pattern, wildcards are translated as 0x0.</param>
+        /// <param name="mask">Byte array representing the matching mask for each token of the pattern (0x00 if byte, 0xFF if wildcard).</param>
+        /// <param name="leadingWildcards">Amount of wildcards at the start of the pattern.</param>
+        private static void ParsePattern(string patternString, out byte[] pattern, out byte[] mask, out int leadingWildcards)
         {
-            ReadOnlySpan<char> span = pattern.AsSpan().Trim();
+            ReadOnlySpan<char> span = patternString.AsSpan().Trim();
             ReadOnlySpan<char> wildcard = ['?', '?'];
             int tokenCount = span.Count(' ') + 1;
-            pBytes = new byte[tokenCount];
-            mBytes = new byte[tokenCount];
+            pattern = new byte[tokenCount];
+            mask = new byte[tokenCount];
             leadingWildcards = 0;
             bool foundFirstByte = false;
             int i = 0;
@@ -185,14 +225,22 @@ namespace SilphScope.Models
                     }
                 } else
                 {
-                    pBytes[i] = (byte)((CharToHex(token[0]) << 4) | CharToHex(token[1]));
-                    mBytes[i] = 0xFF;
+                    pattern[i] = (byte)((CharToHexByte(token[0]) << 4) | CharToHexByte(token[1]));
+                    mask[i] = 0xFF;
                     foundFirstByte = true;
                 }
                 i++;
             }
         }
 
+        /// <summary>
+        /// Load the pattern and the mask into 32 byte vectors for SIMD operations.
+        /// </summary>
+        /// <param name="patternRef">Reference to the start of the pattern byte array.</param>
+        /// <param name="maskRef">Reference to the start of the mask byte array.</param>
+        /// <param name="length">Pattern length.</param>
+        /// <param name="patternVecs">Vectors representing the pattern.</param>
+        /// <param name="maskVecs">Vectors representing the mask.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void BuildMatchingVectors(ref byte patternRef, ref byte maskRef, int length, out Vector256<byte>[] patternVecs, out Vector256<byte>[] maskVecs)
         {
@@ -222,8 +270,13 @@ namespace SilphScope.Models
                 }
             }
         }
-        
-        private static byte CharToHex(char c)
+
+        /// <summary>
+        /// Simple inline char to byte conversion.
+        /// </summary>
+        /// <param name="c">Char (0-9, A-F, a-f).</param>
+        /// <returns>Hex value of c in byte form.</returns>
+        private static byte CharToHexByte(char c)
         {
             return (byte)((c & 0xF) + (c >> 6) * 9);
         }
