@@ -13,55 +13,40 @@ namespace SilphScope.Models
     {
         private const int REGISTER_SIZE = 32;
 
-        public static List<nint> FindPattern(ReadOnlySpan<byte> data, string patternString)
+        public static List<nint> FindAll(ReadOnlySpan<byte> data, string patternString)
         {
             if (!Avx2.IsSupported)
             {
                 throw new NotSupportedException("Current machine does not support AVX2 instructions.");
             }
 
-            List<nint> matches = [];
-
-            // preprocessing
             ParsePattern(patternString, out byte[] pattern, out byte[] mask, out int firstByteIndex);
+
             if(firstByteIndex >= pattern.Length)
             {
                 throw new ArgumentException("Pattern cannot be composed of just wildcards");
             }
 
+            List<nint> matches = [];
             Vector256<byte> firstByteVec = Vector256.Create(pattern[firstByteIndex]);
             BuildMatchingVectors(ref pattern[0], ref mask[0], pattern.Length, out Vector256<byte>[] patternVecs, out Vector256<byte>[] maskVecs);
-
             ref byte dataRef = ref MemoryMarshal.GetReference(data);
             long searchLength = data.Length - pattern.Length;
             int offset = 0;
 
-            // main loop
             while(offset <= searchLength - 32)
             {
                 ref byte searchStart = ref Unsafe.Add(ref dataRef, offset + firstByteIndex);
                 Vector256<byte> firstChunk = Vector256.LoadUnsafe(ref searchStart);
-                Vector256<byte> compareVec = Avx2.CompareEqual(firstByteVec, firstChunk); // get all matches for byte in the loaded chunk
-                int result = Avx2.MoveMask(compareVec); // create a bit mask
+                Vector256<byte> compareVec = Avx2.CompareEqual(firstByteVec, firstChunk);
+                int result = Avx2.MoveMask(compareVec);
                 while (result != 0) {
-                    int pos = BitOperations.TrailingZeroCount(result); // find position in the data chunk
-                    result &= ~(1 << pos); // clear the bit we just used
-                    int matchOffset = offset + pos; // get address for start of the match
-                    if (matchOffset >= 0 && matchOffset <= searchLength) // match address is within bounds
+                    int pos = BitOperations.TrailingZeroCount(result);
+                    result &= ~(1 << pos);
+                    int matchOffset = offset + pos;
+                    if (matchOffset >= 0 && matchOffset <= searchLength)
                     {
-                        bool foundMatch = true;
-                        for(int i = 0; i < patternVecs.Length; i++)
-                        {
-                            ref byte matchStart = ref Unsafe.Add(ref dataRef, matchOffset + (i * 32));
-                            Vector256<byte> matchChunk = Vector256.LoadUnsafe(ref matchStart);
-                            Vector256<byte> diff = Avx2.Xor(patternVecs[i], matchChunk);
-                            if(!Avx2.TestZ(diff, maskVecs[i]))
-                            {
-                                foundMatch = false;
-                                break;
-                            }
-                        }
-                        if(foundMatch)
+                        if(MatchPatternAvx2(ref dataRef, matchOffset, patternVecs, maskVecs))
                         {
                             matches.Add(matchOffset);
                         }
@@ -70,28 +55,111 @@ namespace SilphScope.Models
                 offset += 32;
             }
 
-            // tail loop, checks rest of the data (less than 32 bytes)
             while(offset <= searchLength)
             {
-                if(Unsafe.Add(ref dataRef, offset + firstByteIndex) == pattern[firstByteIndex]) // check first byte
+                if(Unsafe.Add(ref dataRef, offset + firstByteIndex) == pattern[firstByteIndex])
                 {
-                    bool foundMatch = true;
-                    for(int i = 0; i < pattern.Length; i++) // check entire pattern
+                    for (int i = 0; i < pattern.Length; i++)
                     {
-                        if (mask[i] != 0 && Unsafe.Add(ref dataRef, offset + i) != pattern[i])
+                        if (MatchPatternScalar(ref dataRef, offset, pattern, mask))
                         {
-                            foundMatch = false;
-                            break;
+                            matches.Add(offset);
                         }
-                    }
-                    if(foundMatch) 
-                    {
-                        matches.Add(offset);
                     }
                 }
                 offset++;
             }
+
             return matches;
+        }
+
+        public static nint FindFirst(ReadOnlySpan<byte> data, string patternString)
+        {
+            if (!Avx2.IsSupported)
+            {
+                throw new NotSupportedException("Current machine does not support AVX2 instructions.");
+            }
+
+            ParsePattern(patternString, out byte[] pattern, out byte[] mask, out int firstByteIndex);
+
+            if (firstByteIndex >= pattern.Length)
+            {
+                throw new ArgumentException("Pattern cannot be composed of just wildcards");
+            }
+
+            Vector256<byte> firstByteVec = Vector256.Create(pattern[firstByteIndex]);
+            BuildMatchingVectors(ref pattern[0], ref mask[0], pattern.Length, out Vector256<byte>[] patternVecs, out Vector256<byte>[] maskVecs);
+            ref byte dataRef = ref MemoryMarshal.GetReference(data);
+            long searchLength = data.Length - pattern.Length;
+            int offset = 0;
+
+            while (offset <= searchLength - 32)
+            {
+                ref byte searchStart = ref Unsafe.Add(ref dataRef, offset + firstByteIndex);
+                Vector256<byte> firstChunk = Vector256.LoadUnsafe(ref searchStart);
+                Vector256<byte> compareVec = Avx2.CompareEqual(firstByteVec, firstChunk);
+                int result = Avx2.MoveMask(compareVec);
+                while (result != 0)
+                {
+                    int pos = BitOperations.TrailingZeroCount(result);
+                    result &= ~(1 << pos);
+                    int matchOffset = offset + pos;
+                    if (matchOffset >= 0 && matchOffset <= searchLength)
+                    {
+                        if (MatchPatternAvx2(ref dataRef, matchOffset, patternVecs, maskVecs))
+                        {
+                            return matchOffset;
+                        }
+                    }
+                }
+                offset += 32;
+            }
+
+            while (offset <= searchLength)
+            {
+                if (Unsafe.Add(ref dataRef, offset + firstByteIndex) == pattern[firstByteIndex])
+                {
+                    for (int i = 0; i < pattern.Length; i++)
+                    {
+                        if (MatchPatternScalar(ref dataRef, offset, pattern, mask))
+                        {
+                            return offset;
+                        }
+                    }
+                }
+                offset++;
+            }
+
+            return 0;
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool MatchPatternAvx2(ref byte dataRef, int matchOffset, Vector256<byte>[] patternVecs, Vector256<byte>[] maskVecs)
+        {
+            for (int i = 0; i < patternVecs.Length; i++)
+            {
+                ref byte matchStart = ref Unsafe.Add(ref dataRef, matchOffset + (i * 32));
+                Vector256<byte> matchChunk = Vector256.LoadUnsafe(ref matchStart);
+                Vector256<byte> diff = Avx2.Xor(patternVecs[i], matchChunk);
+                if (!Avx2.TestZ(diff, maskVecs[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool MatchPatternScalar(ref byte dataRef, int matchOffset, byte[] pattern, byte[] mask)
+        {
+            for (int i = 0; i < pattern.Length; i++) // check entire pattern
+            {
+                if (mask[i] != 0 && Unsafe.Add(ref dataRef, matchOffset + i) != pattern[i])
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private static void ParsePattern(string pattern, out byte[] pBytes, out byte[] mBytes, out int leadingWildcards)
@@ -153,7 +221,7 @@ namespace SilphScope.Models
                 }
             }
         }
-
+        
         private static byte CharToHex(char c)
         {
             return (byte)((c & 0xF) + (c >> 6) * 9);
