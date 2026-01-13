@@ -17,14 +17,20 @@
     </Design.DataContext>
 
 	<DockPanel>
-		<TextBlock DockPanel.Dock="Left" Text="Selected Process: " VerticalAlignment="Center"/>
-		<ComboBox SelectedItem="{Binding SelectedProcess}" ItemsSource="{Binding Processes}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-			<ComboBox.ItemTemplate>
-				<DataTemplate DataType="vm:ProcessViewModel">
-					<local:ucProcess/>
-				</DataTemplate>
-			</ComboBox.ItemTemplate>
-		</ComboBox>
-	</DockPanel>
+        <!-- Process selection -->
+		<DockPanel DockPanel.Dock="Top">
+		    <TextBlock DockPanel.Dock="Left" Text="Selected Process: " VerticalAlignment="Center"/>
+		    <ComboBox SelectedItem="{Binding SelectedProcess}" ItemsSource="{Binding Processes}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+			    <ComboBox.ItemTemplate>
+				    <DataTemplate DataType="vm:ProcessViewModel">
+					    <local:ucProcess/>
+				    </DataTemplate>
+			    </ComboBox.ItemTemplate>
+		    </ComboBox>
+	    </DockPanel>
+
+        <!-- Log -->
+        <local:ucLog DockPanel.Dock="Bottom" DataContext="{Binding Log}"/>
+    </DockPanel>
 
 </Window>
