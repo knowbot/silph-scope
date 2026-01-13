@@ -1,12 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SilphScope.Models;
 using SilphScope.Models.Memory;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using Tmds.DBus.Protocol;
 
 namespace SilphScope.ViewModels;
 
