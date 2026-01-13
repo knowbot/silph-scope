@@ -12,15 +12,6 @@ namespace SilphScope.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-
-    [ObservableProperty]
-    private bool _ShowMore = false;
-
-    partial void OnShowMoreChanged(bool value)
-    {
-        RefreshProcesses();
-    }
-
     [ObservableProperty]
     private ObservableCollection<ProcessViewModel> _Processes = [];
 
@@ -30,7 +21,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private void RefreshProcesses()
     {
         // Filter processes based on MainWindowTitle.
-        Processes = new(Process.GetProcesses().Select(x => new ProcessViewModel(x)).Where(x => !string.IsNullOrEmpty(x.MainWindowTitle) || ShowMore));
+        Processes = new(Process.GetProcesses().Select(x => new ProcessViewModel(x)).Where(x => !string.IsNullOrEmpty(x.MainWindowTitle)));
         SelectedProcess = Processes.FirstOrDefault();
     }
 
