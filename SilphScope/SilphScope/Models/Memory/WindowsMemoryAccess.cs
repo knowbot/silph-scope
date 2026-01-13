@@ -36,12 +36,10 @@ namespace SilphScope.Models.Memory
 
 		public static byte[] ReadMemory(Process process, nint address, int size)
 		{
-			using (DisposableProcessHandle handle = new DisposableProcessHandle(process, ProcessAccessFlags.VirtualMemoryRead))
-			{
-				byte[] buffer = new byte[size];
-				handle.ReadMemory(address, size, buffer);
-				return buffer;
-			}
-		}
+            using DisposableProcessHandle handle = new(process, ProcessAccessFlags.VirtualMemoryRead);
+            byte[] buffer = new byte[size];
+            handle.ReadMemory(address, size, buffer);
+            return buffer;
+        }
 	}
 }

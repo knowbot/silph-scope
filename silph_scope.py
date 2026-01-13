@@ -51,6 +51,7 @@ def get_addresses(pm: pymem.Pymem, version: str) -> tuple[int, int]:
         return 0, 0
     
     for anchor_addr in res:
+        print(hex(anchor_addr))
         base_addr = anchor_addr - int(game["anchor_offset"], 16)
         raw_save_addr = pm.read_int(base_addr + int(game["save_pointer_offset"], 16))
         if raw_save_addr != 0:

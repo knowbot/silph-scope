@@ -8,12 +8,6 @@ namespace SilphScope.Models.Memory
     public class MemoryReader<T>(Process process) where T : IMemoryAccess
     {
         private readonly Process _process = process;
-
-        public nint FindPattern(ReadOnlySpan<byte> pattern)
-        {
-            return FindPatternAll(pattern).FirstOrDefault();
-        }
-
         public List<nint> FindPatternAll(ReadOnlySpan<byte> pattern)
         {
             List<nint> matches = new List<nint>();
@@ -41,7 +35,18 @@ namespace SilphScope.Models.Memory
                     }
                 }
             }
+            return matches;
+        }
 
+        public List<nint> FindPatternAll(string pattern)
+        {
+            List<nint> matches = new();
+
+            foreach (ReadableMemoryRegion region in T.GetMemoryRegions(_process))
+            {
+                byte[] buffer = T.ReadMemory(_process, region.BaseAddress, region.Size);
+                matches.AddRange(AOBScanner.FindAll(buffer, pattern).Select(m => m + region.BaseAddress));
+            }
             return matches;
         }
     }

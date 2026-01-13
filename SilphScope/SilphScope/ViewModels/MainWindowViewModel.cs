@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models;
 using SilphScope.Models.Memory;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using Tmds.DBus.Protocol;
 
 namespace SilphScope.ViewModels;
 
@@ -39,21 +41,16 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        MemoryReader<WindowsMemoryAccess> manager = new MemoryReader<WindowsMemoryAccess>(value.Process);
-        var patterns = manager.FindPatternAll([0x5b, 0x53, 0x44, 0x4b, 0x2b, 0x4e, 0x49, 0x4e, 0x54, 0x45, 0x4e, 0x44, 0x4f, 0x3a, 0x42, 0x41, 0x43, 0x4b, 0x55, 0x50]).ToList();
+        MemoryReader<WindowsMemoryAccess> reader = new MemoryReader<WindowsMemoryAccess>(value.Process);
+        List<nint> aobRes = reader.FindPatternAll("5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50");
+        foreach (nint res in aobRes)
+        {
+            Debug.WriteLine("AOB scan found match at: " + res.ToString("X"));
+        }
     }
 
     public MainWindowViewModel()
     {
         RefreshProcesses();
-    }
-
-    static void PrintMatches(List<nint> matches, int expected)
-    {
-        Debug.WriteLine($"Count: {matches.Count}");
-        foreach (var m in matches)
-        {
-            Debug.WriteLine($"Found at: {m} - {(m == expected ? "PASS" : "FAIL")}");
-        }
     }
 }
