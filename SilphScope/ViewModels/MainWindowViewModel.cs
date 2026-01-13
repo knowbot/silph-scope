@@ -36,7 +36,7 @@ public partial class MainWindowViewModel : ViewModelBase
         List<nint> aobRes = reader.PatternScanAll("5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50");
         foreach (nint res in aobRes)
         {
-            Debug.WriteLine("AOB scan found match at: " + res.ToString("X"));
+            Debug.WriteLine("Found match at: " + res.ToString("X"));
         }
     }
 

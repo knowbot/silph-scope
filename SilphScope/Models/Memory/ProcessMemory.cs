@@ -8,7 +8,7 @@ namespace SilphScope.Models.Memory
     public class ProcessMemory<T>(Process process) where T : IMemoryAccess
     {
         private readonly Process _process = process;
-       
+
         public List<nint> PatternScanAll(string pattern)
         {
             List<nint> matches = [];
@@ -19,6 +19,11 @@ namespace SilphScope.Models.Memory
                 matches.AddRange(PatternScanner.FindAll(buffer, pattern).Select(m => m + region.BaseAddress));
             }
             return matches;
+        }
+
+        public byte[] ReadMemory(nint address, int size) 
+        { 
+            return T.ReadMemory(_process, address, size);
         }
     }
 }
