@@ -6,8 +6,6 @@ namespace SilphScope.Models.Win32
 {
     public static class WindowsInterop
     {
-        #region PInvoke
-
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern nint OpenProcess(ProcessAccessFlags processAccess, bool bInheritHandle, int processId);
 
@@ -19,10 +17,6 @@ namespace SilphScope.Models.Win32
 
         [DllImport("kernel32.dll", SetLastError = true)]
         private static extern bool ReadProcessMemory(nint hProcess, nint lpBaseAddress, [Out] byte[] lpBuffer, int dwSize, out nint lpNumberOfBytesRead);
-
-        #endregion
-
-        #region Public interface
 
         public static nint OpenProcess(Process process, ProcessAccessFlags flags)
         {
@@ -60,8 +54,6 @@ namespace SilphScope.Models.Win32
             }
             bytesRead = bytesReadPtr;
         }
-
-        #endregion
 
         private static void CheckResult()
         {

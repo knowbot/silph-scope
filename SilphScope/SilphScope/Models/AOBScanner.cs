@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -10,7 +9,7 @@ using static System.MemoryExtensions;
 
 namespace SilphScope.Models
 {
-    public static class MemoryScanner
+    public static class AOBScanner
     {
         private const int REGISTER_SIZE = 32;
 
@@ -23,7 +22,7 @@ namespace SilphScope.Models
 
             List<nint> matches = [];
 
-            // Preprocessing
+            // preprocessing
             ParsePattern(patternString, out byte[] pattern, out byte[] mask, out int firstByteIndex);
             if(firstByteIndex >= pattern.Length)
             {

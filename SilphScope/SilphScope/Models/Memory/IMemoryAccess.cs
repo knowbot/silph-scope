@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace SilphScope.Models;
+namespace SilphScope.Models.Memory;
 
 public interface IMemoryAccess
 {

@@ -2,7 +2,7 @@ using SilphScope.Models.Win32;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace SilphScope.Models
+namespace SilphScope.Models.Memory
 {
 	public class WindowsMemoryAccess : IMemoryAccess
 	{
@@ -23,11 +23,7 @@ namespace SilphScope.Models
 							break;
 						}
 
-						yield return new ReadableMemoryRegion
-						{
-							BaseAddress = info.BaseAddress,
-							Size = (int)info.RegionSize
-						};
+						yield return new ReadableMemoryRegion(info.BaseAddress, (int)info.RegionSize);
 					}
 
 					nint nextAddress = info.BaseAddress + info.RegionSize;

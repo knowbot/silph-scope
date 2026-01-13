@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace SilphScope.Models
+namespace SilphScope.Models.Memory
 {
-    public class MemoryManager<T>(Process process) where T : IMemoryAccess
+    public class MemoryReader<T>(Process process) where T : IMemoryAccess
     {
         private readonly Process _process = process;
 

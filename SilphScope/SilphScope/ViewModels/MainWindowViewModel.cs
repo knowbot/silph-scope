@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SilphScope.Models;
+using SilphScope.Models.Memory;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +10,6 @@ namespace SilphScope.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    #region ShowMore
 
     [ObservableProperty]
     private bool _ShowMore = false;
@@ -19,10 +18,6 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         RefreshProcesses();
     }
-
-    #endregion
-
-    #region Processes
 
     [ObservableProperty]
     private ObservableCollection<ProcessViewModel> _Processes = [];
@@ -44,11 +39,9 @@ public partial class MainWindowViewModel : ViewModelBase
             return;
         }
 
-        MemoryManager<WindowsMemoryAccess> manager = new MemoryManager<WindowsMemoryAccess>(value.Process);
+        MemoryReader<WindowsMemoryAccess> manager = new MemoryReader<WindowsMemoryAccess>(value.Process);
         var patterns = manager.FindPatternAll([0x5b, 0x53, 0x44, 0x4b, 0x2b, 0x4e, 0x49, 0x4e, 0x54, 0x45, 0x4e, 0x44, 0x4f, 0x3a, 0x42, 0x41, 0x43, 0x4b, 0x55, 0x50]).ToList();
     }
-
-    #endregion Processes
 
     public MainWindowViewModel()
     {
