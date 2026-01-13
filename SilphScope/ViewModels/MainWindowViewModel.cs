@@ -2,7 +2,6 @@
 using SilphScope.Models;
 using SilphScope.Models.Memory;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -31,8 +30,8 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             return;
         }
 
-        ProcessMemory<WindowsMemoryAccess> reader = new ProcessMemory<WindowsMemoryAccess>(value.Process);
-        List<nint> aobRes = reader.PatternScanAll("5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50");
+        var reader = new ProcessMemory<WindowsMemoryAccess>(value.Process);
+        var aobRes = reader.PatternScanAll("5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50");
 
         if (aobRes.Count == 0)
         {

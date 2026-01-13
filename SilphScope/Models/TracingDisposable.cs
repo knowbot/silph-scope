@@ -8,7 +8,7 @@ namespace SilphScope.Models
     /// </summary>
     public class TracingDisposable : IDisposable
     {
-        private bool isDisposed;
+        public bool IsDisposed { get; private set; }
 
         protected virtual void Dispose(bool disposing)
         {
@@ -17,19 +17,19 @@ namespace SilphScope.Models
 
         public void Dispose()
         {
-            if (isDisposed)
+            if (IsDisposed)
             {
                 return;
             }
 
             Dispose(true);
 
-            isDisposed = true;
+            IsDisposed = true;
         }
 
         ~TracingDisposable()
         {
-            if (!isDisposed)
+            if (!IsDisposed)
             {
                 // Missing dispose statement!
                 Dispose(false);
