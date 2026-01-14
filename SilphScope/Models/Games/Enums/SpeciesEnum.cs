@@ -4,7 +4,7 @@ namespace SilphScope.Models.Games.Enums
 {
     public enum SpeciesEnum : ushort
     {
-        _,
+        None,
         Bulbasaur,
         Ivysaur,
         Venusaur,
