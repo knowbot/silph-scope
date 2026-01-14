@@ -10,6 +10,34 @@ namespace SilphScope.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase, IDisposable
 {
     [ObservableProperty]
+    private bool _IsAttached = false;
+
+    partial void OnIsAttachedChanged(bool value)
+    {
+        if (value)
+        {
+            // No process to attach to.
+            if (SelectedProcess == null)
+            {
+                IsAttached = false;
+                return;
+            }
+
+            watch = new ProcessWatch(SelectedProcess.Process);
+            watch.OnMessage += Watch_OnMessage;
+        }
+        else
+        {
+            if (watch != null)
+            {
+                watch.Dispose();
+                watch.OnMessage -= Watch_OnMessage;
+                watch = null;
+            }
+        }
+    }
+
+    [ObservableProperty]
     private ObservableCollection<ProcessViewModel> _Processes = [];
 
     [ObservableProperty]
@@ -26,20 +54,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
 
     partial void OnSelectedProcessChanged(ProcessViewModel? value)
     {
-        if (watch != null)
-        {
-            watch.Dispose();
-            watch.OnMessage -= Watch_OnMessage;
-            watch = null;
-        }
-
-        if (value == null)
-        {
-            return;
-        }
-
-        watch = new ProcessWatch(value.Process);
-        watch.OnMessage += Watch_OnMessage;
+        IsAttached = false;
     }
 
     [ObservableProperty]

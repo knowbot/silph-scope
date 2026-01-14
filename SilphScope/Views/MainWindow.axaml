@@ -19,8 +19,14 @@
 	<DockPanel>
         <!-- Process selection -->
 		<DockPanel DockPanel.Dock="Top">
+            <!-- Label -->
 		    <TextBlock DockPanel.Dock="Left" Text="Selected Process: " VerticalAlignment="Center"/>
-		    <ComboBox SelectedItem="{Binding SelectedProcess}" ItemsSource="{Binding Processes}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+		    
+            <!-- Attach/Detach process --> 
+            <ToggleButton DockPanel.Dock="Right" Classes="IsStartStop" Height="32" Width="32" Margin="4" IsChecked="{Binding IsAttached}"/>
+            
+            <!-- Process list -->
+            <ComboBox SelectedItem="{Binding SelectedProcess}" ItemsSource="{Binding Processes}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
 			    <ComboBox.ItemTemplate>
 				    <DataTemplate DataType="vm:ProcessViewModel">
 					    <local:ucProcess/>
