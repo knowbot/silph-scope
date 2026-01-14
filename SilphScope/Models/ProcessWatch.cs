@@ -1,4 +1,6 @@
-﻿using SilphScope.Models.Memory;
+﻿using SilphScope.Models.Games;
+using SilphScope.Models.Memory;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -10,7 +12,7 @@ namespace SilphScope.Models
         public delegate void ProcessWatchMessageHandler(ProcessWatch sender, string message);
         public event ProcessWatchMessageHandler? OnMessage;
 
-        private object locker = new object();
+        private Lock locker = new();
         private Thread thread;
         private bool shouldStop;
 
@@ -31,8 +33,9 @@ namespace SilphScope.Models
                 // First iteration: check process' info.
                 if (!initialized)
                 {
-                    ProcessMemory<WindowsMemoryAccess> reader = new ProcessMemory<WindowsMemoryAccess>(target);
-                    List<nint> aobRes = reader.PatternScanAll("5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50");
+                    ProcessMemory<WindowsMemoryAccess> reader = new(target);
+                    Game game = GameLibrary.SupportedGames[0];
+                    List<nint> aobRes = reader.PatternScanAll(game.Layout.AnchorString);
 
                     if (aobRes.Count == 0)
                     {
@@ -41,7 +44,13 @@ namespace SilphScope.Models
 
                     foreach (nint res in aobRes)
                     {
-                        OnMessage?.Invoke(this, "Found match at: " + res.ToString("X"));
+                        OnMessage?.Invoke(this, "Found match at: 0x" + res.ToString("X"));
+                        nint baseAddr = res - game.Layout.Anchor;
+                        nint savePtr = BitConverter.ToInt32(reader.ReadMemory(baseAddr + game.Layout.SavePointer, 4));
+                        if (savePtr != 0)
+                        {
+                            OnMessage?.Invoke(this, "Save data address found at: 0x" + savePtr.ToString("X"));
+                        }
                     }
 
                     initialized = true;

@@ -5,9 +5,8 @@ namespace SilphScope.Models.Games
 {
     public class GameLibrary
     {
-        public static List<Game> SupportedGames = new()
-        {
-            new Game("Pokémon Platinum (U)", "CPUE", GenEnum.GEN_4, new PlatinumLayout()),
-        };
+        public static readonly List<Game> SupportedGames = [
+                    new Game("Pokémon Platinum (U)", "CPUE", GenEnum.GEN_4, new PlatinumLayout()),
+        ];
     }
 }

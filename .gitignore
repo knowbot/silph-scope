@@ -376,3 +376,5 @@ Directory.Build.Override.props
 /SilphScope/obj/
 /SilphScope/bin/
 .vscode
+/LegacyPython
+/LegacyPython

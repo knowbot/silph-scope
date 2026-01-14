@@ -7,7 +7,7 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using static System.MemoryExtensions;
 
-namespace SilphScope.Models
+namespace SilphScope.Models.Utils
 {
     public static class PatternScanner
     {

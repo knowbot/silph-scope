@@ -1,6 +1,4 @@
-﻿using SilphScope.Models.GameData;
-
-namespace SilphScope.Models.Games
+﻿namespace SilphScope.Models.Games.MemoryLayouts
 {
     public record PlatinumLayout : IMemoryLayout
     {
