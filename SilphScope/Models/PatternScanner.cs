@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -31,7 +30,7 @@ namespace SilphScope.Models
 
             ParsePattern(patternString, out byte[] pattern, out byte[] mask, out int firstByteIndex);
 
-            if(firstByteIndex >= pattern.Length)
+            if (firstByteIndex >= pattern.Length)
             {
                 throw new ArgumentException("Pattern cannot be composed of just wildcards");
             }
@@ -43,19 +42,20 @@ namespace SilphScope.Models
             long searchLength = data.Length - pattern.Length;
             int offset = 0;
 
-            while(offset <= searchLength - AVX_REGISTER_SIZE)
+            while (offset <= searchLength - AVX_REGISTER_SIZE)
             {
                 ref byte searchStart = ref Unsafe.Add(ref dataRef, offset + firstByteIndex);
                 Vector256<byte> firstChunk = Vector256.LoadUnsafe(ref searchStart);
                 Vector256<byte> compareVec = Avx2.CompareEqual(firstByteVec, firstChunk);
                 int result = Avx2.MoveMask(compareVec);
-                while (result != 0) {
+                while (result != 0)
+                {
                     int pos = BitOperations.TrailingZeroCount(result);
                     result &= ~(1 << pos);
                     int matchOffset = offset + pos;
                     if (matchOffset >= 0 && matchOffset <= searchLength)
                     {
-                        if(MatchPatternAvx2(ref dataRef, matchOffset, patternVecs, maskVecs))
+                        if (MatchPatternAvx2(ref dataRef, matchOffset, patternVecs, maskVecs))
                         {
                             matches.Add(matchOffset);
                         }
@@ -64,9 +64,9 @@ namespace SilphScope.Models
                 offset += AVX_REGISTER_SIZE;
             }
 
-            while(offset <= searchLength)
+            while (offset <= searchLength)
             {
-                if(Unsafe.Add(ref dataRef, offset + firstByteIndex) == pattern[firstByteIndex])
+                if (Unsafe.Add(ref dataRef, offset + firstByteIndex) == pattern[firstByteIndex])
                 {
                     for (int i = 0; i < pattern.Length; i++)
                     {
@@ -218,11 +218,12 @@ namespace SilphScope.Models
                 if (token.IsEmpty) continue;
                 if (token.Equals(wildcard, StringComparison.Ordinal))
                 {
-                    if(!foundFirstByte)
+                    if (!foundFirstByte)
                     {
                         leadingWildcards++;
                     }
-                } else
+                }
+                else
                 {
                     pattern[i] = (byte)((CharToHexByte(token[0]) << 4) | CharToHexByte(token[1]));
                     mask[i] = 0xFF;

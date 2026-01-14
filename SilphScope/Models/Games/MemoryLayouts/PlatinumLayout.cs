@@ -1,13 +1,8 @@
 ﻿using SilphScope.Models.GameData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SilphScope.Models.Games
 {
-    public record PtOffsets : IGameOffsets
+    public record PlatinumLayout : IMemoryLayout
     {
         public string AnchorString => "5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50";
         public int Anchor => 0xBFC;

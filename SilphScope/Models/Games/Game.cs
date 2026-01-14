@@ -1,17 +1,12 @@
-﻿using SilphScope.Models.GameData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SilphScope.Models.Games.MemoryLayouts;
 
 namespace SilphScope.Models.Games
 {
-    public record Game(string Name, string ProductId, GenEnum Generation, IGameOffsets Offsets)
+    public record Game(string Name, string ProductId, GenEnum Generation, IMemoryLayout Layout)
     {
         public string Name = Name;
         public string ProductId = ProductId;
         public GenEnum Generation = Generation;
-        public IGameOffsets Offsets = Offsets;
+        public IMemoryLayout Layout = Layout;
     }
 }
