@@ -11,5 +11,7 @@
         public int PartySize => 0xB0;
         public int BoxData => 0x11EE4;
         public int BigBlock => 0xCF40;
+
+        public int Canary => throw new System.NotImplementedException();
     }
 }
