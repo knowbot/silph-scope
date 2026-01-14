@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models;
-using SilphScope.Models.Memory;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -17,6 +15,8 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     [ObservableProperty]
     private ProcessViewModel? _SelectedProcess;
 
+    private ProcessWatch? watch;
+
     private void RefreshProcesses()
     {
         // Filter processes based on MainWindowTitle.
@@ -26,25 +26,20 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
 
     partial void OnSelectedProcessChanged(ProcessViewModel? value)
     {
+        if (watch != null)
+        {
+            watch.Dispose();
+            watch.OnMessage -= Watch_OnMessage;
+            watch = null;
+        }
+
         if (value == null)
         {
             return;
         }
 
-        ProcessMemory<WindowsMemoryAccess> reader = new ProcessMemory<WindowsMemoryAccess>(value.Process);
-        List<nint> aobRes = reader.PatternScanAll("5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50");
-
-        if (aobRes.Count == 0)
-        {
-            SilphScopeLogger.Log("No matches found.");
-        }
-
-        foreach (nint res in aobRes)
-        {
-            var msg = "Found match at: " + res.ToString("X");
-            Debug.WriteLine(msg);
-            SilphScopeLogger.Log(msg);
-        }
+        watch = new ProcessWatch(value.Process);
+        watch.OnMessage += Watch_OnMessage;
     }
 
     [ObservableProperty]
@@ -53,6 +48,11 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public MainWindowViewModel()
     {
         RefreshProcesses();
+    }
+
+    private void Watch_OnMessage(ProcessWatch sender, string message)
+    {
+        SilphScopeLogger.Log(message);
     }
 
     private bool isDisposed;
