@@ -1,6 +1,6 @@
 ﻿namespace SilphScope.Models
 {
-    public static class SilphScopeLogger
+    public static class SilphLogger
     {
         public delegate void MessageEventHandler(object sender, string message);
 
@@ -8,7 +8,7 @@
 
         public static void Log(string message)
         {
-            Message?.Invoke(typeof(SilphScopeLogger), message);
+            Message?.Invoke(typeof(SilphLogger), message);
         }
     }
 }

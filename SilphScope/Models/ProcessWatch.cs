@@ -34,7 +34,7 @@ namespace SilphScope.Models
                 if (!initialized)
                 {
                     ProcessMemory<WindowsMemoryAccess> reader = new(target);
-                    Game game = GameLibrary.SupportedGames[0];
+                    Game game = Game.Supported[0];
                     List<nint> aobRes = reader.PatternScanAll(game.Layout.AnchorString);
 
                     if (aobRes.Count == 0)

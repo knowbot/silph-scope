@@ -12,7 +12,7 @@ namespace SilphScope.ViewModels
 
         public LogViewModel()
         {
-            SilphScopeLogger.Message += SilphScopeLogger_Message;
+            SilphLogger.Message += SilphScopeLogger_Message;
         }
 
         private void SilphScopeLogger_Message(object sender, string message)
@@ -29,7 +29,7 @@ namespace SilphScope.ViewModels
                 return;
             }
 
-            SilphScopeLogger.Message -= SilphScopeLogger_Message;
+            SilphLogger.Message -= SilphScopeLogger_Message;
 
             isDisposed = true;
         }

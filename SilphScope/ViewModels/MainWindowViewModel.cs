@@ -67,7 +67,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
 
     private void Watch_OnMessage(ProcessWatch sender, string message)
     {
-        SilphScopeLogger.Log(message);
+        SilphLogger.Log(message);
     }
 
     private bool isDisposed;
