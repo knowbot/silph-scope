@@ -1,4 +1,4 @@
-﻿namespace SilphScope.Models
+﻿namespace SilphScope.Models.Core
 {
     public static class SilphLogger
     {

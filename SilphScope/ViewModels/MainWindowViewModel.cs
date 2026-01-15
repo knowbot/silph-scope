@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SilphScope.Models;
+using SilphScope.Models.Core;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -23,7 +23,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
                 return;
             }
 
-            watch = new ProcessWatch(SelectedProcess.Process);
+            watch = new SilphService(SelectedProcess.Process);
             watch.OnMessage += Watch_OnMessage;
         }
         else
@@ -43,7 +43,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     [ObservableProperty]
     private ProcessViewModel? _SelectedProcess;
 
-    private ProcessWatch? watch;
+    private SilphService? watch;
 
     private void RefreshProcesses()
     {
@@ -58,14 +58,14 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     }
 
     [ObservableProperty]
-    private LogViewModel _Log = new LogViewModel();
+    private LogViewModel _Log = new();
 
     public MainWindowViewModel()
     {
         RefreshProcesses();
     }
 
-    private void Watch_OnMessage(ProcessWatch sender, string message)
+    private void Watch_OnMessage(SilphService sender, string message)
     {
         SilphLogger.Log(message);
     }

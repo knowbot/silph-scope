@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 
-namespace SilphScope.Models
+namespace SilphScope.Models.Core
 {
     /// <summary>
     /// Thread-safe queue meant for 1 producer - N consumers scenario.

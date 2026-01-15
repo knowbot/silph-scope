@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SilphScope.Models;
+using SilphScope.Models.Core;
 using System;
 using System.Collections.ObjectModel;
 

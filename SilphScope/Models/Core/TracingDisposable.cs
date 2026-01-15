@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace SilphScope.Models
+namespace SilphScope.Models.Core
 {
     /// <summary>
     /// Quick and dirty class to help track missing Dispose statements.

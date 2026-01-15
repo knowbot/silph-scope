@@ -4,10 +4,10 @@ using System.Diagnostics;
 
 namespace SilphScope.Models.Memory
 {
-	public class WindowsMemoryAccess : IMemoryAccess
-	{
-		public static IEnumerable<ReadableMemoryRegion> GetMemoryRegions(Process process)
-		{
+    public class WindowsMemoryAccess : IMemoryAccess
+    {
+        public IEnumerable<ReadableMemoryRegion> GetMemoryRegions(Process process)
+        {
             using DisposableProcessHandle handle = new(process, ProcessAccessFlags.VirtualMemoryRead | ProcessAccessFlags.QueryInformation);
             nint address = 0;
             MemoryBasicInformation? maybeInfo;
@@ -34,12 +34,12 @@ namespace SilphScope.Models.Memory
             }
         }
 
-		public static byte[] ReadMemory(Process process, nint address, int size)
-		{
+        public byte[] ReadMemory(Process process, nint address, int size)
+        {
             using DisposableProcessHandle handle = new(process, ProcessAccessFlags.VirtualMemoryRead);
             byte[] buffer = new byte[size];
             handle.ReadMemory(address, size, buffer);
             return buffer;
         }
-	}
+    }
 }
