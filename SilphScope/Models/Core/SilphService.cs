@@ -18,13 +18,15 @@ namespace SilphScope.Models.Core
         private bool shouldStop;
 
         private bool initialized;
-        private readonly Process target;
+        private readonly Process targetProcess;
         private readonly ProcessMemory processMemory;
-        private SilphContext? context;
+        private readonly Game targetGame;
+        private readonly SilphContext context;
 
-        public SilphService(Process process)
+        public SilphService(Process process, Game game)
         {
-            target = process;
+            targetProcess = process;
+
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 processMemory = new ProcessMemory(process, new WindowsMemoryAccess());
@@ -38,6 +40,9 @@ namespace SilphScope.Models.Core
                 throw new PlatformNotSupportedException("SilphScope does not support the current OS.");
             }
 
+            targetGame = game;
+            context = new SilphContext(game);
+
             thread = new Thread(ThreadLoop) { IsBackground = true };
             thread.Start();
         }
@@ -49,31 +54,33 @@ namespace SilphScope.Models.Core
                 // First iteration: check process' info.
                 if (!initialized)
                 {
-                    // Move initialization code to dedicated method
-
-                    Game game = Game.Supported[0]; // Get game
-                    List<nint> candidateAddresses = processMemory.PatternScanAll(game.Layout.AnchorString); // Find memory signature
-
-                    if (candidateAddresses.Count == 0)
-                    {
-                        OnMessage?.Invoke(this, "No matches found.");
-                    }
-
-                    foreach (nint res in candidateAddresses)
-                    {
-                        OnMessage?.Invoke(this, "Found match at: 0x" + res.ToString("X"));
-                        nint baseAddr = res - game.Layout.Anchor;
-                        // Verify candidate address is good
-                        nint savePtr = BitConverter.ToInt32(processMemory.Read(baseAddr + game.Layout.SavePointer, 4));
-                        if (savePtr != 0)
-                        {
-                            OnMessage?.Invoke(this, "Save data address found at: 0x" + savePtr.ToString("X"));
-                            context = new SilphContext(game, baseAddr); // Make context
-                        }
-                    }
-                    initialized = true;
+                    Init();
                 }
             }
+        }
+
+        private void Init()
+        {
+            List<nint> candidateAddresses = processMemory.PatternScanAll(targetGame.Layout.AnchorString); // Find memory signature
+
+            if (candidateAddresses.Count == 0)
+            {
+                OnMessage?.Invoke(this, "No matches found.");
+            }
+
+            foreach (nint res in candidateAddresses)
+            {
+                OnMessage?.Invoke(this, "Found match at: 0x" + res.ToString("X"));
+                nint baseAddr = res - targetGame.Layout.Anchor;
+                // Verify candidate address is good
+                nint savePtr = BitConverter.ToInt32(processMemory.Read(baseAddr + targetGame.Layout.SavePointer, 4));
+                if (savePtr != 0)
+                {
+                    OnMessage?.Invoke(this, "Save data address found at: 0x" + savePtr.ToString("X"));
+                    context.Buffer = processMemory.Read(baseAddr, context.Buffer.Length);
+                }
+            }
+            initialized = true;
         }
 
         protected bool ShouldStop()
