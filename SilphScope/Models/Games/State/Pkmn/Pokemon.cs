@@ -1,6 +1,6 @@
 ﻿using SilphScope.Models.Games.Data.Enums;
 
-namespace SilphScope.Models.Games.State.Pokemon
+namespace SilphScope.Models.Games.State.Pkmn
 {
     public record Pokemon
     {

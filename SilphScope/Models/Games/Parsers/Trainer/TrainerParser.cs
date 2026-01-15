@@ -2,9 +2,9 @@
 {
     public class TrainerParser
     {
-        public TrainerParser Parse()
-        {
+        //public TrainerParser Parse()
+        //{
 
-        }
+        //}
     }
 }
