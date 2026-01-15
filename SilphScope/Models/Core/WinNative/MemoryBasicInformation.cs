@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace SilphScope.Models.Win32
+namespace SilphScope.Models.Core.WinNative
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct MemoryBasicInformation

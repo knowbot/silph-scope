@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace SilphScope.Models.Win32
+namespace SilphScope.Models.Core.WinNative
 {
     public static class WindowsInterop
     {

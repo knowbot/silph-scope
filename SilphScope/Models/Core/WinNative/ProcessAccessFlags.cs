@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SilphScope.Models.Win32
+namespace SilphScope.Models.Core.WinNative
 {
     [Flags]
     public enum ProcessAccessFlags : uint

@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace SilphScope.Models.Games.Enums
+namespace SilphScope.Models.Games.GameData.Enums
 {
-    public enum AbilityEnum
+    public enum Ability
     {
         None,
         Stench,

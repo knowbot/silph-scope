@@ -1,7 +1,7 @@
 ﻿using SilphScope.Models.Core;
 using System.Diagnostics;
 
-namespace SilphScope.Models.Win32
+namespace SilphScope.Models.Core.WinNative
 {
     public class DisposableProcessHandle : TracingDisposable
     {

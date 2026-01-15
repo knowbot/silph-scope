@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace SilphScope.Models.Games.Enums
+namespace SilphScope.Models.Games.GameData.Enums
 {
-    public enum SpeciesEnum : ushort
+    public enum Species : ushort
     {
         None,
         Bulbasaur,

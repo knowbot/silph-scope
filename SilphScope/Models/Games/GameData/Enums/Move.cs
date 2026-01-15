@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace SilphScope.Models.Games.Enums
+namespace SilphScope.Models.Games.GameData.Enums
 {
-    public enum MoveEnum
+    public enum Move
     {
         None,
         Pound,
@@ -578,7 +578,7 @@ namespace SilphScope.Models.Games.Enums
         Acupressure,
         [Description("Metal Burst")]
         MetalBurst,
-        [Description("U Turn")]
+        [Description("U-turn")]
         UTurn,
         [Description("Close Combat")]
         CloseCombat,

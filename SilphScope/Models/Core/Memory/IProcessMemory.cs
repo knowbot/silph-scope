@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SilphScope.Models.Memory
+namespace SilphScope.Models.Core.Memory
 {
     internal interface IProcessMemory
     {

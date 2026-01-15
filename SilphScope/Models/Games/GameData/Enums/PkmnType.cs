@@ -1,6 +1,6 @@
 ﻿namespace SilphScope.Models.Games.Enums
 {
-    public enum TypeEnum
+    public enum PkmnType
     {
 
     }
