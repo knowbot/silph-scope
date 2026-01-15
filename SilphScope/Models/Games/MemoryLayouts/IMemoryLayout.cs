@@ -13,5 +13,7 @@
         int BoxData { get; }
         int Money { get; }
         int BigBlock { get; }
+        int Badges { get; }
+        int Gender { get; }
     }
 }

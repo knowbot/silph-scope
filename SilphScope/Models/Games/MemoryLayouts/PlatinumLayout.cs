@@ -10,6 +10,8 @@
         public int TrainerName => 0x7C;
         public int TrainerID => 0x8C;
         public int Money => 0x90;
+        public int Gender => 0x94;
+        public int Badges => 0x96;
         public int PartySize => 0xB0;
         public int BoxData => 0x11EE4;
         public int BigBlock => 0xCF40;
