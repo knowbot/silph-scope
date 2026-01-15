@@ -2,5 +2,5 @@
 
 namespace SilphScope.Models.Games.State
 {
-    public record GameState(Trainer trainer, Pokemon[] team, Box[] boxes);
+    public record GameState(Trainer Trainer, Pokemon[] Team, Box[] Boxes);
 }
