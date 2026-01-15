@@ -1,8 +1,8 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:SilphScope.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:SilphScope.ViewModels"
 		xmlns:local="using:SilphScope"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SilphScope.Views.MainWindow"
@@ -35,8 +35,29 @@
 		    </ComboBox>
 	    </DockPanel>
 
-        <!-- Log -->
-        <local:ucLog DockPanel.Dock="Bottom" DataContext="{Binding Log}"/>
+        <!-- Main content & log -->
+        <Panel>
+            <!-- Content -->
+            <TabControl HorizontalAlignment="Stretch">
+				<TabControl.Styles>
+                    <!-- Horizontally center tabs -->
+					<Style Selector="TabControl /template/ WrapPanel">
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                </TabControl.Styles>
+                
+                <TabItem Header="Trainer"/>
+                <TabItem Header="Team">
+                    <local:ucTeamTab DataContext="{Binding TeamTab}"/>
+                </TabItem>
+                <TabItem Header="Box">
+                    <local:ucBoxTab DataContext="{Binding BoxTab}"/>
+                </TabItem>
+            </TabControl>
+			
+            <!-- Log -->
+            <local:ucLog DockPanel.Dock="Bottom" DataContext="{Binding Log}"/>
+        </Panel>
     </DockPanel>
 
 </Window>

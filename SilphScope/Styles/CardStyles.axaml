@@ -1,0 +1,18 @@
+<Styles xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20">
+			<!-- Add Controls for Previewer Here -->
+		</Border>
+	</Design.PreviewWith>
+
+	<!-- Add Styles Here -->
+	<Style Selector="Border.CardClass">
+		<Setter Property="CornerRadius" Value="4"/>
+		<Setter Property="Effect">
+			<Setter.Value>
+				<DropShadowEffect BlurRadius="4" Opacity="0.3" OffsetX="2" OffsetY="2"/>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</Styles>

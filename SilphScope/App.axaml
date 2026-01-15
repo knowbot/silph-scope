@@ -11,6 +11,7 @@
   
     <Application.Styles>
         <FluentTheme />
+        <StyleInclude Source="/Styles/CardStyles.axaml"/>
 		<StyleInclude Source="/Styles/StartStopToggleButtonStyle.axaml"/>
     </Application.Styles>
 </Application>

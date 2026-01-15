@@ -43,8 +43,6 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     [ObservableProperty]
     private ProcessViewModel? _SelectedProcess;
 
-    private ProcessWatch? watch;
-
     private void RefreshProcesses()
     {
         // Filter processes based on MainWindowTitle.
@@ -58,7 +56,15 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     }
 
     [ObservableProperty]
-    private LogViewModel _Log = new LogViewModel();
+    private LogViewModel _Log = new();
+
+    [ObservableProperty]
+    private TeamTabViewModel _TeamTab = new();
+
+    [ObservableProperty]
+    private BoxTabViewModel _BoxTab = new();
+
+    private ProcessWatch? watch;
 
     public MainWindowViewModel()
     {
