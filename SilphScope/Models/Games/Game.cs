@@ -1,4 +1,5 @@
 ﻿using SilphScope.Models.Games.MemoryLayouts;
+using System.Collections.Generic;
 
 namespace SilphScope.Models.Games
 {
@@ -8,5 +9,9 @@ namespace SilphScope.Models.Games
         public string ProductId = ProductId;
         public GenEnum Generation = Generation;
         public IMemoryLayout Layout = Layout;
+
+        public static readonly IReadOnlyList<Game> Supported = [
+                    new Game("Pokémon Platinum (U)", "CPUE", GenEnum.GEN_4, new PlatinumLayout()),
+        ];
     }
 }

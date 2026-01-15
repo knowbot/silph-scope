@@ -2,6 +2,7 @@
 {
     public interface IMemoryLayout
     {
+        int MemorySize { get; }
         string AnchorString { get; }
         int Anchor { get; }
         int SavePointer { get; }

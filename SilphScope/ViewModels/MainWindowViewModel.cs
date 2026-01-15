@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SilphScope.Models;
+using SilphScope.Models.Core;
+using SilphScope.Models.Games;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -23,16 +24,16 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
                 return;
             }
 
-            watch = new ProcessWatch(SelectedProcess.Process);
-            watch.OnMessage += Watch_OnMessage;
+            service = new SilphService(SelectedProcess.Process, Game.Supported[0]); // TODO: replace with dropdown game selection
+            service.OnMessage += Watch_OnMessage;
         }
         else
         {
-            if (watch != null)
+            if (service != null)
             {
-                watch.Dispose();
-                watch.OnMessage -= Watch_OnMessage;
-                watch = null;
+                service.Dispose();
+                service.OnMessage -= Watch_OnMessage;
+                service = null;
             }
         }
     }
@@ -42,6 +43,8 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
 
     [ObservableProperty]
     private ProcessViewModel? _SelectedProcess;
+
+    private SilphService? service;
 
     private void RefreshProcesses()
     {
@@ -64,16 +67,14 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     [ObservableProperty]
     private BoxTabViewModel _BoxTab = new();
 
-    private ProcessWatch? watch;
-
     public MainWindowViewModel()
     {
         RefreshProcesses();
     }
 
-    private void Watch_OnMessage(ProcessWatch sender, string message)
+    private void Watch_OnMessage(SilphService sender, string message)
     {
-        SilphScopeLogger.Log(message);
+        SilphLogger.Log(message);
     }
 
     private bool isDisposed;

@@ -378,3 +378,5 @@ Directory.Build.Override.props
 .vscode
 /LegacyPython
 /LegacyPython
+SilphScope/Assets/SilphLogo.png
+SilphScope/Assets/SilphLogo.svg
