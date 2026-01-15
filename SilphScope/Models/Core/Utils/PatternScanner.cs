@@ -7,7 +7,7 @@ using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 using static System.MemoryExtensions;
 
-namespace SilphScope.Models.Utils
+namespace SilphScope.Models.Core.Utils
 {
     public static class PatternScanner
     {
@@ -244,7 +244,7 @@ namespace SilphScope.Models.Utils
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void BuildMatchingVectors(ref byte patternRef, ref byte maskRef, int length, out Vector256<byte>[] patternVecs, out Vector256<byte>[] maskVecs)
         {
-            int vecCount = (int)(Math.Ceiling(length / (float)AVX_REGISTER_SIZE));
+            int vecCount = (int)Math.Ceiling(length / (float)AVX_REGISTER_SIZE);
             patternVecs = new Vector256<byte>[vecCount];
             maskVecs = new Vector256<byte>[vecCount];
             Span<byte> paddedPattern = stackalloc byte[AVX_REGISTER_SIZE];
@@ -260,7 +260,7 @@ namespace SilphScope.Models.Utils
                 }
                 else
                 {
-                    int leftoverCount = length - i * AVX_REGISTER_SIZE;
+                    int leftoverCount = length - (i * AVX_REGISTER_SIZE);
                     paddedPattern.Clear();
                     paddedMask.Clear();
                     Unsafe.CopyBlock(ref MemoryMarshal.GetReference(paddedPattern), ref Unsafe.Add(ref patternRef, offset), (uint)leftoverCount);
@@ -278,7 +278,7 @@ namespace SilphScope.Models.Utils
         /// <returns>Hex value of c in byte form.</returns>
         private static byte CharToHexByte(char c)
         {
-            return (byte)((c & 0xF) + (c >> 6) * 9);
+            return (byte)((c & 0xF) + ((c >> 6) * 9));
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SilphScope.Models.Games.Strings
+namespace SilphScope.Models.Games.Parsers.Text
 {
-    public interface IEncoding
+    public interface IDecoder
     {
         /// <summary>
         /// Convert generation-specific encoded data to a UTF-16 string.

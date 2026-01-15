@@ -1,6 +1,6 @@
-﻿using SilphScope.Models.Games.GameData.Enums;
+﻿using SilphScope.Models.Games.Data.Enums;
 
-namespace SilphScope.Models.Games
+namespace SilphScope.Models.Games.State.Pokemon
 {
     public record Pokemon
     {
@@ -11,6 +11,5 @@ namespace SilphScope.Models.Games
         public MoveSet MoveSet { get; set; }
         public EVs EVs { get; set; }
         public IVs IVs { get; set; }
-
     }
 }

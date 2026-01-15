@@ -1,9 +1,9 @@
-using SilphScope.Models.Utils;
+using SilphScope.Models.Core.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace SilphScope.Models.Memory
+namespace SilphScope.Models.Core.Memory
 {
     public class ProcessMemory(Process process, IMemoryAccess memoryAccess)
     {

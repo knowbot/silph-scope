@@ -1,4 +1,4 @@
-﻿namespace SilphScope.Models.Games.GameData.Enums
+﻿namespace SilphScope.Models.Games.Data.Enums
 {
     public enum Nature
     {

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Reflection;
 
-namespace SilphScope.Models.Games.GameData.Enums
+namespace SilphScope.Models.Extensions
 {
     public static class EnumExtensions
     {

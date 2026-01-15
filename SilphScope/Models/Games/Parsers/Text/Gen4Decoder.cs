@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace SilphScope.Models.Games.Strings
+namespace SilphScope.Models.Games.Parsers.Text
 {
-    public class Gen4Encoding : IEncoding
+    public class Gen4Decoder : IDecoder
     {
         private const char N_A = '\uFFFD';
         private const ushort END = 0xFFFF;

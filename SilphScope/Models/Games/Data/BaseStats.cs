@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SilphScope.Models.Games.DataTables
+namespace SilphScope.Models.Games.Data
 {
     public static partial class GameData
     {

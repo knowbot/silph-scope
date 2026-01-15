@@ -1,5 +1,5 @@
-﻿using SilphScope.Models.Games;
-using SilphScope.Models.Memory;
+﻿using SilphScope.Models.Core.Memory;
+using SilphScope.Models.Games;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

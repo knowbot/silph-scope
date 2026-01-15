@@ -1,8 +1,8 @@
-using SilphScope.Models.Win32;
+using SilphScope.Models.Core.WinNative;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace SilphScope.Models.Memory
+namespace SilphScope.Models.Core.Memory
 {
     public class WindowsMemoryAccess : IMemoryAccess
     {
