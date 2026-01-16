@@ -11,7 +11,7 @@ namespace SilphScope.Models.Games.Parsers
     {
         public static Trainer Parse(SilphContext context)
         {
-            byte[] buffer = context.Buffer;
+            byte[] buffer = context.Data;
             IMemoryLayout layout = context.Game.Layout;
             string name = Gen4Decoder.Decode(buffer.AsSpan(layout.TrainerName, 16));
             ushort trainerId = MemoryMarshal.Read<ushort>(buffer.AsSpan(layout.TrainerID));

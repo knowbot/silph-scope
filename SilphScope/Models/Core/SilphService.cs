@@ -1,5 +1,7 @@
 ﻿using SilphScope.Models.Core.Memory;
 using SilphScope.Models.Games;
+using SilphScope.Models.Games.Parsers;
+using SilphScope.Models.Games.State;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,7 +23,7 @@ namespace SilphScope.Models.Core
         private readonly Process targetProcess;
         private readonly ProcessMemory processMemory;
         private readonly Game targetGame;
-        private readonly SilphContext context;
+        private SilphContext? context;
 
         public SilphService(Process process, Game game)
         {
@@ -41,8 +43,6 @@ namespace SilphScope.Models.Core
             }
 
             targetGame = game;
-            context = new SilphContext(game);
-
             thread = new Thread(ThreadLoop) { IsBackground = true };
             thread.Start();
         }
@@ -55,6 +55,7 @@ namespace SilphScope.Models.Core
                 if (!initialized)
                 {
                     Init();
+                    // TODO: check if context is null, exit if so
                 }
             }
         }
@@ -73,11 +74,17 @@ namespace SilphScope.Models.Core
                 OnMessage?.Invoke(this, "Found match at: 0x" + res.ToString("X"));
                 nint baseAddr = res - targetGame.Layout.Anchor;
                 // Verify candidate address is good
-                nint savePtr = BitConverter.ToInt32(processMemory.Read(baseAddr + targetGame.Layout.SavePointer, 4));
-                if (savePtr != 0)
+                nint localSaveAddr = BitConverter.ToInt32(processMemory.Read(baseAddr + targetGame.Layout.SavePointer, 4));
+                if (localSaveAddr != 0)
                 {
-                    OnMessage?.Invoke(this, "Save data address found at: 0x" + savePtr.ToString("X"));
-                    context.Buffer = processMemory.Read(baseAddr, context.Buffer.Length);
+                    nint saveAddr = localSaveAddr - targetGame.Layout.RamStart + baseAddr;
+                    OnMessage?.Invoke(this, "Save data address found at: 0x" + saveAddr.ToString("X"));
+                    context = new(targetGame, saveAddr, processMemory.Read(saveAddr, targetGame.Layout.SaveSize));
+                    Trainer tdata = TrainerParser.Parse(context);
+                    OnMessage?.Invoke(this, "Trainer name: " + tdata.Name);
+                    OnMessage?.Invoke(this, "Trainer ID: " + tdata.Id);
+                    OnMessage?.Invoke(this, "Money: " + tdata.Money);
+                    OnMessage?.Invoke(this, "Gender: " + (tdata.Gender ? "Female" : "Male"));
                 }
             }
             initialized = true;

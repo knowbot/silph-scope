@@ -75,14 +75,14 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         RefreshProcesses();
 
         // TODO: remove fake data.
-        GameState game = new GameState(new Trainer("SilphScope", "00000", 1234, true, 0), new Pokemon[6]
+        GameState game = new(new Trainer("SilphScope", 0, 1234, true, 0), new Pokemon[6]
         {
-            new Pokemon() { Species = Species.Abomasnow },
-            new Pokemon() { Species = Species.Abra },
-            new Pokemon() { Species = Species.Absol },
-            new Pokemon() { Species = Species.Accelgor },
-            new Pokemon() { Species = Species.Aegislash },
-            new Pokemon() { Species = Species.Aerodactyl }
+            new() { Species = Species.Abomasnow },
+            new() { Species = Species.Abra },
+            new() { Species = Species.Absol },
+            new() { Species = Species.Accelgor },
+            new() { Species = Species.Aegislash },
+            new() { Species = Species.Aerodactyl }
         },
         [
             new Box("Box 1", new Pokemon[30]),

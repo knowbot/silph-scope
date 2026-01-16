@@ -2,7 +2,8 @@
 {
     public record PlatinumLayout : IMemoryLayout
     {
-        public int MemorySize => 0x400000;
+        public int RamStart => 0x02000000;
+        public int SaveSize => 0x10000;
         public string AnchorString => "5B 53 44 4B 2B 4E 49 4E 54 45 4E 44 4F 3A 42 41 43 4B 55 50";
         public int Anchor => 0xBFC;
         public int SavePointer => 0x101D40;
