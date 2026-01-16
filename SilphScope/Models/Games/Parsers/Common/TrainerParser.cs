@@ -1,11 +1,11 @@
 ﻿using SilphScope.Models.Core;
 using SilphScope.Models.Games.MemoryLayouts;
-using SilphScope.Models.Games.Parsers.Text;
-using SilphScope.Models.Games.State;
+using SilphScope.Models.Games.Parsers.Gen4.Text;
+using SilphScope.Models.Games.State.Common;
 using System;
 using System.Runtime.InteropServices;
 
-namespace SilphScope.Models.Games.Parsers
+namespace SilphScope.Models.Games.Parsers.Common
 {
     public class TrainerParser
     {

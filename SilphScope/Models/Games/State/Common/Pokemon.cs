@@ -1,6 +1,7 @@
 ﻿using SilphScope.Models.Games.Data.Enums;
+using SilphScope.Models.Games.State.Common.PkmnInfo;
 
-namespace SilphScope.Models.Games.State.Pkmn
+namespace SilphScope.Models.Games.State.Common
 {
     public record Pokemon
     {
@@ -11,5 +12,6 @@ namespace SilphScope.Models.Games.State.Pkmn
         public MoveSet MoveSet { get; set; }
         public EVs EVs { get; set; }
         public IVs IVs { get; set; }
+        public Stats Stats { get; set; }
     }
 }

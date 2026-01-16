@@ -3,7 +3,7 @@ using SilphScope.Models.Core;
 using SilphScope.Models.Games;
 using SilphScope.Models.Games.Data.Enums;
 using SilphScope.Models.Games.State;
-using SilphScope.Models.Games.State.Pkmn;
+using SilphScope.Models.Games.State.Pokemon;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;

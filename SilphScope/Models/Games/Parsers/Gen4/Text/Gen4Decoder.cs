@@ -1,7 +1,8 @@
-﻿using System;
+﻿using SilphScope.Models.Games.Parsers.Common.Text;
+using System;
 using System.Runtime.InteropServices;
 
-namespace SilphScope.Models.Games.Parsers.Text
+namespace SilphScope.Models.Games.Parsers.Gen4.Text
 {
     public class Gen4Decoder : IDecoder
     {

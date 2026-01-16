@@ -1,4 +1,4 @@
-﻿namespace SilphScope.Models.Games.State.Pkmn
+﻿namespace SilphScope.Models.Games.State.Common.Pokemon.Info
 {
     public record Stats(int HP, int Attack, int Defense, int SpecialDefense, int SpecialAttack, int Speed);
 }

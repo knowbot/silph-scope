@@ -1,4 +1,4 @@
-﻿using SilphScope.Models.Games.State.Pkmn;
+﻿using SilphScope.Models.Games.State.Common;
 
 namespace SilphScope.Models.Games.State
 {

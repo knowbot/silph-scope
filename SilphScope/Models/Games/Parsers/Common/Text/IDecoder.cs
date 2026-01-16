@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SilphScope.Models.Games.Parsers.Text
+namespace SilphScope.Models.Games.Parsers.Common.Text
 {
     public interface IDecoder
     {

@@ -1,7 +1,7 @@
 ﻿using SilphScope.Models.Core.Memory;
 using SilphScope.Models.Games;
-using SilphScope.Models.Games.Parsers;
-using SilphScope.Models.Games.State;
+using SilphScope.Models.Games.Parsers.Common;
+using SilphScope.Models.Games.State.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
