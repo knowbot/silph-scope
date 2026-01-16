@@ -77,7 +77,7 @@ namespace SilphScope.Models.Core
                 nint localSaveAddr = BitConverter.ToInt32(processMemory.Read(baseAddr + targetGame.Layout.SavePointer, 4));
                 if (localSaveAddr != 0)
                 {
-                    nint saveAddr = localSaveAddr - targetGame.Layout.RamStart + baseAddr;
+                    nint saveAddr = targetGame.Layout.GetSaveAddr(baseAddr, localSaveAddr);
                     OnMessage?.Invoke(this, "Save data address found at: 0x" + saveAddr.ToString("X"));
                     context = new(targetGame, saveAddr, processMemory.Read(saveAddr, targetGame.Layout.SaveSize));
                     Trainer tdata = TrainerParser.Parse(context);

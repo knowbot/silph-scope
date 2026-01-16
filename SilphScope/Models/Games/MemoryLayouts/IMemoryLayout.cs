@@ -11,10 +11,13 @@
         int TrainerName { get; }
         int TrainerID { get; }
         int PartySize { get; }
-        int BoxData { get; }
+        int BoxNames { get; }
         int Money { get; }
         int BigBlock { get; }
         int Badges { get; }
         int Gender { get; }
+        int Skip { get; }
+
+        public nint GetSaveAddr(nint baseAddr, nint localSaveAddr) => localSaveAddr - RamStart + baseAddr + Skip;
     }
 }
