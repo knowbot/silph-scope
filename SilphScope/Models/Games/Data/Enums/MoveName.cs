@@ -2,7 +2,7 @@
 
 namespace SilphScope.Models.Games.Data.Enums
 {
-    public enum Move
+    public enum MoveName : ushort
     {
         None,
         Pound,
@@ -1606,42 +1606,5 @@ namespace SilphScope.Models.Games.Data.Enums
         UpperHand,
         [Description("Malignant Chain")]
         MalignantChain,
-        [Description("Shadow Rush")]
-        ShadowRush,
-        [Description("Shadow Blast")]
-        ShadowBlast,
-        [Description("Shadow Blitz")]
-        ShadowBlitz,
-        [Description("Shadow Bolt")]
-        ShadowBolt,
-        [Description("Shadow Break")]
-        ShadowBreak,
-        [Description("Shadow Chill")]
-        ShadowChill,
-        [Description("Shadow End")]
-        ShadowEnd,
-        [Description("Shadow Fire")]
-        ShadowFire,
-        [Description("Shadow Rave")]
-        ShadowRave,
-        [Description("Shadow Storm")]
-        ShadowStorm,
-        [Description("Shadow Wave")]
-        ShadowWave,
-        [Description("Shadow Down")]
-        ShadowDown,
-        [Description("Shadow Half")]
-        ShadowHalf,
-        [Description("Shadow Hold")]
-        ShadowHold,
-        [Description("Shadow Mist")]
-        ShadowMist,
-        [Description("Shadow Panic")]
-        ShadowPanic,
-        [Description("Shadow Shed")]
-        ShadowShed,
-        [Description("Shadow Sky")]
-        ShadowSky,
-
     }
 }
