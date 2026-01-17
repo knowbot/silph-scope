@@ -1,7 +1,9 @@
 ﻿using SilphScope.Models.Core;
+using SilphScope.Models.Games.Data.Enums;
 using SilphScope.Models.Games.MemoryLayouts;
 using SilphScope.Models.Games.Parsers.Common;
 using SilphScope.Models.Games.State.Common;
+using SilphScope.Models.Games.State.Common.PkmnInfo;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -77,14 +79,53 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             uint shift = ((pId & 0x3E000) >> 0xD) % 24;
             // now, read the data from the blocks (A > B > C > D)
             ReadOnlySpan<byte> order = BlockUnshuffle.Slice((int)shift * 4, 4);
-            int blockAAddr = _blockSize * order[0];
-            ushort species = ReadAt<ushort>(blocks, blockAAddr);
-            ushort heldItem = ReadAt<ushort>(blocks, blockAAddr + 0x2);
-            uint exp = ReadAt<uint>(blocks, blockAAddr + 0x8);
-            byte friendship = ReadAt<byte>(blocks, blockAAddr + 0x1C);
 
+            // BLOCK A
+            int blockAddr = _blockSize * order[0];
+            ushort species = ReadAt<ushort>(blocks, blockAddr);
+            ushort heldItem = ReadAt<ushort>(blocks, blockAddr + 0x2);
+            uint exp = ReadAt<uint>(blocks, blockAddr + 0x8);
+            byte friendship = ReadAt<byte>(blocks, blockAddr + 0xC);
+            byte ability = ReadAt<byte>(blocks, blockAddr + 0xD);
+            EVs evs = new(
+                ReadAt<byte>(blocks, blockAddr + 0x10),
+                ReadAt<byte>(blocks, blockAddr + 0x11),
+                ReadAt<byte>(blocks, blockAddr + 0x12),
+                ReadAt<byte>(blocks, blockAddr + 0x13),
+                ReadAt<byte>(blocks, blockAddr + 0x14),
+                ReadAt<byte>(blocks, blockAddr + 0x15)
+            );
+
+            // BLOCK B
+            blockAddr = _blockSize * order[1];
+            Move[] moves = ParseMoves(blocks.AsSpan(_blockSize * order[1], 32));
+            MoveSet moveSet = new(moves[0], moves[1], moves[2], moves[3]);
+            IVs ivs = new(
+                ReadAt<byte>(blocks, blockAddr + 0x10),
+                ReadAt<byte>(blocks, blockAddr + 0x11),
+                ReadAt<byte>(blocks, blockAddr + 0x12),
+                ReadAt<byte>(blocks, blockAddr + 0x13),
+                ReadAt<byte>(blocks, blockAddr + 0x14),
+                ReadAt<byte>(blocks, blockAddr + 0x15)
+            );
+
+            // BLOCK C
 
             return new Pokemon();
+        }
+
+        private static Move[] ParseMoves(ReadOnlySpan<byte> blockB)
+        {
+            Move[] moves = new Move[4];
+            for (int i = 0; i < 4; i++)
+            {
+                moves[i] = new(
+                    (MoveName)ReadAt<ushort>(blockB),
+                    ReadAt<byte>(blockB, 0x8 + i),
+                    ReadAt<byte>(blockB, 0xC + i)
+                    );
+            }
+            return moves;
         }
 
     }
