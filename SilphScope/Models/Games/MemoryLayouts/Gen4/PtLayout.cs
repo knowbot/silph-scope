@@ -1,6 +1,6 @@
-﻿namespace SilphScope.Models.Games.MemoryLayouts
+﻿namespace SilphScope.Models.Games.MemoryLayouts.Gen4
 {
-    public record PlatinumLayout : IMemoryLayout
+    public record PtLayout : IMemoryLayout
     {
         public int RamStart => 0x02000000;
         public int SaveSize => 0x10000;
@@ -14,7 +14,8 @@
         public int Money => 0x7C;
         public int Gender => 0x80;
         public int Badges => 0x82;
-        public int PartySize => 0x9C;
+        public int PartyCount => 0x9C;
+        public int Party => 0xA0;
         public int BigBlock => 0x0CF2C;
         public int BoxNames => 0x11EE4;
     }

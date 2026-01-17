@@ -25,6 +25,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Models\Games\Parsers\Pokemon\" />
+      <Folder Include="Models\Games\State\Gen4\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="Models\Games\State\Common\Pokemon.cs" />
     </ItemGroup>
 </Project>

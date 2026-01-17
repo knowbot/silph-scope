@@ -10,7 +10,8 @@
         int Canary { get; }
         int TrainerName { get; }
         int TrainerID { get; }
-        int PartySize { get; }
+        int PartyCount { get; }
+        int Party { get; }
         int BoxNames { get; }
         int Money { get; }
         int BigBlock { get; }
