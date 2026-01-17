@@ -13,5 +13,14 @@ namespace SilphScope.ViewModels
 
         [ObservableProperty]
         private string _Name;
+
+        public BoxViewModel()
+        {
+            // TODO: remove.
+            for (int i = 0; i < 30; i++)
+            {
+                Contents.Add(new PokemonViewModel());
+            }
+        }
     }
 }

@@ -13,10 +13,18 @@
 	
 	<!-- A carrousel of boxes with controls to move back and forward -->
 	<DockPanel>
-		<DockPanel>
+		<DockPanel DockPanel.Dock="Top">
 			<Button DockPanel.Dock="Left" Content="Prev"/>
 			<Button DockPanel.Dock="Right" Content="Next"/>
-			<TextBlock Text="{Binding Selected.Name}"/>
+			<TextBlock Text="{Binding Selected.Name}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 		</DockPanel>
+
+		<Carousel ItemsSource="{Binding Boxes}" SelectedItem="{Binding Selected}">
+			<Carousel.ItemTemplate>
+				<DataTemplate x:DataType="vm:BoxViewModel">
+					<local:ucBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+				</DataTemplate>
+			</Carousel.ItemTemplate>
+		</Carousel>		
 	</DockPanel>
 </UserControl>

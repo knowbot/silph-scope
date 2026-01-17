@@ -10,5 +10,14 @@ namespace SilphScope.ViewModels
 
         [ObservableProperty]
         private BoxViewModel? _Selected;
+
+        public BoxesViewModel()
+        {
+            // TODO: remove.
+            for (int i = 0; i < 30; i++)
+            {
+                Boxes.Add(new BoxViewModel() { Name = $"Box {i}" });
+            }
+        }
     }
 }

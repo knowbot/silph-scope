@@ -73,30 +73,6 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public MainWindowViewModel()
     {
         RefreshProcesses();
-
-        // TODO: remove fake data.
-        GameState game = new(new Trainer("SilphScope", 0, 1234, true, 0), new Pokemon[6]
-        {
-            new() { Species = Species.Abomasnow },
-            new() { Species = Species.Abra },
-            new() { Species = Species.Absol },
-            new() { Species = Species.Accelgor },
-            new() { Species = Species.Aegislash },
-            new() { Species = Species.Aerodactyl }
-        },
-        [
-            new Box("Box 1", new Pokemon[30]),
-            new Box("Box 2", new Pokemon[30]),
-            new Box("Box 3", new Pokemon[30]),
-            new Box("Box 4", new Pokemon[30]),
-            new Box("Box 5", new Pokemon[30]),
-            new Box("Box 6", new Pokemon[30]),
-            new Box("Box 7", new Pokemon[30]),
-            new Box("Box 8", new Pokemon[30])
-        ]);
-
-        // TeamTab.UpdateData(game.Team);
-        // BoxTab.UpdateData(game.Boxes);
     }
 
     private void Watch_OnMessage(SilphService sender, string message)
