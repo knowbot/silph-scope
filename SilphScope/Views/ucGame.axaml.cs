@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace SilphScope;
 
-public partial class ucProcess : UserControl
+public partial class ucGame : UserControl
 {
-    public ucProcess()
+    public ucGame()
     {
         InitializeComponent();
     }

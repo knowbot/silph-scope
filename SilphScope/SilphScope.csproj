@@ -25,10 +25,17 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Assets\GameIcons\" />
       <Folder Include="Models\Games\State\Gen4\" />
     </ItemGroup>
 
     <ItemGroup>
       <None Include="Models\Games\State\Common\Pokemon.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\ucGame.axaml.cs">
+        <DependentUpon>ucGame.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>
