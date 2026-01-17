@@ -42,7 +42,7 @@
             <ToggleButton DockPanel.Dock="Right" Classes="IsStartStop" Height="32" Width="32" Margin="4" IsChecked="{Binding IsAttached}"/>
             
             <!-- Process list -->
-            <ComboBox SelectedItem="{Binding SelectedProcess}" ItemsSource="{Binding Processes}" DropDownOpened="OnDropDownOpened" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            <ComboBox SelectedItem="{Binding SelectedProcess}" ItemsSource="{Binding Processes}" IsDropDownOpen="{Binding IsSelectingProcess}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
 			    <ComboBox.ItemTemplate>
 				    <DataTemplate DataType="vm:ProcessViewModel">
 					    <local:ucProcess/>

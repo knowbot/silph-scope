@@ -39,6 +39,17 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     }
 
     [ObservableProperty]
+    private bool _IsSelectingProcess = false;
+
+    partial void OnIsSelectingProcessChanged(bool value)
+    {
+        if (value)
+        {
+            RefreshProcesses();
+        }
+    }
+
+    [ObservableProperty]
     private ObservableCollection<ProcessViewModel> _Processes = [];
 
     [ObservableProperty]
