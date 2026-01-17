@@ -9,7 +9,6 @@
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/silph-logo.ico"
         Title="SilphScope">
-
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -54,19 +53,22 @@
         <!-- Main content & log -->
         <Panel>
             <!-- Content -->
-            <TabControl HorizontalAlignment="Stretch">
-				<TabControl.Styles>
-                    <!-- Horizontally center tabs -->
-					<Style Selector="TabControl /template/ WrapPanel">
-                        <Setter Property="HorizontalAlignment" Value="Center"/>
-                    </Style>
-                </TabControl.Styles>
-                
-                <TabItem Header="Trainer"/>
-                <TabItem Header="Team">
+            <TabControl HorizontalAlignment="Stretch" TabStripPlacement="Left">                
+                <TabItem>
+                    <TabItem.Header>
+						<Border Width="32" Height="32" Child="{DynamicResource TrainerIcon}"/>
+                    </TabItem.Header>
+                </TabItem>
+                <TabItem>
+                    <TabItem.Header>
+						<Border Width="32" Height="32" Child="{DynamicResource TeamIcon}"/>
+                    </TabItem.Header>
                     <local:ucTeamTab DataContext="{Binding TeamTab}"/>
                 </TabItem>
-                <TabItem Header="Box">
+                <TabItem>
+                    <TabItem.Header>
+						<Border Width="32" Height="32" Child="{DynamicResource BoxIcon}"/>
+                    </TabItem.Header>
                     <local:ucBoxTab DataContext="{Binding BoxTab}"/>
                 </TabItem>
             </TabControl>

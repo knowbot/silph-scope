@@ -1,0 +1,16 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<!-- Add Resources Here -->
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Light">
+			<Svg x:Key="TrainerIcon" Path="/Assets/Material/article_black.svg"/>
+			<Svg x:Key="TeamIcon" Path="/Assets/Material/groups_black.svg"/>
+			<Svg x:Key="BoxIcon" Path="/Assets/Material/box_black.svg"/>
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark">
+			<Svg x:Key="TrainerIcon" Path="/Assets/Material/article_white.svg"/>
+			<Svg x:Key="TeamIcon" Path="/Assets/Material/groups_white.svg"/>
+			<Svg x:Key="BoxIcon" Path="/Assets/Material/box_white.svg"/>
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

@@ -12,6 +12,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <AvaloniaXaml Remove="Assets\Material\IconThemes.axaml" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.3.10" />
         <PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.10" />
@@ -22,6 +26,7 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+        <PackageReference Include="Svg.Controls.Avalonia" Version="11.3.9.2" />
     </ItemGroup>
 
     <ItemGroup>
@@ -31,6 +36,12 @@
 
     <ItemGroup>
       <None Include="Models\Games\State\Common\Pokemon.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaResource Update="Assets\Material\IconThemes.axaml">
+        <SubType>Designer</SubType>
+      </AvaloniaResource>
     </ItemGroup>
 
     <ItemGroup>
