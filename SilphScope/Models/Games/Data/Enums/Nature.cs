@@ -1,6 +1,6 @@
 ﻿namespace SilphScope.Models.Games.Data.Enums
 {
-    public enum Nature
+    public enum Nature : ushort
     {
         Hardy,
         Lonely,

@@ -4,9 +4,9 @@ namespace SilphScope.Models.Games.Data
 {
     public static partial class GameData
     {
-        // Access = statIndex + (speciesId - 1) * 6
         public static ReadOnlySpan<int> BaseStats =>
         [
+            0, 0, 0, 0, 0, 0, // Unused 
             45, 49, 49, 65, 65, 45,
             60, 62, 63, 80, 80, 60,
             80, 82, 83, 100, 100, 80,

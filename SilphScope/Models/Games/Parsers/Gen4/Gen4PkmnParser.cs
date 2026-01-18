@@ -1,4 +1,5 @@
 ﻿using SilphScope.Models.Core;
+using SilphScope.Models.Extensions;
 using SilphScope.Models.Games.Data.Enums;
 using SilphScope.Models.Games.MemoryLayouts;
 using SilphScope.Models.Games.Parsers.Common;
@@ -10,7 +11,7 @@ using System.Runtime.InteropServices;
 
 namespace SilphScope.Models.Games.Parsers.Gen4
 {
-    public class Gen4PkmnParser : AParser
+    public class Gen4PkmnParser : APkmnParser
     {
         private const int _unencryptedSize = 8;
         private const int _pkmnSize = 128;
@@ -48,27 +49,32 @@ namespace SilphScope.Models.Games.Parsers.Gen4
         private static int PartyPkmnSize() => _unencryptedSize + _pkmnSize + _battleStats;
         private static int BoxPkmnSize() => _unencryptedSize + _pkmnSize;
 
-        public static List<Pokemon> ParseParty(SilphContext context)
+        public override List<Pokemon> ParseParty(SilphContext context)
         {
             List<Pokemon> party = [];
             ReadOnlySpan<byte> data = context.Data;
             IMemoryLayout layout = context.Game.Layout;
-            int partyCount = ReadAt<byte>(data, layout.PartyCount);
+            int partyCount = data.Read<byte>(layout.PartyCount);
             for (int i = 0; i < partyCount; i++)
             {
                 int pkmnAddr = layout.Party + (i * PartyPkmnSize());
-                Pokemon pkmn = Parse(data[pkmnAddr..]);
+                Pokemon pkmn = this.Parse(data[pkmnAddr..]);
             }
 
             return party;
         }
 
-        private static Pokemon Parse(ReadOnlySpan<byte> data)
+        public override List<Pokemon> ParseBoxes(SilphContext context)
         {
-            uint pId = ReadAt<uint>(data);
-            long prng = ReadAt<ushort>(data, 0x6);
+            throw new NotImplementedException();
+        }
+
+        protected override Pokemon Parse(ReadOnlySpan<byte> pkmnData)
+        {
+            uint pId = pkmnData.Read<uint>();
+            long prng = pkmnData.Read<ushort>(0x6);
             // copy over the ABCD blocks to decrypt in-place
-            byte[] blocks = data.Slice(0x8, _pkmnSize).ToArray();
+            byte[] blocks = pkmnData.Slice(0x8, _pkmnSize).ToArray();
             // read the data as 2-byte words for decryption
             Span<ushort> words = MemoryMarshal.Cast<byte, ushort>(blocks);
             for (int i = 0; i < words.Length; i++)
@@ -81,32 +87,32 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             ReadOnlySpan<byte> order = BlockUnshuffle.Slice((int)shift * 4, 4);
 
             // BLOCK A
-            int blockAddr = _blockSize * order[0];
-            ushort species = ReadAt<ushort>(blocks, blockAddr);
-            ushort heldItem = ReadAt<ushort>(blocks, blockAddr + 0x2);
-            uint exp = ReadAt<uint>(blocks, blockAddr + 0x8);
-            byte friendship = ReadAt<byte>(blocks, blockAddr + 0xC);
-            byte ability = ReadAt<byte>(blocks, blockAddr + 0xD);
+            ReadOnlySpan<byte> blockA = blocks.AsSpan(_blockSize * order[0], 32);
+            ushort species = blockA.Read<ushort>();
+            ushort heldItem = blockA.Read<ushort>(0x2);
+            uint exp = blockA.Read<uint>(0x8);
+            byte friendship = blockA.Read<byte>(0xC);
+            byte ability = blockA.Read<byte>(0xD);
             EVs evs = new(
-                ReadAt<byte>(blocks, blockAddr + 0x10),
-                ReadAt<byte>(blocks, blockAddr + 0x11),
-                ReadAt<byte>(blocks, blockAddr + 0x12),
-                ReadAt<byte>(blocks, blockAddr + 0x13),
-                ReadAt<byte>(blocks, blockAddr + 0x14),
-                ReadAt<byte>(blocks, blockAddr + 0x15)
+                blockA.Read<byte>(0x10),
+                blockA.Read<byte>(0x11),
+                blockA.Read<byte>(0x12),
+                blockA.Read<byte>(0x13),
+                blockA.Read<byte>(0x14),
+                blockA.Read<byte>(0x15)
             );
 
             // BLOCK B
-            blockAddr = _blockSize * order[1];
-            Move[] moves = ParseMoves(blocks.AsSpan(_blockSize * order[1], 32));
+            ReadOnlySpan<byte> blockB = blocks.AsSpan(_blockSize * order[1], 32);
+            Move[] moves = ParseMoves(blockB);
             MoveSet moveSet = new(moves[0], moves[1], moves[2], moves[3]);
             IVs ivs = new(
-                ReadAt<byte>(blocks, blockAddr + 0x10),
-                ReadAt<byte>(blocks, blockAddr + 0x11),
-                ReadAt<byte>(blocks, blockAddr + 0x12),
-                ReadAt<byte>(blocks, blockAddr + 0x13),
-                ReadAt<byte>(blocks, blockAddr + 0x14),
-                ReadAt<byte>(blocks, blockAddr + 0x15)
+                blockB.Read<byte>(0x10),
+                blockB.Read<byte>(0x11),
+                blockB.Read<byte>(0x12),
+                blockB.Read<byte>(0x13),
+                blockB.Read<byte>(0x14),
+                blockB.Read<byte>(0x15)
             );
 
             // BLOCK C
@@ -120,13 +126,12 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             for (int i = 0; i < 4; i++)
             {
                 moves[i] = new(
-                    (MoveName)ReadAt<ushort>(blockB),
-                    ReadAt<byte>(blockB, 0x8 + i),
-                    ReadAt<byte>(blockB, 0xC + i)
+                    (MoveName)blockB.Read<ushort>(),
+                    blockB.Read<byte>(0x8 + i),
+                    blockB.Read<byte>(0xC + i)
                     );
             }
             return moves;
         }
-
     }
 }

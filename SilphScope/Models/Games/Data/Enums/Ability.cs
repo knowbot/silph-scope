@@ -2,7 +2,7 @@
 
 namespace SilphScope.Models.Games.Data.Enums
 {
-    public enum Ability
+    public enum Ability : ushort
     {
         None,
         Stench,

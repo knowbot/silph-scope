@@ -8,6 +8,7 @@ namespace SilphScope.Models.Games.Data
     {
         public static ReadOnlySpan<int> MovePP => new int[]
         {
+            0, // Unused
             35,
             25,
             10,
