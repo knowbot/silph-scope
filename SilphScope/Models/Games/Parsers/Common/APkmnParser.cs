@@ -2,8 +2,10 @@
 using SilphScope.Models.Games.Data;
 using SilphScope.Models.Games.Data.Enums;
 using SilphScope.Models.Games.State.Common;
+using SilphScope.Models.Games.State.Common.PkmnInfo;
 using System;
 using System.Collections.Generic;
+
 
 namespace SilphScope.Models.Games.Parsers.Common
 {
@@ -13,31 +15,28 @@ namespace SilphScope.Models.Games.Parsers.Common
         public abstract List<Pokemon> ParseParty(SilphContext context);
         protected abstract Pokemon Parse(ReadOnlySpan<byte> pkmnData);
 
-        protected virtual byte GetLevel(Species species, uint experience)
+        protected virtual Level GetLevel(ushort species, uint experience)
         {
             GrowthRate growRate = (GrowthRate)GameData.GrowRates[(int)species];
-            int level = 0;
-            switch (growRate)
+
+            ReadOnlySpan<uint> expTable = growRate switch
             {
-                // TODO: fill out cases
-                case GrowthRate.MediumFast:
-                    level = GameData.ExpMediumFast.BinarySearch(experience);
-                    break;
-                case GrowthRate.Erratic:
-                    level = GameData.ExpErratic.BinarySearch(experience);
-                    break;
-                case GrowthRate.Fluctuating:
-                    break;
-                case GrowthRate.MediumSlow:
-                    break;
-                case GrowthRate.Fast:
-                    break;
-                case GrowthRate.Slow:
-                    break;
-                default:
-                    break;
+                GrowthRate.MediumFast => GameData.ExpMediumFast,
+                GrowthRate.Erratic => GameData.ExpErratic,
+                GrowthRate.Fluctuating => throw new NotImplementedException(),
+                GrowthRate.MediumSlow => throw new NotImplementedException(),
+                GrowthRate.Fast => throw new NotImplementedException(),
+                GrowthRate.Slow => throw new NotImplementedException(),
+                _ => throw new ArgumentException("Invalid growth rate")
+            };
+
+            int level = expTable.BinarySearch(experience);
+            if (level >= 0)
+            {
+                level += 1;
+                return new((byte)level, expTable[level]);
             }
-            return level < 0 ? (byte)~level : (byte)(level + 1);
+            return new((byte)(level - 1), expTable[level]);
         }
     }
 }

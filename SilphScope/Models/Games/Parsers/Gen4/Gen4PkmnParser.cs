@@ -117,7 +117,16 @@ namespace SilphScope.Models.Games.Parsers.Gen4
 
             // BLOCK C
 
-            return new Pokemon();
+            return new Pokemon(
+                (Species)species,
+                exp,
+                GetLevel(species, exp),
+                friendship,
+                (Ability)ability,
+                evs,
+                ivs,
+                moveSet
+                );
         }
 
         private static Move[] ParseMoves(ReadOnlySpan<byte> blockB)
