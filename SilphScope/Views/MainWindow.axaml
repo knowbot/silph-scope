@@ -19,11 +19,17 @@
         <Border DockPanel.Dock="Top" Height="40" BorderBrush="#333" BorderThickness="0,0,0,1" Background="#141316">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                 <!-->NO PROCESS ATTACHED</!-->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsVisible="{Binding !IsAttached}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsVisible="{Binding IsAttached}">
                     <TextBlock FontFamily="{StaticResource SpaceMono}" Margin="10,5" Foreground="#FF5454">DISCONNECTED</TextBlock>
                 </StackPanel>
                 <!-->ATTACHED AND SCANNING</!-->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsVisible="{Binding IsAttached}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsVisible="{Binding !IsAttached}">
+                    <Border Classes="Pulse"
+                                Background="#54FF54"
+                                CornerRadius="8"
+                                Margin="10 0 0 0"
+                                Width="8" Height="8"
+                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <TextBlock  FontFamily="{StaticResource SpaceMono}" Margin="10,5">
                         <Run Foreground="#54FF54" Text="CONNECTED"/>
                         <Run Text="|" Foreground="#D5D3D9"/>
@@ -37,8 +43,6 @@
 
         <!-- Game selection -->
 		<DockPanel DockPanel.Dock="Top"> 
-            <TextBlock DockPanel.Dock="Top">Connected to: </TextBlock>
-            <!-- Label -->
 		    <TextBlock DockPanel.Dock="Left" Text="Game: " VerticalAlignment="Center"/>
             <!-- Game list -->
             <ComboBox SelectedItem="{Binding SelectedGame}" ItemsSource="{Binding SupportedGames}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
