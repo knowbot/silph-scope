@@ -17,13 +17,13 @@
 
 	<DockPanel>
         <Border DockPanel.Dock="Top" Height="40" BorderBrush="#333" BorderThickness="0,0,0,1" Background="#141316">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <!-->NO PROCESS ATTACHED</!-->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsVisible="{Binding IsAttached}">
+            <Grid>
+				<!-->NO PROCESS ATTACHED</!-->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" IsVisible="{Binding !IsAttached}">
                     <TextBlock FontFamily="{StaticResource SpaceMono}" Margin="10,5" Foreground="#FF5454">DISCONNECTED</TextBlock>
                 </StackPanel>
                 <!-->ATTACHED AND SCANNING</!-->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsVisible="{Binding !IsAttached}">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" IsVisible="{Binding IsAttached}">
                     <Border Classes="Pulse"
                                 Background="#54FF54"
                                 CornerRadius="8"
@@ -37,8 +37,10 @@
                         <Run Text="{Binding SelectedProcess.Pid, StringFormat='[PID: {0}]'}" Foreground="#D5D3D9"/>
                     </TextBlock>
                 </StackPanel>
-            </StackPanel>
-            
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" IsVisible="{Binding IsAttached}">
+					<TextBlock FontFamily="{StaticResource SpaceMono}" Text="{Binding SelectedGame.Name}" Margin="10,5" Foreground="#D5D3D9" />
+                </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Game selection -->
