@@ -16,9 +16,28 @@
     </Design.DataContext>
 
 	<DockPanel>
+        <Border DockPanel.Dock="Top" Height="40" BorderBrush="#333" BorderThickness="0,0,0,1" Background="#141316">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <!-->NO PROCESS ATTACHED</!-->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsVisible="{Binding !IsAttached}">
+                    <TextBlock FontFamily="{StaticResource SpaceMono}" Margin="10,5" Foreground="#FF5454">DISCONNECTED</TextBlock>
+                </StackPanel>
+                <!-->ATTACHED AND SCANNING</!-->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsVisible="{Binding IsAttached}">
+                    <TextBlock  FontFamily="{StaticResource SpaceMono}" Margin="10,5">
+                        <Run Foreground="#54FF54" Text="CONNECTED"/>
+                        <Run Text="|" Foreground="#D5D3D9"/>
+                        <Run Text="{Binding SelectedProcess.Name}" Foreground="#D5D3D9"/>
+                        <Run Text="{Binding SelectedProcess.Pid, StringFormat='[PID: {0}]'}" Foreground="#D5D3D9"/>
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+            
+        </Border>
 
         <!-- Game selection -->
-		<DockPanel DockPanel.Dock="Top">
+		<DockPanel DockPanel.Dock="Top"> 
+            <TextBlock DockPanel.Dock="Top">Connected to: </TextBlock>
             <!-- Label -->
 		    <TextBlock DockPanel.Dock="Left" Text="Game: " VerticalAlignment="Center"/>
             <!-- Game list -->

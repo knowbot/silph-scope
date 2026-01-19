@@ -12,7 +12,16 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AvaloniaXaml Remove="Assets\Material\IconThemes.axaml" />
+      <AvaloniaResource Remove="Assets\Fonts\Fonts\**" />
+      <AvaloniaXaml Remove="Assets\Fonts\Fonts\**" />
+      <Compile Remove="Assets\Fonts\Fonts\**" />
+      <EmbeddedResource Remove="Assets\Fonts\Fonts\**" />
+      <None Remove="Assets\Fonts\Fonts\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AvaloniaXaml Remove="Assets\Fonts\SilphFonts.axaml" />
+      <AvaloniaXaml Remove="Assets\Images\MaterialIcons\IconThemes.axaml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -30,7 +39,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Assets\GameIcons\" />
+      <Folder Include="Assets\Images\GameIcons\" />
       <Folder Include="Models\Games\State\Gen4\" />
     </ItemGroup>
 
@@ -39,7 +48,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AvaloniaResource Update="Assets\Material\IconThemes.axaml">
+      <AvaloniaResource Update="Assets\Fonts\SilphFonts.axaml">
+        <SubType>Designer</SubType>
+      </AvaloniaResource>
+      <AvaloniaResource Update="Assets\Images\MaterialIcons\IconThemes.axaml">
         <SubType>Designer</SubType>
       </AvaloniaResource>
     </ItemGroup>

@@ -12,7 +12,7 @@ namespace SilphScope.ViewModels
         private PokemonViewModel? _Selected;
 
         [ObservableProperty]
-        private string _Name;
+        private string? _Name;
 
         public BoxViewModel()
         {

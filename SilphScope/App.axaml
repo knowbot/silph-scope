@@ -18,7 +18,8 @@
     <Application.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<MergeResourceInclude Source="/Assets/Material/IconThemes.axaml"/>
+                <MergeResourceInclude Source="/Assets/Fonts/SilphFonts.axaml"/>
+				<MergeResourceInclude Source="/Assets/Images/MaterialIcons/IconThemes.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

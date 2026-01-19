@@ -51,17 +51,16 @@ namespace SilphScope.Models.Games.Parsers.Gen4
 
         public override List<Pokemon> ParseParty(SilphContext context)
         {
-            List<Pokemon> party = [];
             ReadOnlySpan<byte> data = context.Data;
             IMemoryLayout layout = context.Game.Layout;
-            int partyCount = data.Read<byte>(layout.PartyCount);
+            byte partyCount = data.Read<byte>(layout.PartyCount);
+            Pokemon[] party = new Pokemon[partyCount];
             for (int i = 0; i < partyCount; i++)
             {
                 int pkmnAddr = layout.Party + (i * PartyPkmnSize());
-                Pokemon pkmn = this.Parse(data[pkmnAddr..]);
+                party[i] = this.Parse(data[pkmnAddr..]);
             }
-
-            return party;
+            return [.. party];
         }
 
         public override List<Pokemon> ParseBoxes(SilphContext context)
