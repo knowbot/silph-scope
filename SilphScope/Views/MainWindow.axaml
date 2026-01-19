@@ -1,19 +1,19 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="using:SilphScope.ViewModels"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:SilphScope.ViewModels"
 		xmlns:local="using:SilphScope"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="SilphScope.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/silph-logo.ico"
-        Title="SilphScope">
-    <Design.DataContext>
-        <!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		x:Class="SilphScope.Views.MainWindow"
+		x:DataType="vm:MainWindowViewModel"
+		Icon="/Assets/silph-logo.ico"
+		Title="SilphScope">
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
 	<DockPanel>
         <Border DockPanel.Dock="Top" Height="40" BorderBrush="#333" BorderThickness="0,0,0,1" Background="#141316">
@@ -43,64 +43,70 @@
             </Grid>
         </Border>
 
-        <!-- Game selection -->
-		<DockPanel DockPanel.Dock="Top"> 
-		    <TextBlock DockPanel.Dock="Left" Text="Game: " VerticalAlignment="Center"/>
-            <!-- Game list -->
-            <ComboBox SelectedItem="{Binding SelectedGame}" ItemsSource="{Binding SupportedGames}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-			    <ComboBox.ItemTemplate>
-				    <DataTemplate DataType="vm:GameViewModel">
-					    <local:ucGame/>
-				    </DataTemplate>
-			    </ComboBox.ItemTemplate>
-		    </ComboBox>
-	    </DockPanel>
-
-
-        <!-- Process selection -->
+		<!-- Game selection -->
 		<DockPanel DockPanel.Dock="Top">
-            <!-- Label -->
-		    <TextBlock DockPanel.Dock="Left" Text="Process: " VerticalAlignment="Center"/>
-		    
-            <!-- Attach/Detach process --> 
-            <ToggleButton DockPanel.Dock="Right" Classes="IsStartStop" Height="32" Width="32" Margin="4" IsChecked="{Binding IsAttached}"/>
-            
-            <!-- Process list -->
-            <ComboBox SelectedItem="{Binding SelectedProcess}" ItemsSource="{Binding Processes}" IsDropDownOpen="{Binding IsSelectingProcess}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-			    <ComboBox.ItemTemplate>
-				    <DataTemplate DataType="vm:ProcessViewModel">
-					    <local:ucProcess/>
-				    </DataTemplate>
-			    </ComboBox.ItemTemplate>
-		    </ComboBox>
-	    </DockPanel>
+			<TextBlock DockPanel.Dock="Left" Text="Game: " VerticalAlignment="Center"/>
+			<!-- Game list -->
+			<ComboBox SelectedItem="{Binding SelectedGame}" ItemsSource="{Binding SupportedGames}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+				<ComboBox.ItemTemplate>
+					<DataTemplate DataType="vm:GameViewModel">
+						<local:ucGame/>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+		</DockPanel>
 
-        <!-- Main content & log -->
-        <Panel>
-            <!-- Content -->
-            <TabControl HorizontalAlignment="Stretch" TabStripPlacement="Left">                
-                <TabItem>
-                    <TabItem.Header>
+
+		<!-- Process selection -->
+		<DockPanel DockPanel.Dock="Top">
+			<!-- Label -->
+			<TextBlock DockPanel.Dock="Left" Text="Process: " VerticalAlignment="Center"/>
+
+			<!-- Attach/Detach process -->
+			<ToggleButton DockPanel.Dock="Right" Classes="IsStartStop" Height="32" Width="32" Margin="4" IsChecked="{Binding IsAttached}"/>
+
+			<!-- Process list -->
+			<ComboBox SelectedItem="{Binding SelectedProcess}" ItemsSource="{Binding Processes}" IsDropDownOpen="{Binding IsSelectingProcess}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+				<ComboBox.ItemTemplate>
+					<DataTemplate DataType="vm:ProcessViewModel">
+						<local:ucProcess/>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+		</DockPanel>
+
+		<!-- Main content & log -->
+		<Panel>
+			<!-- Content -->
+			<TabControl HorizontalAlignment="Stretch" TabStripPlacement="Left">
+				<TabItem>
+					<TabItem.Header>
+						<Border Width="32" Height="32" Child="{DynamicResource SettingsIcon}"/>
+					</TabItem.Header>
+					<local:ucSettingsTab DataContext="{Binding SettingsTab}"/>
+				</TabItem>
+				<TabItem>
+					<TabItem.Header>
 						<Border Width="32" Height="32" Child="{DynamicResource TrainerIcon}"/>
-                    </TabItem.Header>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
+					</TabItem.Header>
+				</TabItem>
+				<TabItem>
+					<TabItem.Header>
 						<Border Width="32" Height="32" Child="{DynamicResource TeamIcon}"/>
-                    </TabItem.Header>
-                    <local:ucTeamTab DataContext="{Binding TeamTab}"/>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
+					</TabItem.Header>
+					<local:ucTeamTab DataContext="{Binding TeamTab}"/>
+				</TabItem>
+				<TabItem>
+					<TabItem.Header>
 						<Border Width="32" Height="32" Child="{DynamicResource BoxIcon}"/>
-                    </TabItem.Header>
-                    <local:ucBoxTab DataContext="{Binding BoxTab}"/>
-                </TabItem>
-            </TabControl>
-			
-            <!-- Log -->
-            <local:ucLog DockPanel.Dock="Bottom" DataContext="{Binding Log}"/>
-        </Panel>
-    </DockPanel>
+					</TabItem.Header>
+					<local:ucBoxTab DataContext="{Binding BoxTab}"/>
+				</TabItem>
+			</TabControl>
+
+			<!-- Log -->
+			<local:ucLog DockPanel.Dock="Bottom" DataContext="{Binding Log}"/>
+		</Panel>
+	</DockPanel>
 
 </Window>
