@@ -104,14 +104,13 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         IsAttached = false;
     }
 
-    [ObservableProperty]
-    private LogViewModel _Log = new();
+    public LogViewModel Log { get; } = new();
 
-    [ObservableProperty]
-    private TeamTabViewModel _TeamTab = new();
+    public TeamTabViewModel TeamTab { get; } = new();
 
-    [ObservableProperty]
-    private BoxTabViewModel _BoxTab = new();
+    public BoxTabViewModel BoxTab { get; } = new();
+
+    public SettingsTabViewModel SettingsTab { get; } = new();
 
     public MainWindowViewModel()
     {
