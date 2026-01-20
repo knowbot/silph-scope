@@ -68,7 +68,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             throw new NotImplementedException();
         }
 
-        protected override Pokemon Parse(ReadOnlySpan<byte> pkmnData)
+        public override Pokemon Parse(ReadOnlySpan<byte> pkmnData)
         {
             uint pId = pkmnData.Read<uint>();
             long prng = pkmnData.Read<ushort>(0x6);
@@ -128,7 +128,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 );
         }
 
-        private static Move[] ParseMoves(ReadOnlySpan<byte> blockB)
+        protected Move[] ParseMoves(ReadOnlySpan<byte> blockB)
         {
             Move[] moves = new Move[4];
             for (int i = 0; i < 4; i++)
