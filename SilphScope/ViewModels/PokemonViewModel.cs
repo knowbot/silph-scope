@@ -1,22 +1,35 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Media.Imaging;
+using Avalonia.Threading;
+using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Core.Sprites;
 using SilphScope.Models.Games.State.Common;
+using System.Threading.Tasks;
 
 namespace SilphScope.ViewModels
 {
-    public partial class PokemonViewModel : ViewModelBase
-    {
-        [ObservableProperty]
-        private string? _Name;
+	public partial class PokemonViewModel : ViewModelBase
+	{
+		[ObservableProperty]
+		private string? _Name;
 
-        public void UpdateGameState(Pokemon? pokemon)
-        {
-            if (pokemon == null)
-            {
-                Name = string.Empty;
-                return;
-            }
+		[ObservableProperty]
+		private Bitmap? _Sprite;
 
-            Name = pokemon.Species.ToString();
-        }
-    }
+		public void UpdateGameState(Pokemon? pokemon)
+		{
+			if (pokemon == null)
+			{
+				Name = string.Empty;
+				return;
+			}
+
+			Name = pokemon.Species.ToString();
+
+			// Ask for asynchronous sprite loading.
+			Task<SpriteLoadResult> task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
+
+			// When sprite has been loaded, go back to UI thread to update UI.
+			task.ContinueWith(task => Dispatcher.UIThread.Post(() => Sprite = task.Result.Result));
+		}
+	}
 }

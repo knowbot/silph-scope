@@ -9,6 +9,9 @@
 			 x:DataType="vm:PokemonViewModel"
 			 ClipToBounds="False">
 	<Border Background="White" Classes="CardClass" HorizontalAlignment="Stretch">
-		<TextBlock Text="{Binding Name}"/>
+		<StackPanel Orientation="Horizontal">
+			<Image Source="{Binding Sprite}"/>
+			<TextBlock Text="{Binding Name}"/>
+		</StackPanel>
 	</Border>
 </UserControl>
