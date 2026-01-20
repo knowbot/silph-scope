@@ -128,7 +128,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 );
         }
 
-        protected Move[] ParseMoves(ReadOnlySpan<byte> blockB)
+        protected override Move[] ParseMoves(ReadOnlySpan<byte> blockB)
         {
             Move[] moves = new Move[4];
             for (int i = 0; i < 4; i++)
