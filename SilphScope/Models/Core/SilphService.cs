@@ -87,7 +87,6 @@ namespace SilphScope.Models.Core
                     OnMessage?.Invoke(this, "First pkmn: " + party[0].Species.ToString());
                     OnMessage?.Invoke(this, "Ability: " + party[0].Ability.ToString());
                     OnMessage?.Invoke(this, "Moves: " + party[0].MoveSet.ToString());
-                    OnMessage?.Invoke(this, "First pkmn: " + party[0].Species.ToString());
                     _initialized = true;
                 }
             }
