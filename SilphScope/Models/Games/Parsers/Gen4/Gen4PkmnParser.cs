@@ -78,7 +78,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             Span<ushort> words = MemoryMarshal.Cast<byte, ushort>(blocks);
             for (int i = 0; i < words.Length; i++)
             {
-                prng = (0x41C64E6D * prng) + 0x6073;
+                prng = ((0x41C64E6D * prng) + 0x6073) & 0xFFFFFFFF;
                 words[i] ^= (ushort)(prng >> 16);
             }
             uint shift = ((pId & 0x3E000) >> 0xD) % 24;

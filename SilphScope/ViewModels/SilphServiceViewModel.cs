@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models.Core;
+using SilphScope.Models.Core.Messages;
+using System.Diagnostics;
 
 namespace SilphScope.ViewModels
 {
@@ -39,9 +41,22 @@ namespace SilphScope.ViewModels
 
         [ObservableProperty]
         private SilphService? _service;
-        private static void Watch_OnMessage(SilphService sender, string message)
+
+        private static void Watch_OnMessage(SilphService sender, SilphServiceMessage message)
         {
-            SilphLogger.Log(message);
+            if (message is DebugMessage dmessage)
+            {
+                SilphLogger.Log(dmessage.Message);
+            }
+            else if (message is GameStateUpdateMessage gmessage)
+            {
+
+            }
+            else
+            {
+                Debugger.Break();
+                SilphLogger.Log($"Message type not implemented: {message}");
+            }
         }
 
         partial void OnTargetProcessChanged(ProcessViewModel? value)
