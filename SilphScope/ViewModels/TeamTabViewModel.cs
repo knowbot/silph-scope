@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Games.State.Common;
 
 namespace SilphScope.ViewModels
 {
@@ -10,6 +11,11 @@ namespace SilphScope.ViewModels
         public TeamTabViewModel()
         {
 
+        }
+
+        public void UpdateGameState(Pokemon[] team)
+        {
+            Team.UpdateGameState(team);
         }
     }
 }

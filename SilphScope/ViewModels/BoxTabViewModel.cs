@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Games.State.Common;
 
 namespace SilphScope.ViewModels
 {
@@ -6,5 +7,9 @@ namespace SilphScope.ViewModels
     {
         [ObservableProperty]
         private BoxesViewModel _Boxes = new();
+
+        internal void UpdateGameState(Box[] boxes)
+        {
+        }
     }
 }

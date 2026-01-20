@@ -2,6 +2,7 @@
 using SilphScope.Models.Core.Messages;
 using SilphScope.Models.Games;
 using SilphScope.Models.Games.Parsers.Gen4;
+using SilphScope.Models.Games.State;
 using SilphScope.Models.Games.State.Common;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,6 @@ namespace SilphScope.Models.Core
         private readonly Thread _thread;
         private readonly ProcessMemory _processMemory;
         private readonly Game _targetGame;
-        private SilphContext? _context;
 
         public SilphService(Process process, Game game)
         {
@@ -81,13 +81,13 @@ namespace SilphScope.Models.Core
                 {
                     nint saveAddr = _targetGame.Layout.GetSaveAddr(baseAddr, localSaveAddr);
                     OnMessage?.Invoke(this, new DebugMessage("Save data address found at: 0x" + saveAddr.ToString("X")));
-                    _context = new(_targetGame, saveAddr, _processMemory.Read(saveAddr, _targetGame.Layout.SaveSize));
+                    SilphContext _context = new(_targetGame, saveAddr, _processMemory.Read(saveAddr, _targetGame.Layout.SaveSize));
                     Gen4PkmnParser partyParser = new();
                     List<Pokemon> party = partyParser.ParseParty(_context);
-                    Debug.WriteLine(party.Count);
-                    OnMessage?.Invoke(this, new DebugMessage("First pkmn: " + party[0].Species.ToString()));
-                    OnMessage?.Invoke(this, new DebugMessage("Ability: " + party[0].Ability.ToString()));
-                    OnMessage?.Invoke(this, new DebugMessage("Moves: " + party[0].MoveSet.ToString()));
+
+                    GameState state = new GameState(null, party.ToArray(), null);
+                    OnMessage?.Invoke(this, new GameStateUpdateMessage(state));
+
                     _initialized = true;
                 }
             }

@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models.Core;
 using SilphScope.Models.Core.Messages;
+using SilphScope.Models.Games.State;
 using System.Diagnostics;
 
 namespace SilphScope.ViewModels
 {
     public partial class SilphServiceViewModel : ViewModelBase
     {
+        public delegate void GameStateUpdateHandler(SilphServiceViewModel sender, GameState state);
+        public event GameStateUpdateHandler? GameStateUpdated;
+
         [ObservableProperty]
         private bool _shouldStart = false;
 
@@ -42,7 +46,7 @@ namespace SilphScope.ViewModels
         [ObservableProperty]
         private SilphService? _service;
 
-        private static void Watch_OnMessage(SilphService sender, SilphServiceMessage message)
+        private void Watch_OnMessage(SilphService sender, SilphServiceMessage message)
         {
             if (message is DebugMessage dmessage)
             {
@@ -50,7 +54,7 @@ namespace SilphScope.ViewModels
             }
             else if (message is GameStateUpdateMessage gmessage)
             {
-
+                GameStateUpdated?.Invoke(this, gmessage.NewState);
             }
             else
             {
@@ -68,6 +72,5 @@ namespace SilphScope.ViewModels
         {
             ShouldStart = false;
         }
-
     }
 }

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Games.State.Common;
 using System.Collections.ObjectModel;
 
 namespace SilphScope.ViewModels
@@ -13,5 +14,29 @@ namespace SilphScope.ViewModels
 
         public TeamViewModel()
         { }
+
+        internal void UpdateGameState(Pokemon[] team)
+        {
+            // First ever update. Insert 6 empty party slots.
+            if (Members.Count == 0)
+            {
+                for (int i = 0; i < 6; i++)
+                {
+                    Members.Add(new PokemonViewModel());
+                }
+            }
+
+            // Update the team members.
+            for (int i = 0; i < team.Length && i < Members.Count; i++)
+            {
+                Members[i].UpdateGameState(team[i]);
+            }
+
+            // Extra empty members.
+            for (int i = team.Length; i < Members.Count; i++)
+            {
+                Members[i].UpdateGameState(null);
+            }
+        }
     }
 }
