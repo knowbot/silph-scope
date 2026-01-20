@@ -23,10 +23,10 @@ namespace SilphScope.Models.Games.Parsers.Common
             {
                 GrowthRate.MediumFast => GameData.ExpMediumFast,
                 GrowthRate.Erratic => GameData.ExpErratic,
-                GrowthRate.Fluctuating => throw new NotImplementedException(),
-                GrowthRate.MediumSlow => throw new NotImplementedException(),
-                GrowthRate.Fast => throw new NotImplementedException(),
-                GrowthRate.Slow => throw new NotImplementedException(),
+                GrowthRate.Fluctuating => GameData.ExpMediumFast,
+                GrowthRate.MediumSlow => GameData.ExpMediumFast,
+                GrowthRate.Fast => GameData.ExpMediumFast,
+                GrowthRate.Slow => GameData.ExpMediumFast,
                 _ => throw new ArgumentException("Invalid growth rate")
             };
 
@@ -36,7 +36,7 @@ namespace SilphScope.Models.Games.Parsers.Common
                 level += 1;
                 return new((byte)level, level >= 100 ? 0 : expTable[level]);
             }
-            return new((byte)(level - 1), expTable[level]);
+            return new((byte)(~level - 1), expTable[~level]);
         }
     }
 }

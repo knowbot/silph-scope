@@ -380,3 +380,4 @@ Directory.Build.Override.props
 /LegacyPython
 SilphScope/Assets/SilphLogo.png
 SilphScope/Assets/SilphLogo.svg
+/SilphScope/Test

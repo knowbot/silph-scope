@@ -1,6 +1,6 @@
 ﻿using SilphScope.Models.Core.Memory;
 using SilphScope.Models.Games;
-using SilphScope.Models.Games.Parsers.Common;
+using SilphScope.Models.Games.Parsers.Gen4;
 using SilphScope.Models.Games.State.Common;
 using System;
 using System.Collections.Generic;
@@ -80,11 +80,14 @@ namespace SilphScope.Models.Core
                     nint saveAddr = targetGame.Layout.GetSaveAddr(baseAddr, localSaveAddr);
                     OnMessage?.Invoke(this, "Save data address found at: 0x" + saveAddr.ToString("X"));
                     context = new(targetGame, saveAddr, processMemory.Read(saveAddr, targetGame.Layout.SaveSize));
-                    Trainer tdata = TrainerParser.Parse(context);
-                    OnMessage?.Invoke(this, "Trainer name: " + tdata.Name);
-                    OnMessage?.Invoke(this, "Trainer ID: " + tdata.Id);
-                    OnMessage?.Invoke(this, "Money: " + tdata.Money);
-                    OnMessage?.Invoke(this, "Gender: " + (tdata.Gender ? "Female" : "Male"));
+                    Gen4PkmnParser partyParser = new();
+                    List<Pokemon> party = partyParser.ParseParty(context);
+                    Debug.WriteLine(party.Count);
+                    OnMessage?.Invoke(this, "First pkmn: " + party[0].Species.ToString());
+                    OnMessage?.Invoke(this, "Ability: " + party[0].Ability.ToString());
+                    OnMessage?.Invoke(this, "Moves: " + party[0].MoveSet.ToString());
+                    OnMessage?.Invoke(this, "First pkmn: " + party[0].Species.ToString());
+
                 }
             }
             initialized = true;

@@ -134,7 +134,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             for (int i = 0; i < 4; i++)
             {
                 moves[i] = new(
-                    (MoveName)blockB.Read<ushort>(),
+                    (MoveName)blockB.Read<ushort>(i * 0x2),
                     blockB.Read<byte>(0x8 + i),
                     blockB.Read<byte>(0xC + i)
                     );

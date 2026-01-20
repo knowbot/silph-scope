@@ -5,6 +5,6 @@ namespace SilphScope.Models.Games.State.Common.PkmnInfo
 {
     public record Move(MoveName Name, int CurrPP, int PPUp)
     {
-        public int TotPP => GameData.MovePP[(int)Name];
+        public int TotPP => GameData.MovePP[(int)Name] + PPUp;
     }
 }
