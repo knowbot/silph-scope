@@ -8,21 +8,19 @@
              x:Class="SilphScope.ucSettingsTab"
              x:DataType="vm:SettingsTabViewModel"
              >
-  <DockPanel Margin="20">
-	  <!-- Game selection -->
+	<DockPanel Margin="20">
+		<!-- Game selection -->
 		<DockPanel DockPanel.Dock="Top">
 			<TextBlock DockPanel.Dock="Left" Text="Game: " VerticalAlignment="Center"/>
 			<!-- Game list -->
 			<ComboBox SelectedItem="{Binding Service.SelectedGame}" ItemsSource="{Binding SupportedGames}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-				<ComboBox.ItemTemplate>
-					<DataTemplate DataType="vm:GameViewModel">
-						<local:ucGame/>
-					</DataTemplate>
-				</ComboBox.ItemTemplate>
+			<ComboBox.ItemTemplate>
+				<DataTemplate DataType="vm:GameViewModel">
+					<local:ucGame/>
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
 			</ComboBox>
 		</DockPanel>
-
-
 		<!-- Process selection -->
 		<DockPanel DockPanel.Dock="Top">
 			<!-- Label -->
@@ -40,6 +38,5 @@
 				</ComboBox.ItemTemplate>
 			</ComboBox>
 		</DockPanel>
-
-  </DockPanel>
+	</DockPanel>
 </UserControl>
