@@ -48,9 +48,9 @@ namespace SilphScope.ViewModels
                 }
             }
 
-            if (Service.SelectedProcess == null && Processes.Count > 0)
+            if (Service.TargetProcess == null && Processes.Count > 0)
             {
-                Service.SelectedProcess = Processes.FirstOrDefault();
+                Service.TargetProcess = Processes.FirstOrDefault();
             }
         }
 

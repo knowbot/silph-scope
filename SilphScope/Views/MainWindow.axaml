@@ -33,12 +33,12 @@
                     <TextBlock  FontFamily="{StaticResource SpaceMono}" Margin="10,5">
                         <Run Foreground="#54FF54" Text="CONNECTED"/>
                         <Run Text="|" Foreground="#D5D3D9"/>
-                        <Run Text="{Binding Service.SelectedProcess.Name}" Foreground="#D5D3D9"/>
-                        <Run Text="{Binding Service.SelectedProcess.Pid, StringFormat='[PID: {0}]'}" Foreground="#D5D3D9"/>
+                        <Run Text="{Binding Service.TargetProcess.Name}" Foreground="#D5D3D9"/>
+                        <Run Text="{Binding Service.TargetProcess.Pid, StringFormat='[PID: {0}]'}" Foreground="#D5D3D9"/>
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" IsVisible="{Binding Service.ShouldStart}">
-					<TextBlock FontFamily="{StaticResource SpaceMono}" Text="{Binding Service.SelectedGame.Name}" Margin="10,5" Foreground="#D5D3D9" />
+					<TextBlock FontFamily="{StaticResource SpaceMono}" Text="{Binding Service.TargetGame.Name}" Margin="10,5" Foreground="#D5D3D9" />
                 </StackPanel>
             </Grid>
         </Border>

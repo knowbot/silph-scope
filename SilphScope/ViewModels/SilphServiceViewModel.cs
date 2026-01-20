@@ -13,12 +13,12 @@ namespace SilphScope.ViewModels
             if (value)
             {
                 // No process to attach to / game to scan for.
-                if (SelectedProcess == null || SelectedGame == null)
+                if (TargetProcess == null || TargetGame == null)
                 {
                     ShouldStart = false;
                     return;
                 }
-                Service = new SilphService(SelectedProcess.Process, SelectedGame.Game);
+                Service = new SilphService(TargetProcess.Process, TargetGame.Game);
                 Service.OnMessage += Watch_OnMessage;
             }
             else
@@ -32,10 +32,10 @@ namespace SilphScope.ViewModels
             }
         }
         [ObservableProperty]
-        private ProcessViewModel? _selectedProcess;
+        private ProcessViewModel? _targetProcess;
 
         [ObservableProperty]
-        private GameViewModel? _selectedGame;
+        private GameViewModel? _targetGame;
 
         [ObservableProperty]
         private SilphService? _service;
@@ -44,12 +44,12 @@ namespace SilphScope.ViewModels
             SilphLogger.Log(message);
         }
 
-        partial void OnSelectedProcessChanged(ProcessViewModel? value)
+        partial void OnTargetProcessChanged(ProcessViewModel? value)
         {
             ShouldStart = false;
         }
 
-        partial void OnSelectedGameChanged(GameViewModel? value)
+        partial void OnTargetGameChanged(GameViewModel? value)
         {
             ShouldStart = false;
         }

@@ -13,7 +13,7 @@
 		<DockPanel DockPanel.Dock="Top">
 			<TextBlock DockPanel.Dock="Left" Text="Game: " VerticalAlignment="Center"/>
 			<!-- Game list -->
-			<ComboBox SelectedItem="{Binding Service.SelectedGame}" ItemsSource="{Binding SupportedGames}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+			<ComboBox SelectedItem="{Binding Service.TargetGame}" ItemsSource="{Binding SupportedGames}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
 			<ComboBox.ItemTemplate>
 				<DataTemplate DataType="vm:GameViewModel">
 					<local:ucGame/>
@@ -30,7 +30,7 @@
 			<ToggleButton DockPanel.Dock="Right" Classes="IsStartStop" Height="32" Width="32" Margin="4" IsChecked="{Binding Service.ShouldStart}"/>
 
 			<!-- Process list -->
-			<ComboBox SelectedItem="{Binding Service.SelectedProcess}" ItemsSource="{Binding Processes}" IsDropDownOpen="{Binding IsSelectingProcess, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+			<ComboBox SelectedItem="{Binding Service.TargetProcess}" ItemsSource="{Binding Processes}" IsDropDownOpen="{Binding IsSelectingProcess, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
 				<ComboBox.ItemTemplate>
 					<DataTemplate DataType="vm:ProcessViewModel">
 						<local:ucProcess/>
