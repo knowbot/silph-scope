@@ -1,131 +1,27 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SilphScope.Models.Core;
-using SilphScope.Models.Games;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
+﻿namespace SilphScope.ViewModels;
 
-namespace SilphScope.ViewModels;
-
-public partial class MainWindowViewModel : ViewModelBase, IDisposable
+public partial class MainWindowViewModel : ViewModelBase
 {
-    [ObservableProperty]
-    private bool _IsAttached = false;
+    public LogViewModel Log { get; }
 
-    partial void OnIsAttachedChanged(bool value)
-    {
-        if (value)
-        {
-            // No process to attach to / game to scan for.
-            if (SelectedProcess == null || SelectedGame == null)
-            {
-                IsAttached = false;
-                return;
-            }
-            Service = new SilphService(SelectedProcess.Process, SelectedGame.Game); // TODO: replace with dropdown game selection
-            Service.OnMessage += Watch_OnMessage;
-        }
-        else
-        {
-            if (Service != null)
-            {
-                Service.Dispose();
-                Service.OnMessage -= Watch_OnMessage;
-                Service = null;
-            }
-        }
-    }
+    public TeamTabViewModel TeamTab { get; }
 
-    [ObservableProperty]
-    private bool _IsSelectingProcess = false;
+    public BoxTabViewModel BoxTab { get; }
 
-    partial void OnIsSelectingProcessChanged(bool value)
-    {
-        if (value)
-        {
-            RefreshProcesses();
-        }
-    }
+    public SettingsTabViewModel SettingsTab { get; }
+    public SilphServiceViewModel Service => _service;
+    private readonly SilphServiceViewModel _service;
 
-    [ObservableProperty]
-    private ObservableCollection<ProcessViewModel> _Processes = [];
-
-    [ObservableProperty]
-    private ProcessViewModel? _SelectedProcess;
-
-
-    public List<GameViewModel> SupportedGames { get; private set; }
-
-    [ObservableProperty]
-    private GameViewModel? _SelectedGame;
-
-    [ObservableProperty]
-    private SilphService? _service;
-
-    public void RefreshProcesses()
-    {
-        List<Process> newProcesses = Process.GetProcesses()
-            .Where(x => !string.IsNullOrEmpty(x.MainWindowTitle))
-            .ToList();
-        HashSet<int> newPids = newProcesses.Select(p => p.Id).ToHashSet();
-        HashSet<int> currPids = Processes.Select(p => p.Pid).ToHashSet();
-
-        for (int i = Processes.Count - 1; i >= 0; i--)
-        {
-            if (!newPids.Contains(Processes[i].Pid))
-            {
-                Processes.RemoveAt(i);
-            }
-        }
-
-        foreach (Process process in newProcesses)
-        {
-            if (!currPids.Contains(process.Id))
-            {
-                Processes.Add(new ProcessViewModel(process));
-            }
-        }
-
-        if (SelectedProcess == null && Processes.Count > 0)
-        {
-            SelectedProcess = Processes.FirstOrDefault();
-        }
-    }
-
-    partial void OnSelectedProcessChanged(ProcessViewModel? value)
-    {
-        IsAttached = false;
-    }
-
-    partial void OnSelectedGameChanged(GameViewModel? value)
-    {
-        IsAttached = false;
-    }
-
-    public LogViewModel Log { get; } = new();
-
-    public TeamTabViewModel TeamTab { get; } = new();
-
-    public BoxTabViewModel BoxTab { get; } = new();
-
-    public SettingsTabViewModel SettingsTab { get; } = new();
 
     public MainWindowViewModel()
     {
-        RefreshProcesses();
-        SupportedGames = new(Game.Supported.Select(g => new GameViewModel(g)));
-
-        // TODO: remove fake data.
-
+        _service = new SilphServiceViewModel();
+        Log = new();
+        TeamTab = new();
+        BoxTab = new();
+        SettingsTab = new(Service);
         // TeamTab.UpdateData(game.Team);
         // BoxTab.UpdateData(game.Boxes);
-    }
-
-    private void Watch_OnMessage(SilphService sender, string message)
-    {
-        SilphLogger.Log(message);
     }
 
     private bool isDisposed;

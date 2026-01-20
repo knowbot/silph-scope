@@ -14,100 +14,101 @@ namespace SilphScope.Models.Core
     {
         public delegate void ProcessWatchMessageHandler(SilphService sender, string message);
         public event ProcessWatchMessageHandler? OnMessage;
+        public bool Initialized { get => _initialized; private set => _initialized = value; }
+        public bool Stopped { get => _stopped; private set => _stopped = value; }
 
-        private readonly Lock locker = new();
-        private readonly Thread thread;
-        private bool shouldStop;
-
-        private bool initialized;
-        private readonly Process targetProcess;
-        private readonly ProcessMemory processMemory;
-        private readonly Game targetGame;
-        private SilphContext? context;
+        private bool _stopped;
+        private bool _initialized;
+        private readonly Lock _locker = new();
+        private readonly Thread _thread;
+        private readonly ProcessMemory _processMemory;
+        private readonly Game _targetGame;
+        private SilphContext? _context;
 
         public SilphService(Process process, Game game)
         {
-            targetProcess = process;
-
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                processMemory = new ProcessMemory(process, new WindowsMemoryAccess());
+                _processMemory = new ProcessMemory(process, new WindowsMemoryAccess());
             }
             else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
-                processMemory = new ProcessMemory(process, new LinuxMemoryAccess());
+                _processMemory = new ProcessMemory(process, new LinuxMemoryAccess());
             }
             else
             {
                 throw new PlatformNotSupportedException("SilphScope does not support the current OS.");
             }
 
-            targetGame = game;
-            thread = new Thread(ThreadLoop) { IsBackground = true };
-            thread.Start();
+            _targetGame = game;
+            _thread = new Thread(ThreadLoop) { IsBackground = true };
+            _thread.Start();
         }
+
+        // TODO: needed?
+        public SilphServiceStatus GetStatus() => Stopped ? SilphServiceStatus.Stopped : Initialized ? SilphServiceStatus.Started : SilphServiceStatus.Scanning;
 
         private void ThreadLoop()
         {
             while (!ShouldStop())
             {
-                // First iteration: check process' info.
-                if (!initialized)
+                // If not initialized yet, attempt initialization
+                if (!_initialized)
                 {
                     Init();
-                    // TODO: check if context is null, exit if so
                 }
             }
         }
 
         private void Init()
         {
-            List<nint> candidateAddresses = processMemory.PatternScanAll(targetGame.Layout.AnchorString); // Find memory signature
+            List<nint> candidateAddresses = _processMemory.PatternScanAll(_targetGame.Layout.AnchorString); // Find memory signature
 
             if (candidateAddresses.Count == 0)
             {
                 OnMessage?.Invoke(this, "No matches found.");
+                return;
             }
 
             foreach (nint res in candidateAddresses)
             {
                 OnMessage?.Invoke(this, "Found match at: 0x" + res.ToString("X"));
-                nint baseAddr = res - targetGame.Layout.Anchor;
+                nint baseAddr = res - _targetGame.Layout.Anchor;
                 // Verify candidate address is good
-                nint localSaveAddr = BitConverter.ToInt32(processMemory.Read(baseAddr + targetGame.Layout.SavePointer, 4));
+                nint localSaveAddr = BitConverter.ToInt32(_processMemory.Read(baseAddr + _targetGame.Layout.SavePointer, 4));
                 if (localSaveAddr != 0)
                 {
-                    nint saveAddr = targetGame.Layout.GetSaveAddr(baseAddr, localSaveAddr);
+                    nint saveAddr = _targetGame.Layout.GetSaveAddr(baseAddr, localSaveAddr);
                     OnMessage?.Invoke(this, "Save data address found at: 0x" + saveAddr.ToString("X"));
-                    context = new(targetGame, saveAddr, processMemory.Read(saveAddr, targetGame.Layout.SaveSize));
+                    _context = new(_targetGame, saveAddr, _processMemory.Read(saveAddr, _targetGame.Layout.SaveSize));
                     Gen4PkmnParser partyParser = new();
-                    List<Pokemon> party = partyParser.ParseParty(context);
+                    List<Pokemon> party = partyParser.ParseParty(_context);
                     Debug.WriteLine(party.Count);
                     OnMessage?.Invoke(this, "First pkmn: " + party[0].Species.ToString());
                     OnMessage?.Invoke(this, "Ability: " + party[0].Ability.ToString());
                     OnMessage?.Invoke(this, "Moves: " + party[0].MoveSet.ToString());
                     OnMessage?.Invoke(this, "First pkmn: " + party[0].Species.ToString());
-
+                    _initialized = true;
                 }
             }
-            initialized = true;
+            return;
         }
 
         protected bool ShouldStop()
         {
-            lock (locker)
+            lock (_locker)
             {
-                return shouldStop;
+                return Stopped;
             }
         }
 
         protected override void Dispose(bool disposing)
         {
-            lock (locker)
+            lock (_locker)
             {
-                shouldStop = true;
+                Stopped = true;
             }
-            thread.Join();
+            _thread.Join();
             base.Dispose(disposing);
         }
     }
