@@ -54,7 +54,7 @@ namespace SilphScope.ViewModels
             }
             else if (message is GameStateUpdateMessage gmessage)
             {
-                GameStateUpdated?.Invoke(this, gmessage.NewState);
+                GameStateUpdated?.Invoke(this, gmessage.NewGameState);
             }
             else
             {

@@ -16,15 +16,19 @@ namespace SilphScope.Models.Core
     {
         public delegate void ProcessWatchMessageHandler(SilphService sender, SilphServiceMessage message);
         public event ProcessWatchMessageHandler? OnMessage;
-        public bool Initialized { get => _initialized; private set => _initialized = value; }
-        public bool Stopped { get => _stopped; private set => _stopped = value; }
 
-        private bool _stopped;
-        private bool _initialized;
-        private readonly Lock _locker = new();
+        public SilphServiceState State => _state;
+
+        private volatile SilphServiceState _state = SilphServiceState.Stopped;
+
+        private readonly CancellationTokenSource _cts = new();
+        private readonly Lock _lock = new();
         private readonly Thread _thread;
+        private int _tickRate = 100;
+
         private readonly ProcessMemory _processMemory;
         private readonly Game _targetGame;
+        private SilphContext? _context;
 
         public SilphService(Process process, Game game)
         {
@@ -46,69 +50,99 @@ namespace SilphScope.Models.Core
             _thread.Start();
         }
 
-        // TODO: needed?
-        public SilphServiceStatus GetStatus() => Stopped ? SilphServiceStatus.Stopped : Initialized ? SilphServiceStatus.Started : SilphServiceStatus.Scanning;
+        public void SetTickRate(int value)
+        {
+            _tickRate = value;
+        }
+
+        private void SetState(SilphServiceState value)
+        {
+            lock (_lock)
+            {
+                if (_state == value) return;
+                _state = value;
+                // send message
+            }
+        }
+
+        public void Start()
+        {
+            if (_thread.IsAlive) return;
+            SetState(SilphServiceState.Scanning);
+            _thread.Start();
+        }
 
         private void ThreadLoop()
         {
-            while (!ShouldStop())
+            CancellationToken token = _cts.Token;
+            while (!token.IsCancellationRequested)
             {
-                // If not initialized yet, attempt initialization
-                if (!_initialized)
+                try
                 {
-                    Init();
+                    // TODO: Check if process has exited
+                    //if ()
+                    //{
+                    //    OnMessage?.Invoke(this, new DebugMessage("Target process exited. Stopping service."));
+                    //    SetState(SilphServiceState.Stopped);
+                    //    break;
+                    //}
+                    if (_state == SilphServiceState.Scanning)
+                    {
+                        ScanForAnchor();
+                    }
+                    token.WaitHandle.WaitOne(_tickRate);
+                }
+                catch (Exception ex)
+                {
+                    {
+                        OnMessage?.Invoke(this, new DebugMessage($"{ex.Message}"));
+                    }
                 }
             }
         }
 
-        private void Init()
+        private void ScanForAnchor()
         {
             List<nint> candidateAddresses = _processMemory.PatternScanAll(_targetGame.Layout.AnchorString); // Find memory signature
 
             if (candidateAddresses.Count == 0)
             {
-                OnMessage?.Invoke(this, new DebugMessage("No matches found."));
                 return;
             }
 
             foreach (nint res in candidateAddresses)
             {
                 OnMessage?.Invoke(this, new DebugMessage("Found match at: 0x" + res.ToString("X")));
+                // TODO: add sanity check
+                // TODO: compatibility with other games? make a class responsible for getting the save address and reading the context
                 nint baseAddr = res - _targetGame.Layout.Anchor;
-                // Verify candidate address is good
                 nint localSaveAddr = BitConverter.ToInt32(_processMemory.Read(baseAddr + _targetGame.Layout.SavePointer, 4));
-                if (localSaveAddr != 0)
+                if (localSaveAddr >= _targetGame.Layout.RamStart && localSaveAddr <= _targetGame.Layout.RamEnd)
                 {
                     nint saveAddr = _targetGame.Layout.GetSaveAddr(baseAddr, localSaveAddr);
-                    OnMessage?.Invoke(this, new DebugMessage("Save data address found at: 0x" + saveAddr.ToString("X")));
-                    SilphContext _context = new(_targetGame, saveAddr, _processMemory.Read(saveAddr, _targetGame.Layout.SaveSize));
+                    _context = new(_targetGame, saveAddr, _processMemory.Read(saveAddr, _targetGame.Layout.SaveSize));
                     Gen4PkmnParser partyParser = new();
                     List<Pokemon> party = partyParser.ParseParty(_context);
 
-                    GameState state = new GameState(null, party.ToArray(), null);
+                    GameState state = new(null, party.ToArray(), null);
                     OnMessage?.Invoke(this, new GameStateUpdateMessage(state));
 
-                    _initialized = true;
+                    SetState(SilphServiceState.Started);
+                    break;
                 }
             }
             return;
         }
 
-        protected bool ShouldStop()
-        {
-            lock (_locker)
-            {
-                return Stopped;
-            }
-        }
-
         protected override void Dispose(bool disposing)
         {
-            lock (_locker)
+            SetState(SilphServiceState.Stopped);
+            _context = null;
+            _cts.Cancel();
+            if (_thread.IsAlive)
             {
-                Stopped = true;
+                _thread.Join();
             }
-            _thread.Join();
             base.Dispose(disposing);
         }
     }

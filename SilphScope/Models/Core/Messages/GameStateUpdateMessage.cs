@@ -4,11 +4,11 @@ namespace SilphScope.Models.Core.Messages
 {
     public class GameStateUpdateMessage : SilphServiceMessage
     {
-        public readonly GameState NewState;
+        public readonly GameState NewGameState;
 
-        public GameStateUpdateMessage(GameState newState)
+        public GameStateUpdateMessage(GameState newGameState)
         {
-            NewState = newState;
+            NewGameState = newGameState;
         }
     }
 }

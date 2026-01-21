@@ -3,11 +3,11 @@
     public interface IMemoryLayout
     {
         int RamStart { get; }
+        int RamEnd { get; }
         int SaveSize { get; }
         string AnchorString { get; }
         int Anchor { get; }
         int SavePointer { get; }
-        int Canary { get; }
         int TrainerName { get; }
         int TrainerID { get; }
         int PartyCount { get; }

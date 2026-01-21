@@ -21,9 +21,8 @@ namespace SilphScope.Models.Core
             {
                 return;
             }
-
+            GC.SuppressFinalize(this);
             Dispose(true);
-
             IsDisposed = true;
         }
 
