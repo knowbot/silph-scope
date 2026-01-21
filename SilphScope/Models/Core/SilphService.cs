@@ -118,11 +118,11 @@ namespace SilphScope.Models.Core
 
         private void UpdateGameData()
         {
-            ScanForAnchor();
-            //SilphContext context = new(_targetGame, _saveAddr, _processMemory.Read(_saveAddr, _targetGame.Layout.SaveSize));
-            //List<Pokemon> party = _pkmnParser.ParseParty(context);
-            //GameState gameState = new(null, party.ToArray(), null);
-            //OnMessage?.Invoke(this, new GameStateUpdate(gameState));
+            //ScanForAnchor();
+            SilphContext context = new(_targetGame, _saveAddr, _processMemory.Read(_saveAddr, _targetGame.Layout.SaveSize));
+            List<Pokemon> party = _pkmnParser.ParseParty(context);
+            GameState gameState = new(null, party.ToArray(), null);
+            OnMessage?.Invoke(this, new GameStateUpdate(gameState));
 
             //    catch (Exception ex)
             //    {
@@ -155,10 +155,10 @@ namespace SilphScope.Models.Core
                         OnMessage?.Invoke(this, new DebugMessage($"Save address updated, was: 0x{_saveAddr:X}, is 0x{newSaveAddr:X}"));
                         _saveAddr = newSaveAddr;
                     }
-                    SilphContext context = new(_targetGame, _saveAddr, _processMemory.Read(_saveAddr, _targetGame.Layout.SaveSize));
-                    List<Pokemon> party = _pkmnParser.ParseParty(context);
-                    GameState gameState = new(null, party.ToArray(), null);
-                    OnMessage?.Invoke(this, new GameStateUpdate(gameState));
+                    //SilphContext context = new(_targetGame, _saveAddr, _processMemory.Read(_saveAddr, _targetGame.Layout.SaveSize));
+                    //List<Pokemon> party = _pkmnParser.ParseParty(context);
+                    //GameState gameState = new(null, party.ToArray(), null);
+                    //OnMessage?.Invoke(this, new GameStateUpdate(gameState));
                     SetState(SilphState.Started);
                     break;
                 }

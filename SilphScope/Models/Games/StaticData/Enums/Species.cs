@@ -1071,6 +1071,7 @@ namespace SilphScope.Models.Games.StaticData.Enums
         [Description("Iron Crown")]
         IronCrown,
         Terapagos,
-        Pecharunt
+        Pecharunt,
+        MAX_VALUE
     }
 }

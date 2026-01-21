@@ -35,7 +35,8 @@ namespace SilphScope.Models.Games.Parsers.Common
                 level += 1;
                 return new((byte)level, level >= 100 ? 0 : expTable[level]);
             }
-            return new((byte)(~level - 1), expTable[~level]);
+            level = ~level - 1;
+            return new((byte)level, expTable[level]);
         }
     }
 }
