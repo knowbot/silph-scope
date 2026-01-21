@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using SilphScope.Models.Games.StaticData.Enums;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -28,18 +29,41 @@ namespace SilphScope.Models.Core.Sprites
 		{
 			while (_requests.Wait(out SpriteLoadRequest? request))
 			{
-				Bitmap? sprite = new WriteableBitmap(new PixelSize(1, 1), Vector.Zero);
-
-				// Load the sprite.
-				// TODO: delegate to dedicated class.
-				using (HttpClient client = new HttpClient())
+				// Try loading from disk.
+				if (!SpriteStorageManager.Current.Load(request!.Species, out Bitmap? sprite))
 				{
-					string url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{(int)request!.Species}.png";
-					using (HttpResponseMessage response = client.GetAsync(url).Result)
-					using (Stream stream = response.Content.ReadAsStreamAsync().Result)
+					// Not on disk. Download.
+					// TODO: delegate to dedicated class.
+					try
 					{
-						sprite = new Bitmap(stream);
+						using (HttpClient client = new HttpClient())
+						{
+							string url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{(int)request!.Species}.png";
+							using (HttpResponseMessage response = client.GetAsync(url).Result)
+							using (Stream stream = response.Content.ReadAsStreamAsync().Result)
+							{
+								sprite = new Bitmap(stream);
+							}
+						}
 					}
+					catch (Exception)
+					{
+						// There was some issue.
+						sprite = default;
+					}
+
+					// Save it to disk for later use.
+					if (sprite != null)
+					{
+						SpriteStorageManager.Current.Save(request!.Species, sprite);
+					}
+				}
+
+				// Set default sprite.
+				// TODO: proper default sprite.
+				if (sprite == null)
+				{
+					sprite = new WriteableBitmap(new PixelSize(1, 1), Vector.Zero);
 				}
 
 				// Push the result to the task.
