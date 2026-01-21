@@ -7,16 +7,17 @@ namespace SilphScope.Models.Core.Memory
 {
     public class ProcessMemory(Process process, IMemoryAccess memoryAccess)
     {
-        private readonly Process process = process;
-        private readonly IMemoryAccess memoryAccess = memoryAccess;
+        public Process Process => _process;
+        private readonly Process _process = process;
+        private readonly IMemoryAccess _memoryAccess = memoryAccess;
 
         public List<nint> PatternScanAll(string pattern)
         {
             List<nint> matches = [];
 
-            foreach (ReadableMemoryRegion region in memoryAccess.GetMemoryRegions(process))
+            foreach (ReadableMemoryRegion region in _memoryAccess.GetMemoryRegions(_process))
             {
-                byte[] buffer = memoryAccess.ReadMemory(process, region.BaseAddress, region.Size);
+                byte[] buffer = _memoryAccess.ReadMemory(_process, region.BaseAddress, region.Size);
                 matches.AddRange(PatternScanner.FindAll(buffer, pattern).Select(m => m + region.BaseAddress));
             }
             return matches;
@@ -24,7 +25,7 @@ namespace SilphScope.Models.Core.Memory
 
         public byte[] Read(nint address, int size)
         {
-            return memoryAccess.ReadMemory(process, address, size);
+            return _memoryAccess.ReadMemory(_process, address, size);
         }
     }
 }

@@ -84,13 +84,13 @@ namespace SilphScope.Models.Core
             {
                 try
                 {
-                    // TODO: Check if process has exited
-                    //if ()
-                    //{
-                    //    OnMessage?.Invoke(this, new DebugMessage("Target process exited. Stopping service."));
-                    //    SetState(SilphServiceState.Stopped);
-                    //    break;
-                    //}
+                    // TODO: move this to event?
+                    if (_processMemory.Process.HasExited)
+                    {
+                        OnMessage?.Invoke(this, new DebugMessage("Target process exited. Stopping service."));
+                        Stop();
+                        break;
+                    }
                     if (_state == SilphState.Scanning)
                     {
                         ScanForAnchor();
