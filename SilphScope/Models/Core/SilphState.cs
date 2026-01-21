@@ -1,6 +1,6 @@
 ﻿namespace SilphScope.Models.Core
 {
-    public enum SilphServiceState
+    public enum SilphState
     {
         Stopped,
         Scanning,

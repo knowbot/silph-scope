@@ -1,12 +1,7 @@
 ﻿namespace SilphScope.Models.Core.Messages
 {
-    public class DebugMessage : SilphServiceMessage
+    public class DebugMessage(string message) : SilphServiceMessage
     {
-        public readonly string Message;
-
-        public DebugMessage(string message)
-        {
-            Message = message;
-        }
+        public readonly string Message = message;
     }
 }

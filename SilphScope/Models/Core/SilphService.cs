@@ -17,9 +17,9 @@ namespace SilphScope.Models.Core
         public delegate void ProcessWatchMessageHandler(SilphService sender, SilphServiceMessage message);
         public event ProcessWatchMessageHandler? OnMessage;
 
-        public SilphServiceState State => _state;
+        public SilphState State => _state;
 
-        private volatile SilphServiceState _state = SilphServiceState.Stopped;
+        private volatile SilphState _state = SilphState.Stopped;
 
         private readonly CancellationTokenSource _cts = new();
         private readonly Lock _lock = new();
@@ -55,21 +55,26 @@ namespace SilphScope.Models.Core
             _tickRate = value;
         }
 
-        private void SetState(SilphServiceState value)
+        private void SetState(SilphState value)
         {
             lock (_lock)
             {
                 if (_state == value) return;
                 _state = value;
-                // send message
+                OnMessage?.Invoke(this, new SilphStateChangedMessage(_state));
             }
         }
 
         public void Start()
         {
             if (_thread.IsAlive) return;
-            SetState(SilphServiceState.Scanning);
+            SetState(SilphState.Scanning);
             _thread.Start();
+        }
+
+        public void Stop()
+        {
+            SetState(SilphState.Stopped);
         }
 
         private void ThreadLoop()
@@ -86,7 +91,7 @@ namespace SilphScope.Models.Core
                     //    SetState(SilphServiceState.Stopped);
                     //    break;
                     //}
-                    if (_state == SilphServiceState.Scanning)
+                    if (_state == SilphState.Scanning)
                     {
                         ScanForAnchor();
                     }
@@ -125,9 +130,9 @@ namespace SilphScope.Models.Core
                     List<Pokemon> party = partyParser.ParseParty(_context);
 
                     GameState state = new(null, party.ToArray(), null);
-                    OnMessage?.Invoke(this, new GameStateUpdateMessage(state));
+                    OnMessage?.Invoke(this, new GameStateChangedMessage(state));
 
-                    SetState(SilphServiceState.Started);
+                    SetState(SilphState.Started);
                     break;
                 }
             }
@@ -136,7 +141,7 @@ namespace SilphScope.Models.Core
 
         protected override void Dispose(bool disposing)
         {
-            SetState(SilphServiceState.Stopped);
+            SetState(SilphState.Stopped);
             _context = null;
             _cts.Cancel();
             if (_thread.IsAlive)

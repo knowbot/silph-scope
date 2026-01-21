@@ -52,7 +52,7 @@ namespace SilphScope.ViewModels
             {
                 SilphLogger.Log(dmessage.Message);
             }
-            else if (message is GameStateUpdateMessage gmessage)
+            else if (message is GameStateChangedMessage gmessage)
             {
                 GameStateUpdated?.Invoke(this, gmessage.NewGameState);
             }
