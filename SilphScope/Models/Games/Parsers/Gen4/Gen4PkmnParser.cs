@@ -71,7 +71,8 @@ namespace SilphScope.Models.Games.Parsers.Gen4
         private bool IsValidData(ReadOnlySpan<byte> blockA, ReadOnlySpan<byte> blockB)
         {
             ushort candidateSpecies = blockA.Read<ushort>();
-            return candidateSpecies < (ushort)Species.MAX_VALUE;
+            EVs candidateEVs = ParseEVs(blockA);
+            return candidateSpecies < (ushort)Species.MAX_VALUE && candidateEVs.IsValid();
 
 
         }
@@ -110,17 +111,9 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             uint exp = blockA.Read<uint>(0x8);
             byte friendship = blockA.Read<byte>(0xC);
             byte ability = blockA.Read<byte>(0xD);
-            EVs evs = new(
-                blockA.Read<byte>(0x10),
-                blockA.Read<byte>(0x11),
-                blockA.Read<byte>(0x12),
-                blockA.Read<byte>(0x13),
-                blockA.Read<byte>(0x14),
-                blockA.Read<byte>(0x15)
-            );
+            EVs evs = ParseEVs(blockA);
 
             // BLOCK B
-
             Move[] moves = ParseMoves(blockB);
             MoveSet moveSet = new(moves[0], moves[1], moves[2], moves[3]);
             IVs ivs = ParseIVs(blockB);
