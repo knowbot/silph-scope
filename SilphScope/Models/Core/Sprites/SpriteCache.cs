@@ -1,5 +1,5 @@
 ﻿using Avalonia.Media.Imaging;
-using SilphScope.Models.Games.Data.Enums;
+using SilphScope.Models.Games.StaticData.Enums;
 using System.Collections.Generic;
 
 namespace SilphScope.Models.Core.Sprites

@@ -1,8 +1,7 @@
 ﻿using SilphScope.Models.Core;
-using SilphScope.Models.Games.Data;
-using SilphScope.Models.Games.Data.Enums;
 using SilphScope.Models.Games.State.Common;
 using SilphScope.Models.Games.State.Common.PkmnInfo;
+using SilphScope.Models.Games.StaticData.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -17,16 +16,16 @@ namespace SilphScope.Models.Games.Parsers.Common
 
         public virtual Level GetLevel(ushort species, uint experience)
         {
-            GrowthRate growRate = (GrowthRate)GameData.GrowRates[(int)species];
+            GrowthRate growRate = (GrowthRate)StaticData.SpeciesData.GrowRate[(int)species];
 
             ReadOnlySpan<uint> expTable = growRate switch
             {
-                GrowthRate.MediumFast => GameData.ExpMediumFast,
-                GrowthRate.Erratic => GameData.ExpErratic,
-                GrowthRate.Fluctuating => GameData.ExpMediumFast,
-                GrowthRate.MediumSlow => GameData.ExpMediumFast,
-                GrowthRate.Fast => GameData.ExpMediumFast,
-                GrowthRate.Slow => GameData.ExpMediumFast,
+                GrowthRate.MediumFast => StaticData.ExpCurve.MediumFast,
+                GrowthRate.Erratic => StaticData.ExpCurve.Erratic,
+                GrowthRate.Fluctuating => StaticData.ExpCurve.MediumFast,
+                GrowthRate.MediumSlow => StaticData.ExpCurve.MediumFast,
+                GrowthRate.Fast => StaticData.ExpCurve.MediumFast,
+                GrowthRate.Slow => StaticData.ExpCurve.MediumFast,
                 _ => throw new ArgumentException("Invalid growth rate")
             };
 

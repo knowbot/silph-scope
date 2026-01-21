@@ -1,6 +1,7 @@
 ﻿using SilphScope.Models.Core.Memory;
 using SilphScope.Models.Core.Messages;
 using SilphScope.Models.Games;
+using SilphScope.Models.Games.Parsers.Common;
 using SilphScope.Models.Games.Parsers.Gen4;
 using SilphScope.Models.Games.State;
 using SilphScope.Models.Games.State.Common;
@@ -24,11 +25,14 @@ namespace SilphScope.Models.Core
         private readonly CancellationTokenSource _cts = new();
         private readonly Lock _lock = new();
         private readonly Thread _thread;
-        private int _tickRate = 100;
+        private int _tickRate = 500;
 
         private readonly ProcessMemory _processMemory;
         private readonly Game _targetGame;
-        private SilphContext? _context;
+
+        private nint _saveAddr;
+        private readonly APkmnParser _pkmnParser;
+        private readonly TrainerParser _trainerParser;
 
         public SilphService(Process process, Game game)
         {
@@ -46,8 +50,9 @@ namespace SilphScope.Models.Core
             }
 
             _targetGame = game;
+            _pkmnParser = new Gen4PkmnParser();
+            _trainerParser = new TrainerParser();
             _thread = new Thread(ThreadLoop) { IsBackground = true };
-            _thread.Start();
         }
 
         public void SetTickRate(int value)
@@ -82,28 +87,48 @@ namespace SilphScope.Models.Core
             CancellationToken token = _cts.Token;
             while (!token.IsCancellationRequested)
             {
-                try
+                //try
+                //{
+                // TODO: move this to event?
+                if (_processMemory.Process.HasExited)
                 {
-                    // TODO: move this to event?
-                    if (_processMemory.Process.HasExited)
-                    {
-                        OnMessage?.Invoke(this, new DebugMessage("Target process exited. Stopping service."));
-                        Stop();
-                        break;
-                    }
-                    if (_state == SilphState.Scanning)
-                    {
+                    OnMessage?.Invoke(this, new DebugMessage("Target process exited. Stopping service."));
+                    Stop();
+                    break;
+                }
+                switch (_state)
+                {
+                    case SilphState.Scanning:
                         ScanForAnchor();
-                    }
-                    token.WaitHandle.WaitOne(_tickRate);
+                        break;
+                    case SilphState.Started:
+                        UpdateGameData();
+                        break;
                 }
-                catch (Exception ex)
-                {
-                    {
-                        OnMessage?.Invoke(this, new DebugMessage($"{ex.Message}"));
-                    }
-                }
+                token.WaitHandle.WaitOne(_tickRate);
+                //}
+                //catch (Exception ex)
+                //{
+                //    {
+                //        OnMessage?.Invoke(this, new DebugMessage($"Error in ThreadLoop: {ex.Message}"));
+                //    }
+                //}
             }
+        }
+
+        private void UpdateGameData()
+        {
+            ScanForAnchor();
+            //SilphContext context = new(_targetGame, _saveAddr, _processMemory.Read(_saveAddr, _targetGame.Layout.SaveSize));
+            //List<Pokemon> party = _pkmnParser.ParseParty(context);
+            //GameState gameState = new(null, party.ToArray(), null);
+            //OnMessage?.Invoke(this, new GameStateUpdate(gameState));
+
+            //    catch (Exception ex)
+            //    {
+            //        OnMessage?.Invoke(this, new DebugMessage($"Memory read failed at 0x{_saveAddr:X}: {ex.Message}"));
+            //    }
+            //}
         }
 
         private void ScanForAnchor()
@@ -117,21 +142,23 @@ namespace SilphScope.Models.Core
 
             foreach (nint res in candidateAddresses)
             {
-                OnMessage?.Invoke(this, new DebugMessage("Found match at: 0x" + res.ToString("X")));
                 // TODO: add sanity check
                 // TODO: compatibility with other games? make a class responsible for getting the save address and reading the context
                 nint baseAddr = res - _targetGame.Layout.Anchor;
                 nint localSaveAddr = BitConverter.ToInt32(_processMemory.Read(baseAddr + _targetGame.Layout.SavePointer, 4));
                 if (localSaveAddr >= _targetGame.Layout.RamStart && localSaveAddr <= _targetGame.Layout.RamEnd)
                 {
-                    nint saveAddr = _targetGame.Layout.GetSaveAddr(baseAddr, localSaveAddr);
-                    _context = new(_targetGame, saveAddr, _processMemory.Read(saveAddr, _targetGame.Layout.SaveSize));
-                    Gen4PkmnParser partyParser = new();
-                    List<Pokemon> party = partyParser.ParseParty(_context);
-
-                    GameState state = new(null, party.ToArray(), null);
-                    OnMessage?.Invoke(this, new GameStateChangedMessage(state));
-
+                    //OnMessage?.Invoke(this, new DebugMessage("Anchor located, save is at: 0x" + localSaveAddr.ToString("X")));
+                    nint newSaveAddr = _targetGame.Layout.GetSaveAddr(baseAddr, localSaveAddr);
+                    if (newSaveAddr != _saveAddr)
+                    {
+                        OnMessage?.Invoke(this, new DebugMessage($"Save address updated, was: 0x{_saveAddr:X}, is 0x{newSaveAddr:X}"));
+                        _saveAddr = newSaveAddr;
+                    }
+                    SilphContext context = new(_targetGame, _saveAddr, _processMemory.Read(_saveAddr, _targetGame.Layout.SaveSize));
+                    List<Pokemon> party = _pkmnParser.ParseParty(context);
+                    GameState gameState = new(null, party.ToArray(), null);
+                    OnMessage?.Invoke(this, new GameStateUpdate(gameState));
                     SetState(SilphState.Started);
                     break;
                 }
@@ -141,12 +168,14 @@ namespace SilphScope.Models.Core
 
         protected override void Dispose(bool disposing)
         {
-            SetState(SilphState.Stopped);
-            _context = null;
-            _cts.Cancel();
-            if (_thread.IsAlive)
+            if (disposing)
             {
-                _thread.Join();
+                SetState(SilphState.Stopped);
+                _cts.Cancel();
+                if (_thread.IsAlive)
+                {
+                    _thread.Join();
+                }
             }
             base.Dispose(disposing);
         }

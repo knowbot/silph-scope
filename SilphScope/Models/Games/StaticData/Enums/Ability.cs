@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace SilphScope.Models.Games.Data.Enums
+namespace SilphScope.Models.Games.StaticData.Enums
 {
     public enum Ability : ushort
     {

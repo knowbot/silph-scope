@@ -1,12 +1,13 @@
 ﻿using SilphScope.Models.Core;
 using SilphScope.Models.Extensions;
-using SilphScope.Models.Games.Data.Enums;
 using SilphScope.Models.Games.MemoryLayouts;
 using SilphScope.Models.Games.Parsers.Common;
 using SilphScope.Models.Games.State.Common;
 using SilphScope.Models.Games.State.Common.PkmnInfo;
+using SilphScope.Models.Games.StaticData.Enums;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace SilphScope.Models.Games.Parsers.Gen4
@@ -68,19 +69,38 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             throw new NotImplementedException();
         }
 
+        private ushort GetChecksum(ReadOnlySpan<ushort> words)
+        {
+            uint sum = 0;
+            foreach (ushort word in words)
+            {
+                unchecked { sum += word; }
+            }
+            return (ushort)(sum & 0xFFFF);
+        }
+
         public override Pokemon Parse(ReadOnlySpan<byte> pkmnData)
         {
             uint pId = pkmnData.Read<uint>();
-            long prng = pkmnData.Read<ushort>(0x6);
+            ushort storedChecksum = pkmnData.Read<ushort>(0x6);
             // copy over the ABCD blocks to decrypt in-place
             byte[] blocks = pkmnData.Slice(0x8, _pkmnSize).ToArray();
+
             // read the data as 2-byte words for decryption
             Span<ushort> words = MemoryMarshal.Cast<byte, ushort>(blocks);
+            Debug.WriteLine(storedChecksum);
+
+            //if (storedChecksum != updatedChecksum)
+            //{
+            long prng = storedChecksum;
             for (int i = 0; i < words.Length; i++)
             {
                 prng = ((0x41C64E6D * prng) + 0x6073) & 0xFFFFFFFF;
                 words[i] ^= (ushort)(prng >> 16);
             }
+            ushort updatedChecksum = GetChecksum(words);
+            Debug.WriteLine(updatedChecksum);
+
             uint shift = ((pId & 0x3E000) >> 0xD) % 24;
             // now, read the data from the blocks (A > B > C > D)
             ReadOnlySpan<byte> order = BlockUnshuffle.Slice((int)shift * 4, 4);

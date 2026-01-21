@@ -1,4 +1,4 @@
-﻿using SilphScope.Models.Games.Data.Enums;
+﻿using SilphScope.Models.Games.StaticData.Enums;
 
 namespace SilphScope.Models.Core.Sprites
 {

@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace SilphScope.Models.Games.Data
+namespace SilphScope.Models.Games.StaticData
 {
-    public static partial class GameData
+    public static partial class SpeciesData
     {
         public static ReadOnlySpan<int> BaseStats =>
         [

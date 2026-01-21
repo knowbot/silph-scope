@@ -1,4 +1,4 @@
-﻿using SilphScope.Models.Games.Data.Enums;
+﻿using SilphScope.Models.Games.StaticData.Enums;
 using SilphScope.Models.Games.State.Common.PkmnInfo;
 
 namespace SilphScope.Models.Games.State.Common

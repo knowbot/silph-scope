@@ -1,4 +1,4 @@
-﻿namespace SilphScope.Models.Games.Data.Enums
+﻿namespace SilphScope.Models.Games.StaticData.Enums
 {
     public enum GrowthRate : byte
     {

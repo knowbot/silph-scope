@@ -2,7 +2,6 @@
 using SilphScope.Models.Core;
 using SilphScope.Models.Core.Messages;
 using SilphScope.Models.Games.State;
-using System.Diagnostics;
 
 namespace SilphScope.ViewModels
 {
@@ -10,9 +9,38 @@ namespace SilphScope.ViewModels
     {
         public delegate void GameStateUpdateHandler(SilphServiceViewModel sender, GameState state);
         public event GameStateUpdateHandler? GameStateUpdated;
+        public delegate void SilphStateChangedHandler(SilphServiceViewModel sender, SilphState state);
+        public event SilphStateChangedHandler? SilphStateChanged;
 
         [ObservableProperty]
         private bool _shouldStart = false;
+
+        public void Start()
+        {
+            if (TargetProcess == null || TargetGame == null)
+            {
+                SilphLogger.Log($"Target process or target game are not set.");
+                return;
+            }
+            if (Service == null)
+            {
+                Service = new SilphService(TargetProcess.Process, TargetGame.Game);
+                Service.OnMessage += Watch_OnMessage;
+                Service.Start();
+            }
+            else if (Service.State == SilphState.Stopped)
+            {
+                Service.Start();
+            }
+        }
+
+        public void Stop()
+        {
+            if (Service == null) return;
+            Service.Stop();
+            Service.Dispose();
+            Service = null;
+        }
 
         partial void OnShouldStartChanged(bool value)
         {
@@ -24,17 +52,11 @@ namespace SilphScope.ViewModels
                     ShouldStart = false;
                     return;
                 }
-                Service = new SilphService(TargetProcess.Process, TargetGame.Game);
-                Service.OnMessage += Watch_OnMessage;
+                Start();
             }
             else
             {
-                if (Service != null)
-                {
-                    Service.Dispose();
-                    Service.OnMessage -= Watch_OnMessage;
-                    Service = null;
-                }
+                Stop();
             }
         }
         [ObservableProperty]
@@ -52,13 +74,17 @@ namespace SilphScope.ViewModels
             {
                 SilphLogger.Log(dmessage.Message);
             }
-            else if (message is GameStateChangedMessage gmessage)
+            else if (message is GameStateUpdate gmessage)
             {
                 GameStateUpdated?.Invoke(this, gmessage.NewGameState);
             }
+            else if (message is SilphStateChangedMessage smessage)
+            {
+                SilphLogger.Log($"Service is now: {smessage.NewState}");
+            }
             else
             {
-                Debugger.Break();
+                //Debugger.Break();
                 SilphLogger.Log($"Message type not implemented: {message}");
             }
         }

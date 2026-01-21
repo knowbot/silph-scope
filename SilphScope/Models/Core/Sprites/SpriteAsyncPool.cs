@@ -1,6 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
-using SilphScope.Models.Games.Data.Enums;
+using SilphScope.Models.Games.StaticData.Enums;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
