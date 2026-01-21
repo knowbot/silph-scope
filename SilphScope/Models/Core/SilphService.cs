@@ -87,8 +87,6 @@ namespace SilphScope.Models.Core
             CancellationToken token = _cts.Token;
             while (!token.IsCancellationRequested)
             {
-                //try
-                //{
                 // TODO: move this to event?
                 if (_processMemory.Process.HasExited)
                 {
@@ -106,29 +104,24 @@ namespace SilphScope.Models.Core
                         break;
                 }
                 token.WaitHandle.WaitOne(_tickRate);
-                //}
-                //catch (Exception ex)
-                //{
-                //    {
-                //        OnMessage?.Invoke(this, new DebugMessage($"Error in ThreadLoop: {ex.Message}"));
-                //    }
-                //}
             }
         }
 
         private void UpdateGameData()
         {
-            //ScanForAnchor();
-            SilphContext context = new(_targetGame, _saveAddr, _processMemory.Read(_saveAddr, _targetGame.Layout.SaveSize));
-            List<Pokemon> party = _pkmnParser.ParseParty(context);
-            GameState gameState = new(null, party.ToArray(), null);
-            OnMessage?.Invoke(this, new GameStateUpdate(gameState));
-
-            //    catch (Exception ex)
-            //    {
-            //        OnMessage?.Invoke(this, new DebugMessage($"Memory read failed at 0x{_saveAddr:X}: {ex.Message}"));
-            //    }
-            //}
+            try
+            {
+                ScanForAnchor();
+                SilphContext context = new(_targetGame, _saveAddr, _processMemory.Read(_saveAddr, _targetGame.Layout.SaveSize));
+                Trainer trainer = _trainerParser.Parse(context);
+                List<Pokemon> party = _pkmnParser.ParseParty(context);
+                GameState gameState = new(null, party.ToArray(), null);
+                OnMessage?.Invoke(this, new GameStateUpdate(gameState));
+            }
+            catch (Exception ex)
+            {
+                OnMessage?.Invoke(this, new DebugMessage($"Error while reading game data: {ex.Message}"));
+            }
         }
 
         private void ScanForAnchor()

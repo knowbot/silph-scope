@@ -68,14 +68,12 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             throw new NotImplementedException();
         }
 
-        private ushort GetChecksum(ReadOnlySpan<ushort> words)
+        private bool IsValidData(ReadOnlySpan<byte> blockA, ReadOnlySpan<byte> blockB)
         {
-            uint sum = 0;
-            foreach (ushort word in words)
-            {
-                unchecked { sum += word; }
-            }
-            return (ushort)(sum & 0xFFFF);
+            ushort candidateSpecies = blockA.Read<ushort>();
+            return candidateSpecies < (ushort)Species.MAX_VALUE;
+
+
         }
 
         public override Pokemon Parse(ReadOnlySpan<byte> pkmnData)
@@ -91,10 +89,9 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             ReadOnlySpan<byte> blockA = blocks.AsSpan(_blockSize * order[0], 32);
             ReadOnlySpan<byte> blockB = blocks.AsSpan(_blockSize * order[1], 32);
 
-            ushort candidateSpecies = blockA.Read<ushort>();
-
-            // check if species is already decrypted
-            if (candidateSpecies >= (ushort)Species.MAX_VALUE)
+            bool isDecrypted = IsValidData(blockA, blockB);
+            // if false, attempt decryption
+            if (!isDecrypted)
             {
                 Span<ushort> words = MemoryMarshal.Cast<byte, ushort>(blocks);
                 long prng = checksum;
@@ -104,6 +101,8 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                     words[i] ^= (ushort)(prng >> 16);
                 }
             }
+            // TODO: decide what to do if check fails again
+
 
             // BLOCK A
             ushort species = blockA.Read<ushort>();
@@ -124,14 +123,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
 
             Move[] moves = ParseMoves(blockB);
             MoveSet moveSet = new(moves[0], moves[1], moves[2], moves[3]);
-            IVs ivs = new(
-                blockB.Read<byte>(0x10),
-                blockB.Read<byte>(0x11),
-                blockB.Read<byte>(0x12),
-                blockB.Read<byte>(0x13),
-                blockB.Read<byte>(0x14),
-                blockB.Read<byte>(0x15)
-            );
+            IVs ivs = ParseIVs(blockB);
 
             // BLOCK C
 
@@ -145,6 +137,31 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 ivs,
                 moveSet
                 );
+        }
+
+        protected EVs ParseEVs(ReadOnlySpan<byte> block)
+        {
+            return new(
+                block.Read<byte>(0x10),
+                block.Read<byte>(0x11),
+                block.Read<byte>(0x12),
+                block.Read<byte>(0x13),
+                block.Read<byte>(0x14),
+                block.Read<byte>(0x15)
+            );
+        }
+
+        protected IVs ParseIVs(ReadOnlySpan<byte> block)
+        {
+            uint ivs = block.Read<uint>(0x10);
+            return new(
+                (int)((ivs >> 0) & 0x1F),
+                (int)((ivs >> 5) & 0x1F),
+                (int)((ivs >> 10) & 0x1F),
+                (int)((ivs >> 20) & 0x1F),
+                (int)((ivs >> 25) & 0x1F),
+                (int)((ivs >> 15) & 0x1F)
+            );
         }
 
         protected override Move[] ParseMoves(ReadOnlySpan<byte> blockB)
