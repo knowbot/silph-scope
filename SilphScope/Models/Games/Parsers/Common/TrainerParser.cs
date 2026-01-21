@@ -9,7 +9,7 @@ namespace SilphScope.Models.Games.Parsers.Common
 {
     public class TrainerParser
     {
-        public static Trainer Parse(SilphContext context)
+        public Trainer Parse(SilphContext context)
         {
             ReadOnlySpan<byte> data = context.Data;
             IMemoryLayout layout = context.Game.Layout;
