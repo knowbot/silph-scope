@@ -100,7 +100,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 }
             }
             // TODO: decide what to do if check fails again
-            if (!IsValidData(blockA)) throw new InvalidFrameDataException($"Invalid Pokémon data.");
+            if (!IsValidData(blockA)) throw new ParserException($"Invalid Pokémon data.");
 
             // BLOCK A
             ushort species = blockA.Read<ushort>();

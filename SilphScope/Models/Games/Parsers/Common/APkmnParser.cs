@@ -22,11 +22,11 @@ namespace SilphScope.Models.Games.Parsers.Common
             {
                 GrowthRate.MediumFast => StaticData.ExpCurve.MediumFast,
                 GrowthRate.Erratic => StaticData.ExpCurve.Erratic,
-                GrowthRate.Fluctuating => StaticData.ExpCurve.MediumFast,
-                GrowthRate.MediumSlow => StaticData.ExpCurve.MediumFast,
-                GrowthRate.Fast => StaticData.ExpCurve.MediumFast,
-                GrowthRate.Slow => StaticData.ExpCurve.MediumFast,
-                _ => throw new ArgumentException("Invalid growth rate")
+                GrowthRate.Fluctuating => StaticData.ExpCurve.Fluctuating,
+                GrowthRate.MediumSlow => StaticData.ExpCurve.MediumSlow,
+                GrowthRate.Fast => StaticData.ExpCurve.Fast,
+                GrowthRate.Slow => StaticData.ExpCurve.Slow,
+                _ => throw new ParserException("Invalid growth rate")
             };
             if (experience >= expTable[99]) return new(100, expTable[99]);
             int level = expTable.BinarySearch(experience);
