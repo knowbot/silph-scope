@@ -136,9 +136,9 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 block.Read<byte>(0x10),
                 block.Read<byte>(0x11),
                 block.Read<byte>(0x12),
-                block.Read<byte>(0x13),
                 block.Read<byte>(0x14),
-                block.Read<byte>(0x15)
+                block.Read<byte>(0x15),
+                block.Read<byte>(0x13)
             );
         }
 
