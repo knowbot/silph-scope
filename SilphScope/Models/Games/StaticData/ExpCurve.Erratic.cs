@@ -8,7 +8,6 @@ namespace SilphScope.Models.Games.StaticData
     {
         public static ReadOnlySpan<uint> Erratic => new uint[]
         {
-            0,
             15,
             52,
             122,

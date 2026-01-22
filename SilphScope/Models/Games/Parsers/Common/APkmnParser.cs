@@ -28,14 +28,9 @@ namespace SilphScope.Models.Games.Parsers.Common
                 GrowthRate.Slow => StaticData.ExpCurve.MediumFast,
                 _ => throw new ArgumentException("Invalid growth rate")
             };
-
+            if (experience >= expTable[99]) return new(100, expTable[99]);
             int level = expTable.BinarySearch(experience);
-            if (level >= 0)
-            {
-                level += 1;
-                return new((byte)level, level >= 100 ? 0 : expTable[level]);
-            }
-            level = ~level - 1;
+            level = level < 0 ? ~level : level + 1;
             return new((byte)level, expTable[level]);
         }
     }

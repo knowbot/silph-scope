@@ -18,7 +18,6 @@ namespace SilphScope.Models.Games.Parsers.Gen4
         private const int _battleStats = 100;
         private const int _blockSize = 32;
 
-        // From https://bulbapedia.bulbagarden.net/wiki/Pok%C3%A9mon_data_structure_(Generation_IV)#Block_shuffling
         private static ReadOnlySpan<byte> BlockUnshuffle =>
             [
                 0, 1, 2, 3, //00 ABCD
@@ -68,7 +67,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             throw new NotImplementedException();
         }
 
-        private bool IsValidData(ReadOnlySpan<byte> blockA, ReadOnlySpan<byte> blockB)
+        private bool IsValidData(ReadOnlySpan<byte> blockA)
         {
             ushort candidateSpecies = blockA.Read<ushort>();
             EVs candidateEVs = ParseEVs(blockA);
@@ -88,7 +87,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             ReadOnlySpan<byte> blockA = blocks.AsSpan(_blockSize * order[0], 32);
             ReadOnlySpan<byte> blockB = blocks.AsSpan(_blockSize * order[1], 32);
 
-            bool isDecrypted = IsValidData(blockA, blockB);
+            bool isDecrypted = IsValidData(blockA);
             // if false, attempt decryption
             if (!isDecrypted)
             {
@@ -101,7 +100,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 }
             }
             // TODO: decide what to do if check fails again
-
+            if (!IsValidData(blockA)) throw new InvalidFrameDataException($"Invalid Pokémon data.");
 
             // BLOCK A
             ushort species = blockA.Read<ushort>();

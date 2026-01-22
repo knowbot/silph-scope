@@ -8,7 +8,6 @@ namespace SilphScope.Models.Games.StaticData
     {
         public static ReadOnlySpan<uint> MediumFast => new uint[]
         {
-            0,
             8,
             27,
             64,
