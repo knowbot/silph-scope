@@ -58,7 +58,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             for (int i = 0; i < partyCount; i++)
             {
                 int pkmnAddr = layout.Party + (i * PartyPkmnSize());
-                party[i] = this.Parse(data[pkmnAddr..]);
+                party[i] = Parse(data[pkmnAddr..]);
             }
             return [.. party];
         }
@@ -73,8 +73,6 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             ushort candidateSpecies = blockA.Read<ushort>();
             EVs candidateEVs = ParseEVs(blockA);
             return candidateSpecies < (ushort)Species.MAX_VALUE && candidateEVs.IsValid();
-
-
         }
 
         public override Pokemon Parse(ReadOnlySpan<byte> pkmnData)
