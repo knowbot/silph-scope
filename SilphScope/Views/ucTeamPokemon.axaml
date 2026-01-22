@@ -9,9 +9,23 @@
 			 x:DataType="vm:PokemonViewModel"
 			 ClipToBounds="False">
 	<Border Background="White" Classes="CardClass" HorizontalAlignment="Stretch">
-		<StackPanel Orientation="Horizontal">
-			<Image Source="{Binding Sprite}"/>
-			<TextBlock Text="{Binding Name}"/>
-		</StackPanel>
+		<DockPanel>
+			<!-- Sprite -->
+			<Image DockPanel.Dock="Left" Source="{Binding Sprite}" Height="96" RenderOptions.BitmapInterpolationMode="None"/>
+
+			<!-- Everything but sprite. -->
+			<StackPanel x:Name="spDetails" VerticalAlignment="Center">
+				<DockPanel>
+					<TextBlock DockPanel.Dock="Left" Text="{Binding Name}" VerticalAlignment="Center" Margin="16 0 0 0"/>
+					<TextBlock DockPanel.Dock="Right" Text="{Binding Level, StringFormat={}Lv. {0}}" VerticalAlignment="Center" Margin="0 0 16 0"/>
+					<Rectangle/>
+				</DockPanel>
+
+				<StackPanel Margin="16 16 16 0" Spacing="8">
+					<ProgressBar Minimum="0" Maximum="100" Value="100" Height="4" Foreground="Green"/>
+					<ProgressBar Minimum="0" Maximum="{Binding ExpToNext}" Value="{Binding Exp}" Height="4" Foreground="CornflowerBlue"/>
+				</StackPanel>
+			</StackPanel>
+		</DockPanel>
 	</Border>
 </UserControl>
