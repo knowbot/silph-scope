@@ -115,7 +115,7 @@ namespace SilphScope.Models.Core
                 SilphContext context = new(_targetGame, _saveAddr, _processMemory.Read(_saveAddr, _targetGame.Layout.SaveSize));
                 Trainer trainer = _trainerParser.Parse(context);
                 List<Pokemon> party = _pkmnParser.ParseParty(context);
-                GameState gameState = new(null, party.ToArray(), null);
+                FrameData gameState = new(null, party.ToArray(), null);
                 OnMessage?.Invoke(this, new GameStateUpdate(gameState));
             }
             catch (Exception ex)

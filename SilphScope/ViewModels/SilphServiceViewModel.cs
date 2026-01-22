@@ -7,7 +7,7 @@ namespace SilphScope.ViewModels
 {
     public partial class SilphServiceViewModel : ViewModelBase
     {
-        public delegate void GameStateUpdateHandler(SilphServiceViewModel sender, GameState state);
+        public delegate void GameStateUpdateHandler(SilphServiceViewModel sender, FrameData state);
         public event GameStateUpdateHandler? GameStateUpdated;
         public delegate void SilphStateChangedHandler(SilphServiceViewModel sender, SilphState state);
         public event SilphStateChangedHandler? SilphStateChanged;

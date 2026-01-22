@@ -28,12 +28,12 @@ public partial class MainWindowViewModel : ViewModelBase
 		SettingsTab = new(Service);
 	}
 
-	private void Service_GameStateUpdated(SilphServiceViewModel sender, GameState state)
+	private void Service_GameStateUpdated(SilphServiceViewModel sender, FrameData state)
 	{
 		Dispatcher.UIThread.Post(() => UpdateGameState(state));
 	}
 
-	private void UpdateGameState(GameState state)
+	private void UpdateGameState(FrameData state)
 	{
 		// Update (each tab will optimize its own operations).
 		TeamTab.UpdateGameState(state.Team);
