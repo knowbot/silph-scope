@@ -8,6 +8,11 @@
 			 x:Class="SilphScope.ucTeam"
 			 x:DataType="vm:TeamViewModel">
 	<ListBox ItemsSource="{Binding Members}" SelectedItem="{Binding Selected}" Background="Transparent">
+		<ListBox.ItemsPanel>
+			<ItemsPanelTemplate>
+				<UniformGrid Columns="1"/>
+			</ItemsPanelTemplate>
+		</ListBox.ItemsPanel>
 		<ListBox.ItemTemplate>
 			<DataTemplate x:DataType="vm:PokemonViewModel">
 				<local:ucTeamPokemon/>

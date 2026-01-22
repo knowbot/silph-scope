@@ -15,6 +15,15 @@ namespace SilphScope.ViewModels
 		[ObservableProperty]
 		private Bitmap? _Sprite;
 
+		[ObservableProperty]
+		private int _Level;
+
+		[ObservableProperty]
+		private int _ExpToNext;
+
+		[ObservableProperty]
+		private int _Exp;
+
 		public void UpdateGameState(Pokemon? pokemon)
 		{
 			if (pokemon == null)
@@ -24,11 +33,13 @@ namespace SilphScope.ViewModels
 			}
 
 			Name = pokemon.Species.ToString();
+			Level = pokemon.Level.Current;
+			ExpToNext = (int)pokemon.Level.ExpToNext;
+			Exp = (int)pokemon.Exp;
 
 			// Ask for asynchronous sprite loading.
-			Task<SpriteLoadResult> task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
-
 			// When sprite has been loaded, go back to UI thread to update UI.
+			Task<SpriteLoadResult> task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
 			task.ContinueWith(task => Dispatcher.UIThread.Post(() => Sprite = task.Result.Result));
 		}
 	}
