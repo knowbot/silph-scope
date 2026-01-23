@@ -116,7 +116,6 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             IVs ivs = ParseIVs(blockB);
 
             // BLOCK C
-
             return new Pokemon(
                 (Species)species,
                 exp,
@@ -129,7 +128,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 );
         }
 
-        protected EVs ParseEVs(ReadOnlySpan<byte> block)
+        protected override EVs ParseEVs(ReadOnlySpan<byte> block)
         {
             return new(
                 block.Read<byte>(0x10),
@@ -141,7 +140,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             );
         }
 
-        protected IVs ParseIVs(ReadOnlySpan<byte> block)
+        protected override IVs ParseIVs(ReadOnlySpan<byte> block)
         {
             uint ivs = block.Read<uint>(0x10);
             return new(

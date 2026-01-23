@@ -13,6 +13,8 @@ namespace SilphScope.Models.Games.Parsers.Common
         public abstract List<Pokemon> ParseParty(SilphContext context);
         public abstract Pokemon Parse(ReadOnlySpan<byte> pkmnData);
         protected abstract Move[] ParseMoves(ReadOnlySpan<byte> blockB);
+        protected abstract EVs ParseEVs(ReadOnlySpan<byte> block);
+        protected abstract IVs ParseIVs(ReadOnlySpan<byte> block);
 
         public virtual Level GetLevel(ushort species, uint experience)
         {
@@ -28,10 +30,13 @@ namespace SilphScope.Models.Games.Parsers.Common
                 GrowthRate.Slow => StaticData.ExpCurve.Slow,
                 _ => throw new ParserException("Invalid growth rate")
             };
-            if (experience >= expTable[99]) return new(100, expTable[99]);
+            if (experience >= expTable[^1]) return new(100, 0, 0);
             int level = expTable.BinarySearch(experience);
             level = level < 0 ? ~level : level + 1;
-            return new((byte)level, expTable[level]);
+            if (level <= 1) return new(1, experience, expTable[0]);
+            uint progress = experience - expTable[level - 1];
+            uint toNext = expTable[level] - expTable[level - 1];
+            return new((byte)(level + 1), progress, toNext);
         }
     }
 }
