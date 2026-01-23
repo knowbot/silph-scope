@@ -10,12 +10,12 @@ namespace SilphScope.Models.Games.Parsers.Common
     public abstract class APkmnParser
     {
         public abstract List<Pokemon> ParseBoxes(SilphContext context);
-        public abstract List<Pokemon> ParseParty(SilphContext context);
         public abstract Pokemon Parse(ReadOnlySpan<byte> pkmnData);
         protected abstract Move[] ParseMoves(ReadOnlySpan<byte> blockB);
         protected abstract EVs ParseEVs(ReadOnlySpan<byte> block);
         protected abstract IVs ParseIVs(ReadOnlySpan<byte> block);
-
+        public abstract int GetBoxPkmnSize();
+        public abstract int GetPartyPkmnSize();
         public virtual Level GetLevel(ushort species, uint experience)
         {
             GrowthRate growRate = (GrowthRate)StaticData.SpeciesData.GrowRate[(int)species];

@@ -1,6 +1,5 @@
 ﻿using SilphScope.Models.Core;
 using SilphScope.Models.Extensions;
-using SilphScope.Models.Games.MemoryLayouts;
 using SilphScope.Models.Games.Parsers.Common;
 using SilphScope.Models.Games.State.Common;
 using SilphScope.Models.Games.State.Common.PkmnInfo;
@@ -14,7 +13,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
     public class Gen4PkmnParser : APkmnParser
     {
         private const int _unencryptedSize = 8;
-        private const int _pkmnSize = 128;
+        private const int _encryptedSize = 128;
         private const int _battleStats = 100;
         private const int _blockSize = 32;
 
@@ -45,22 +44,8 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 2, 3, 1, 0, //22 CDBA
                 3, 2, 1, 0  //23 DCBA
             ];
-        private static int PartyPkmnSize() => _unencryptedSize + _pkmnSize + _battleStats;
-        private static int BoxPkmnSize() => _unencryptedSize + _pkmnSize;
-
-        public override List<Pokemon> ParseParty(SilphContext context)
-        {
-            ReadOnlySpan<byte> data = context.Data;
-            IMemoryLayout layout = context.Game.Layout;
-            byte partyCount = data.Read<byte>(layout.PartyCount);
-            Pokemon[] party = new Pokemon[partyCount];
-            for (int i = 0; i < partyCount; i++)
-            {
-                int pkmnAddr = layout.Party + (i * PartyPkmnSize());
-                party[i] = Parse(data[pkmnAddr..]);
-            }
-            return [.. party];
-        }
+        private static int PartyPkmnSize() => _unencryptedSize + _encryptedSize + _battleStats;
+        private static int BoxPkmnSize() => _unencryptedSize + _encryptedSize;
 
         public override List<Pokemon> ParseBoxes(SilphContext context)
         {
@@ -79,7 +64,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             uint pId = pkmnData.Read<uint>();
             ushort checksum = pkmnData.Read<ushort>(0x6);
             // copy over the ABCD blocks to decrypt in-place
-            byte[] blocks = pkmnData.Slice(0x8, _pkmnSize).ToArray();
+            byte[] blocks = pkmnData.Slice(0x8, _encryptedSize).ToArray();
 
             // unshuffle blocks
             uint shift = ((pId & 0x3E000) >> 0xD) % 24;
@@ -166,5 +151,8 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             }
             return moves;
         }
+
+        public override int GetPartyPkmnSize() => _unencryptedSize + _encryptedSize + _battleStats;
+        public override int GetBoxPkmnSize() => _unencryptedSize + _encryptedSize;
     }
 }
