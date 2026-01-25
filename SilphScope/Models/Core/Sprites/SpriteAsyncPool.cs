@@ -21,7 +21,7 @@ namespace SilphScope.Models.Core.Sprites
 
 		private SpriteAsyncPool()
 		{
-			_thread = new Thread(ThreadLoop) { IsBackground = true };
+			_thread = new Thread(ThreadLoop) { IsBackground = true, Name = GetType().Name };
 			_thread.Start();
 		}
 

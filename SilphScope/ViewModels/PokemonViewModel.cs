@@ -13,6 +13,9 @@ namespace SilphScope.ViewModels
         private string? _Name;
 
         [ObservableProperty]
+        private string? _Gender;
+
+        [ObservableProperty]
         private Bitmap? _Sprite;
 
         [ObservableProperty]
@@ -26,7 +29,11 @@ namespace SilphScope.ViewModels
 
         [ObservableProperty]
         private int _LevelToNext;
+
         public int ExpBarLength => LevelProgress + LevelToNext;
+
+        [ObservableProperty]
+        private PokeballViewModel? _Pokeball;
 
         public void UpdateGameState(Pkmn? pokemon)
         {
@@ -36,7 +43,8 @@ namespace SilphScope.ViewModels
                 return;
             }
 
-            Name = pokemon.Species.ToString();
+            Name = string.IsNullOrEmpty(pokemon.Nickname) ? pokemon.Species.ToString() : pokemon.Nickname;
+            Gender = "???";
             Level = pokemon.Level.Current;
             LevelProgress = (int)pokemon.Level.Progress;
             LevelToNext = (int)pokemon.Level.ToNext;

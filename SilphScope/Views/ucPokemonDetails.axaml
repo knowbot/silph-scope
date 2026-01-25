@@ -1,8 +1,29 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SilphScope.ucPokemonDetails">
-  Welcome to Avalonia!
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
+			 xmlns:local="clr-namespace:SilphScope"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="SilphScope.ucPokemonDetails"
+			 x:DataType="vm:PokemonViewModel">
+	<Design.DataContext>
+		<vm:PokemonViewModel/>
+	</Design.DataContext>
+
+	<StackPanel>
+		<!-- Name, gender, level -->
+		<DockPanel>
+			<TextBlock DockPanel.Dock="Left" Text="{Binding Name}" Margin="16 16 8 16"/>
+			<TextBlock DockPanel.Dock="Left" Text="{Binding Gender}" Margin="0 16 0 16"/>
+			<TextBlock DockPanel.Dock="Right" Text="{Binding Level, StringFormat={}Lv. {0}}" Margin="0 16 16 16"/>
+			<Rectangle/>
+		</DockPanel>
+
+		<!-- TODO: Pokeball in the corner -->
+		<Panel HorizontalAlignment="Stretch">
+			<Image Source="{Binding Sprite}" HorizontalAlignment="Stretch" RenderOptions.BitmapInterpolationMode="None"/>
+			<Image Source="{Binding Pokeball.Sprite}" HorizontalAlignment="Left" VerticalAlignment="Bottom" RenderOptions.BitmapInterpolationMode="None"/> 
+		</Panel>
+	</StackPanel>
 </UserControl>
