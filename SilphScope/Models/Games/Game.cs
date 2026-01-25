@@ -14,7 +14,7 @@ namespace SilphScope.Models.Games
         public IMemoryLayout Layout = Layout;
 
         public static readonly IReadOnlyList<Game> Supported = [
-                    new Game("Pokémon Platinum (U)", "CPUE", "avares://SilphScope/Assets/Images/GameIcons/NDS/Platinum_icon.png", 4, new PtLayout()),
+            new Game("Pokémon Platinum (U)", "CPUE", "avares://SilphScope/Assets/Images/GameIcons/NDS/Platinum_icon.png", 4, new PtLayout()),
         ];
     }
 }

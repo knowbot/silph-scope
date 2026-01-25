@@ -27,7 +27,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 boxes[i] = new(name, new Pkmn?[_pkmnPerBox]);
                 for (int j = 0; j < _pkmnPerBox; j++)
                 {
-                    boxes[i].Slots[j] = pkmnParser.Parse(data[(layout.BoxPokemon + (pkmnSize * j) + (boxSize * i))..]);
+                    boxes[i].Slots[j] = pkmnParser.Parse(data[(layout.BoxPokemon + (pkmnSize * j) + (boxSize * i))..], false);
                 }
             }
             return boxes;

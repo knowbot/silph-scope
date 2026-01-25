@@ -4,15 +4,15 @@ using System;
 
 namespace SilphScope.Models.Games.Parsers.Common
 {
-    public class StatCalc
+    public class StatsCalc
     {
         public static Stats GetStats(Species species, IVs ivs, EVs evs, int level, Nature nature)
         {
             int[] stats = new int[6];
-            stats[0] = HPFormula(StaticData.SpeciesData.BaseStats[(int)species * 6], ivs[0], evs[0], level);
+            stats[0] = species == Species.Shedinja ? 1 : HPFormula(StaticData.SpeciesData.BaseStats[(int)species * 6], ivs[0], evs[0], level);
             int incStat = (int)nature / 5;
             int decStat = (int)nature % 5;
-            Span<float> natMults = stackalloc float[5] { 1.0f, 1.0f, 1.0f, 1.0f, 1.0f };
+            Span<float> natMults = [1.0f, 1.0f, 1.0f, 1.0f, 1.0f];
             if (incStat != decStat)
             {
                 natMults[incStat] = 1.1f;

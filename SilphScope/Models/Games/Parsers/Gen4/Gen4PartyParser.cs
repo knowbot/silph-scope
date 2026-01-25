@@ -19,7 +19,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             for (int i = 0; i < partyCount; i++)
             {
                 int pkmnAddr = layout.Party + (i * pkmnParser.GetPartyPkmnSize());
-                Pkmn? pkmn = pkmnParser.Parse(data[pkmnAddr..]);
+                Pkmn? pkmn = pkmnParser.Parse(data[pkmnAddr..], true);
                 if (pkmn != null) party[i] = pkmn;
             }
             return party;

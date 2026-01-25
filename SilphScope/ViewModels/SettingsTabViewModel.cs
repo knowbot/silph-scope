@@ -42,7 +42,7 @@ namespace SilphScope.ViewModels
 
             foreach (Process process in newProcesses)
             {
-                if (!currPids.Contains(process.Id))
+                if (!currPids.Contains(process.Id) && process.ProcessName.Contains("desmume", System.StringComparison.OrdinalIgnoreCase))
                 {
                     Processes.Add(new ProcessViewModel(process));
                 }
@@ -59,6 +59,7 @@ namespace SilphScope.ViewModels
             Service = silphService;
             RefreshProcesses();
             SupportedGames = [.. Game.Supported.Select(g => new GameViewModel(g))];
+            Service.TargetGame = SupportedGames.FirstOrDefault();
         }
     }
 }
