@@ -12,9 +12,8 @@ public partial class MainWindowViewModel : ViewModelBase
 	public BoxTabViewModel BoxTab { get; }
 
 	public SettingsTabViewModel SettingsTab { get; }
-	public SilphServiceViewModel Service => _service;
-	private readonly SilphServiceViewModel _service;
 
+	public SilphServiceViewModel Service { get; }
 
 	public MainWindowViewModel()
 	{
@@ -23,7 +22,7 @@ public partial class MainWindowViewModel : ViewModelBase
 		BoxTab = new();
 
 		// Initialize service and settings tab (which references service).
-		_service = new SilphServiceViewModel();
+		Service = new SilphServiceViewModel();
 		Service.GameStateUpdated += Service_GameStateUpdated;
 		SettingsTab = new(Service);
 	}
