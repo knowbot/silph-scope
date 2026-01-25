@@ -20,10 +20,17 @@
 			<Rectangle/>
 		</DockPanel>
 
-		<!-- TODO: Pokeball in the corner -->
 		<Panel HorizontalAlignment="Stretch">
+			<!-- Main sprite -->
 			<Image Source="{Binding Sprite}" HorizontalAlignment="Stretch" RenderOptions.BitmapInterpolationMode="None"/>
-			<Image Source="{Binding Pokeball.Sprite}" HorizontalAlignment="Left" VerticalAlignment="Bottom" RenderOptions.BitmapInterpolationMode="None"/> 
+			
+			<!-- Pokeball -->
+			<Image Source="{Binding Pokeball.Sprite}" HorizontalAlignment="Left" VerticalAlignment="Bottom" RenderOptions.BitmapInterpolationMode="None"/>
+			
+			<!-- Held item -->
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+				<TextBlock Text="{Binding HeldItem.Name}"/>
+			</StackPanel>
 		</Panel>
 	</StackPanel>
 </UserControl>

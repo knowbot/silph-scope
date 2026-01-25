@@ -1,0 +1,23 @@
+﻿using Avalonia.Media.Imaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Extensions;
+using SilphScope.Models.Games.StaticData.Enums;
+
+namespace SilphScope.ViewModels
+{
+	public partial class HeldItemViewModel : ViewModelBase
+	{
+		[ObservableProperty]
+		private string? _Name;
+
+		[ObservableProperty]
+		private Bitmap? _Sprite;
+
+		public HeldItemViewModel() { }
+
+		public void UpdateGameState(ItemName item)
+		{
+			Name = item.GetName();
+		}
+	}
+}

@@ -7,53 +7,56 @@ using System.Threading.Tasks;
 
 namespace SilphScope.ViewModels
 {
-    public partial class PokemonViewModel : ViewModelBase
-    {
-        [ObservableProperty]
-        private string? _Name;
+	public partial class PokemonViewModel : ViewModelBase
+	{
+		[ObservableProperty]
+		private string? _Name;
 
-        [ObservableProperty]
-        private string? _Gender;
+		[ObservableProperty]
+		private string? _Gender;
 
-        [ObservableProperty]
-        private Bitmap? _Sprite;
+		[ObservableProperty]
+		private Bitmap? _Sprite;
 
-        [ObservableProperty]
-        private int _Exp;
+		[ObservableProperty]
+		private int _Exp;
 
-        [ObservableProperty]
-        private int _Level;
+		[ObservableProperty]
+		private int _Level;
 
-        [ObservableProperty]
-        private int _LevelProgress;
+		[ObservableProperty]
+		private int _LevelProgress;
 
-        [ObservableProperty]
-        private int _LevelToNext;
+		[ObservableProperty]
+		private int _LevelToNext;
 
-        public int ExpBarLength => LevelProgress + LevelToNext;
+		public int ExpBarLength => LevelProgress + LevelToNext;
 
-        [ObservableProperty]
-        private PokeballViewModel? _Pokeball;
+		[ObservableProperty]
+		private PokeballViewModel? _Pokeball;
 
-        public void UpdateGameState(Pkmn? pokemon)
-        {
-            if (pokemon == null)
-            {
-                Name = string.Empty;
-                return;
-            }
+		public HeldItemViewModel HeldItem { get; } = new();
 
-            Name = string.IsNullOrEmpty(pokemon.Nickname) ? pokemon.Species.ToString() : pokemon.Nickname;
-            Gender = "???";
-            Level = pokemon.Level.Current;
-            LevelProgress = (int)pokemon.Level.Progress;
-            LevelToNext = (int)pokemon.Level.ToNext;
-            Exp = (int)pokemon.Exp;
+		public void UpdateGameState(Pkmn? pokemon)
+		{
+			if (pokemon == null)
+			{
+				Name = string.Empty;
+				return;
+			}
 
-            // Ask for asynchronous sprite loading.
-            // When sprite has been loaded, go back to UI thread to update UI.
-            Task<SpriteLoadResult> task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
-            task.ContinueWith(task => Dispatcher.UIThread.Post(() => Sprite = task.Result.Result));
-        }
-    }
+			Name = string.IsNullOrEmpty(pokemon.Nickname) ? pokemon.Species.ToString() : pokemon.Nickname;
+			Gender = "???";
+			Level = pokemon.Level.Current;
+			LevelProgress = (int)pokemon.Level.Progress;
+			LevelToNext = (int)pokemon.Level.ToNext;
+			Exp = (int)pokemon.Exp;
+			HeldItem.UpdateGameState(pokemon.HeldItem);
+
+			// Ask for asynchronous sprite loading.
+			// When sprite has been loaded, go back to UI thread to update UI.
+			Task<SpriteLoadResult> task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
+			task.ContinueWith(task => Dispatcher.UIThread.Post(() => Sprite = task.Result.Result));
+		}
+	}
 }

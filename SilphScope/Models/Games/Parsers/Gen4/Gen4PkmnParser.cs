@@ -2,22 +2,23 @@
 using SilphScope.Models.Games.Parsers.Common;
 using SilphScope.Models.Games.State.Common;
 using SilphScope.Models.Games.State.Common.PkmnInfo;
+using SilphScope.Models.Games.StaticData;
 using SilphScope.Models.Games.StaticData.Enums;
 using System;
 using System.Runtime.InteropServices;
 
 namespace SilphScope.Models.Games.Parsers.Gen4
 {
-    public class Gen4PkmnParser : APkmnParser
-    {
-        private const int _unencryptedSize = 8;
-        private const int _encryptedSize = 128;
-        private const int _battleStats = 100;
-        private const int _blockSize = 32;
+	public class Gen4PkmnParser : APkmnParser
+	{
+		private const int _unencryptedSize = 8;
+		private const int _encryptedSize = 128;
+		private const int _battleStats = 100;
+		private const int _blockSize = 32;
 
-        private static ReadOnlySpan<byte> BlockUnshuffle =>
-            [
-                0, 1, 2, 3, //00 ABCD
+		private static ReadOnlySpan<byte> BlockUnshuffle =>
+			[
+				0, 1, 2, 3, //00 ABCD
                 0, 1, 3, 2, //01 ABDC
                 0, 2, 1, 3, //02 ACBD
                 0, 3, 1, 2, //03 ADBC
@@ -42,117 +43,118 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 2, 3, 1, 0, //22 CDBA
                 3, 2, 1, 0  //23 DCBA
             ];
-        private static int PartyPkmnSize() => _unencryptedSize + _encryptedSize + _battleStats;
-        private static int BoxPkmnSize() => _unencryptedSize + _encryptedSize;
+		private static int PartyPkmnSize() => _unencryptedSize + _encryptedSize + _battleStats;
+		private static int BoxPkmnSize() => _unencryptedSize + _encryptedSize;
 
-        private bool IsValidData(ReadOnlySpan<byte> blockA)
-        {
-            ushort candidateSpecies = blockA.Read<ushort>();
-            EVs candidateEVs = ParseEVs(blockA);
-            return candidateSpecies < (ushort)Species.MAX_VALUE && candidateEVs.IsValid();
-        }
+		private bool IsValidData(ReadOnlySpan<byte> blockA)
+		{
+			ushort candidateSpecies = blockA.Read<ushort>();
+			EVs candidateEVs = ParseEVs(blockA);
+			return candidateSpecies < (ushort)Species.MAX_VALUE && candidateEVs.IsValid();
+		}
 
-        public override Pkmn? Parse(ReadOnlySpan<byte> pkmnData)
-        {
-            uint pId = pkmnData.Read<uint>();
-            if (pId == 0) return null;
-            ushort checksum = pkmnData.Read<ushort>(0x6);
-            // copy over the ABCD blocks to decrypt in-place
-            byte[] blocks = pkmnData.Slice(0x8, _encryptedSize).ToArray();
+		public override Pkmn? Parse(ReadOnlySpan<byte> pkmnData)
+		{
+			uint pId = pkmnData.Read<uint>();
+			if (pId == 0) return null;
+			ushort checksum = pkmnData.Read<ushort>(0x6);
+			// copy over the ABCD blocks to decrypt in-place
+			byte[] blocks = pkmnData.Slice(0x8, _encryptedSize).ToArray();
 
-            // unshuffle blocks
-            uint shift = ((pId & 0x3E000) >> 0xD) % 24;
-            ReadOnlySpan<byte> order = BlockUnshuffle.Slice((int)shift * 4, 4);
-            ReadOnlySpan<byte> blockA = blocks.AsSpan(_blockSize * order[0], 32);
-            ReadOnlySpan<byte> blockB = blocks.AsSpan(_blockSize * order[1], 32);
+			// unshuffle blocks
+			uint shift = ((pId & 0x3E000) >> 0xD) % 24;
+			ReadOnlySpan<byte> order = BlockUnshuffle.Slice((int)shift * 4, 4);
+			ReadOnlySpan<byte> blockA = blocks.AsSpan(_blockSize * order[0], 32);
+			ReadOnlySpan<byte> blockB = blocks.AsSpan(_blockSize * order[1], 32);
 
-            bool isDecrypted = IsValidData(blockA);
-            // if false, attempt decryption
-            if (!isDecrypted)
-            {
-                Span<ushort> words = MemoryMarshal.Cast<byte, ushort>(blocks);
-                long prng = checksum;
-                for (int i = 0; i < words.Length; i++)
-                {
-                    prng = ((0x41C64E6D * prng) + 0x6073) & 0xFFFFFFFF;
-                    words[i] ^= (ushort)(prng >> 16);
-                }
-            }
-            // TODO: decide what to do if check fails again
-            if (!IsValidData(blockA)) throw new ParserException($"Invalid Pokémon data.");
+			bool isDecrypted = IsValidData(blockA);
+			// if false, attempt decryption
+			if (!isDecrypted)
+			{
+				Span<ushort> words = MemoryMarshal.Cast<byte, ushort>(blocks);
+				long prng = checksum;
+				for (int i = 0; i < words.Length; i++)
+				{
+					prng = ((0x41C64E6D * prng) + 0x6073) & 0xFFFFFFFF;
+					words[i] ^= (ushort)(prng >> 16);
+				}
+			}
+			// TODO: decide what to do if check fails again
+			if (!IsValidData(blockA)) throw new ParserException($"Invalid Pokémon data.");
 
-            // BLOCK A
-            ushort species = blockA.Read<ushort>();
-            ushort heldItem = blockA.Read<ushort>(0x2);
-            uint exp = blockA.Read<uint>(0x8);
-            byte friendship = blockA.Read<byte>(0xC);
-            byte ability = blockA.Read<byte>(0xD);
-            EVs evs = ParseEVs(blockA);
+			// BLOCK A
+			ushort species = blockA.Read<ushort>();
+			ushort heldItem = blockA.Read<ushort>(0x2);
+			uint exp = blockA.Read<uint>(0x8);
+			byte friendship = blockA.Read<byte>(0xC);
+			byte ability = blockA.Read<byte>(0xD);
+			EVs evs = ParseEVs(blockA);
 
-            // BLOCK B
-            Move[] moves = ParseMoves(blockB);
-            MoveSet moveSet = new(moves[0], moves[1], moves[2], moves[3]);
-            IVs ivs = ParseIVs(blockB);
+			// BLOCK B
+			Move[] moves = ParseMoves(blockB);
+			MoveSet moveSet = new(moves[0], moves[1], moves[2], moves[3]);
+			IVs ivs = ParseIVs(blockB);
 
+			// BLOCK C
+			Level level = GetLevel(species, exp);
+			Stats stats = StatCalc.GetStats((Species)species, ivs, evs, level.Current, Nature.Hardy);
 
-            // BLOCK C
-            Level level = GetLevel(species, exp);
-            Stats stats = StatCalc.GetStats((Species)species, ivs, evs, level.Current, Nature.Hardy);
-            return new Pkmn(
-                (Species)species,
-                exp,
-                GetLevel(species, exp),
-                friendship,
-                (Ability)ability,
-                evs,
-                ivs,
-                stats,
-                moveSet,
-                false,
-                ""
-                );
-        }
+			return new Pkmn(
+				(Species)species,
+				ItemTables.Gen4Plus[heldItem],
+				exp,
+				GetLevel(species, exp),
+				friendship,
+				(Ability)ability,
+				evs,
+				ivs,
+				stats,
+				moveSet,
+				false,
+				""
+				);
+		}
 
-        protected override EVs ParseEVs(ReadOnlySpan<byte> block)
-        {
-            return new(
-                block.Read<byte>(0x10),
-                block.Read<byte>(0x11),
-                block.Read<byte>(0x12),
-                block.Read<byte>(0x14),
-                block.Read<byte>(0x15),
-                block.Read<byte>(0x13)
-            );
-        }
+		protected override EVs ParseEVs(ReadOnlySpan<byte> block)
+		{
+			return new(
+				block.Read<byte>(0x10),
+				block.Read<byte>(0x11),
+				block.Read<byte>(0x12),
+				block.Read<byte>(0x14),
+				block.Read<byte>(0x15),
+				block.Read<byte>(0x13)
+			);
+		}
 
-        protected override IVs ParseIVs(ReadOnlySpan<byte> block)
-        {
-            uint ivs = block.Read<uint>(0x10);
-            return new(
-                (int)((ivs >> 0) & 0x1F),
-                (int)((ivs >> 5) & 0x1F),
-                (int)((ivs >> 10) & 0x1F),
-                (int)((ivs >> 20) & 0x1F),
-                (int)((ivs >> 25) & 0x1F),
-                (int)((ivs >> 15) & 0x1F)
-            );
-        }
+		protected override IVs ParseIVs(ReadOnlySpan<byte> block)
+		{
+			uint ivs = block.Read<uint>(0x10);
+			return new(
+				(int)((ivs >> 0) & 0x1F),
+				(int)((ivs >> 5) & 0x1F),
+				(int)((ivs >> 10) & 0x1F),
+				(int)((ivs >> 20) & 0x1F),
+				(int)((ivs >> 25) & 0x1F),
+				(int)((ivs >> 15) & 0x1F)
+			);
+		}
 
-        protected override Move[] ParseMoves(ReadOnlySpan<byte> blockB)
-        {
-            Move[] moves = new Move[4];
-            for (int i = 0; i < 4; i++)
-            {
-                moves[i] = new(
-                    (MoveName)blockB.Read<ushort>(i * 0x2),
-                    blockB.Read<byte>(0x8 + i),
-                    blockB.Read<byte>(0xC + i)
-                    );
-            }
-            return moves;
-        }
+		protected override Move[] ParseMoves(ReadOnlySpan<byte> blockB)
+		{
+			Move[] moves = new Move[4];
+			for (int i = 0; i < 4; i++)
+			{
+				moves[i] = new(
+					(MoveName)blockB.Read<ushort>(i * 0x2),
+					blockB.Read<byte>(0x8 + i),
+					blockB.Read<byte>(0xC + i)
+					);
+			}
+			return moves;
+		}
 
-        public override int GetPartyPkmnSize() => _unencryptedSize + _encryptedSize + _battleStats;
-        public override int GetBoxPkmnSize() => _unencryptedSize + _encryptedSize;
-    }
+		public override int GetPartyPkmnSize() => _unencryptedSize + _encryptedSize + _battleStats;
+		public override int GetBoxPkmnSize() => _unencryptedSize + _encryptedSize;
+	}
 }
