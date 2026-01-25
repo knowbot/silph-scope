@@ -4,25 +4,25 @@ using SilphScope.Models.Games.MemoryLayouts;
 using SilphScope.Models.Games.Parsers.Common;
 using SilphScope.Models.Games.State.Common;
 using System;
-using System.Collections.Generic;
 
 namespace SilphScope.Models.Games.Parsers.Gen4
 {
     public class Gen4PartyParser : IPartyParser
     {
-        public List<Pokemon> ParseParty(SilphContext context)
+        public Pkmn[] Parse(SilphContext context)
         {
             Gen4PkmnParser pkmnParser = new();
-            ReadOnlySpan<byte> data = context.Data;
             IMemoryLayout layout = context.Game.Layout;
+            ReadOnlySpan<byte> data = context.Data;
             byte partyCount = data.Read<byte>(layout.PartyCount);
-            Pokemon[] party = new Pokemon[partyCount];
+            Pkmn[] party = new Pkmn[partyCount];
             for (int i = 0; i < partyCount; i++)
             {
                 int pkmnAddr = layout.Party + (i * pkmnParser.GetPartyPkmnSize());
-                party[i] = pkmnParser.Parse(data[pkmnAddr..]);
+                Pkmn? pkmn = pkmnParser.Parse(data[pkmnAddr..]);
+                if (pkmn != null) party[i] = pkmn;
             }
-            return [.. party];
+            return party;
         }
     }
 }

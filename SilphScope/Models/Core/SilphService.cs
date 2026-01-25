@@ -32,6 +32,7 @@ namespace SilphScope.Models.Core
 
         private nint _baseAddr;
         private readonly IPartyParser _partyParser;
+        private readonly IBoxParser _boxParser;
         private readonly TrainerParser _trainerParser;
 
         public SilphService(Process process, Game game)
@@ -51,11 +52,15 @@ namespace SilphScope.Models.Core
 
             _targetGame = game;
             _trainerParser = new TrainerParser();
-            _partyParser = _targetGame.Generation switch
+            switch (_targetGame.Generation)
             {
-                4 => new Gen4PartyParser(),
-                _ => throw new PlatformNotSupportedException("Generation not supported")
-            };
+                case 4:
+                    _partyParser = new Gen4PartyParser();
+                    _boxParser = new Gen4BoxParser();
+                    break;
+                default:
+                    throw new PlatformNotSupportedException("Generation not supported");
+            }
             _thread = new Thread(ThreadLoop) { IsBackground = true };
         }
 
@@ -124,8 +129,9 @@ namespace SilphScope.Models.Core
             nint saveAddr = GetSaveAddr();
             SilphContext context = new(_targetGame, saveAddr, _processMemory.Read(saveAddr, _targetGame.Layout.SaveSize));
             Trainer trainer = _trainerParser.Parse(context);
-            List<Pokemon> party = _partyParser.ParseParty(context);
-            FrameData gameState = new(trainer, [.. party], null);
+            Pkmn[] party = _partyParser.Parse(context);
+            Box[] boxes = _boxParser.Parse(context);
+            FrameData gameState = new(trainer, [.. party], boxes);
             OnMessage?.Invoke(this, new GameStateUpdate(gameState));
             //}
             //catch (ParserException ex)

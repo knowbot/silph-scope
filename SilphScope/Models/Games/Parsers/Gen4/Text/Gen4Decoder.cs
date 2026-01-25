@@ -1,15 +1,16 @@
 ﻿using SilphScope.Models.Games.Parsers.Common.Text;
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace SilphScope.Models.Games.Parsers.Gen4.Text
 {
     public class Gen4Decoder : IDecoder
     {
-        private const char N_A = '\uFFFD';
+        private const int N_A = 0xFFFD;
         private const ushort END = 0xFFFF;
 
-        public static ReadOnlySpan<char> TableIntl =>
+        private static readonly int[] _tableIntl =
         [
             '␀', '　', 'ぁ', 'あ', 'ぃ', 'い', 'ぅ', 'う', 'ぇ', 'え', 'ぉ', 'お', 'か', 'が', 'き', 'ぎ',
             'く', 'ぐ', 'け', 'げ', 'こ', 'ご', 'さ', 'ざ', 'し', 'じ', 'す', 'ず', 'せ', 'ぜ', 'そ', 'ぞ',
@@ -27,8 +28,8 @@ namespace SilphScope.Models.Games.Parsers.Gen4.Text
             'ｋ', 'ｌ', 'ｍ', 'ｎ', 'ｏ', 'ｐ', 'ｑ', 'ｒ', 'ｓ', 'ｔ', 'ｕ', 'ｖ', 'ｗ', 'ｘ', 'ｙ', 'ｚ',
             N_A, '！', '？', '、', '。', '…', '・', '／', '「', '」', '『', '』', '（', '）', '♂', '♀',
             '＋', 'ー', '×', '÷', '＝', '～', '：', '；', '．', '，', '♠', '♣', '♥', '♦', '★', '◎',
-            '○', '□', '△', '◇', '＠', '♪', '％', '☀', '☁', '☂', '☃', N_A, '☺', '☹', N_A, N_A,
-            N_A, N_A, '円', N_A, N_A, N_A, N_A, N_A, N_A, N_A, N_A, '←', '↑', '↓', '→', '►',
+            '○', '□', '△', '◇', '＠', '♪', '％', '☀', '☁', '☂', '☃', 0x1F611, 0x263A, 0x2639, 0x1F620, 0x2934,
+            0x2935, 0x1F4A4, '円', N_A, N_A, N_A, N_A, N_A, N_A, N_A, N_A, '←', '↑', '↓', '→', '►',
             '＆', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E',
             'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
             'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
@@ -40,27 +41,33 @@ namespace SilphScope.Models.Games.Parsers.Gen4.Text
             'œ', 'Ş', 'ş', 'ª', 'º', N_A, N_A, 'r', N_A, '¡', '¿', '!', '?', ',', '.', '…',
             '･', '/', '‘', '\'', '“', '”', '„', '«', '»', '(', ')', '♂', '♀', '+', '-', '*',
             '#', '=', '&', '~', ':', ';', '♠', '♣', '♥', '♦', '★', '◎', '○', '□', '△', '◇',
-            '@', '♪', '%', '☀', '☁', '☂', '☃', N_A, N_A, N_A, N_A, N_A, N_A, N_A, N_A, 'e',
+            '@', '♪', '%', '☀', '☁', '☂', '☃', 0x1F611, 0x263A, 0x2639, 0x1F620, 0x2934, 0x2935, 0x1F4A4, ' ', 'e',
             N_A, N_A, N_A, N_A, N_A, N_A, N_A, N_A, '°', '_', '＿', '․', '‥', N_A, N_A, N_A
         ];
 
-        public static string Decode(ReadOnlySpan<byte> encoded)
+        public static ReadOnlySpan<Rune> TableIntl => MemoryMarshal.Cast<int, Rune>(_tableIntl);
+
+        public static string Decode(ReadOnlySpan<byte> data)
         {
-            if (encoded.Length % 2 != 0)
+            if (data.Length % 2 != 0)
             {
                 throw new ArgumentException("Encoded length should be a multiple of 2.");
             }
-            Span<char> decoded = stackalloc char[encoded.Length]; // safe alloc
-            for (int i = 0; i < encoded.Length; i += 2)
+            ReadOnlySpan<ushort> encoded = MemoryMarshal.Cast<byte, ushort>(data);
+            Span<char> decoded = stackalloc char[encoded.Length * 2]; // UTF-32 uses two chars
+            ReadOnlySpan<Rune> table = TableIntl;
+            int written = 0;
+            foreach (ushort val in encoded)
             {
-                ushort val = MemoryMarshal.Read<ushort>(encoded[i..]);
                 if (val == END)
                 {
                     break;
                 }
-                decoded[i] = val < TableIntl.Length ? TableIntl[val] : N_A;
+                Rune runeVal = val < table.Length ? table[val] : Rune.ReplacementChar;
+                runeVal.TryEncodeToUtf16(decoded[written..], out int charsWritten);
+                written += charsWritten;
             }
-            return decoded.ToString();
+            return decoded[..written].ToString();
         }
     }
 }

@@ -3,7 +3,7 @@ using SilphScope.Models.Games.StaticData.Enums;
 
 namespace SilphScope.Models.Games.State.Common
 {
-    public record Pokemon(
+    public record Pkmn(
         Species Species,
         // HELD ITEM
         uint Exp,
@@ -12,6 +12,8 @@ namespace SilphScope.Models.Games.State.Common
         Ability Ability,
         EVs EVs,
         IVs IVs,
-        MoveSet MoveSet
+        MoveSet MoveSet,
+        bool IsEgg,
+        string Nickname
         );
 }

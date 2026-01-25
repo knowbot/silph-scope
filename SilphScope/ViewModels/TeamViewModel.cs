@@ -15,7 +15,7 @@ namespace SilphScope.ViewModels
         public TeamViewModel()
         { }
 
-        internal void UpdateGameState(Pokemon[] team)
+        internal void UpdateGameState(Pkmn[] team)
         {
             // First ever update. Insert 6 empty party slots.
             if (Members.Count == 0)

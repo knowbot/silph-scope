@@ -3,8 +3,8 @@ using SilphScope.Models.Games.State.Common;
 
 namespace SilphScope.Models.Games.Parsers.Common
 {
-    public interface IPartyParser
+    public interface IBoxParser
     {
-        public Pkmn[] Parse(SilphContext context);
+        public Box[] Parse(SilphContext context);
     }
 }

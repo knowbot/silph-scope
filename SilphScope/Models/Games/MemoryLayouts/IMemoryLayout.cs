@@ -18,6 +18,7 @@
         int Badges { get; }
         int Gender { get; }
         int Skip { get; }
+        int BoxPokemon { get; }
 
         public nint GetSaveAddr(nint baseAddr, nint localSaveAddr) => localSaveAddr - RamStart + baseAddr + Skip;
     }

@@ -1,11 +1,9 @@
-﻿using SilphScope.Models.Core;
-using SilphScope.Models.Extensions;
+﻿using SilphScope.Models.Extensions;
 using SilphScope.Models.Games.Parsers.Common;
 using SilphScope.Models.Games.State.Common;
 using SilphScope.Models.Games.State.Common.PkmnInfo;
 using SilphScope.Models.Games.StaticData.Enums;
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace SilphScope.Models.Games.Parsers.Gen4
@@ -47,11 +45,6 @@ namespace SilphScope.Models.Games.Parsers.Gen4
         private static int PartyPkmnSize() => _unencryptedSize + _encryptedSize + _battleStats;
         private static int BoxPkmnSize() => _unencryptedSize + _encryptedSize;
 
-        public override List<Pokemon> ParseBoxes(SilphContext context)
-        {
-            throw new NotImplementedException();
-        }
-
         private bool IsValidData(ReadOnlySpan<byte> blockA)
         {
             ushort candidateSpecies = blockA.Read<ushort>();
@@ -59,9 +52,10 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             return candidateSpecies < (ushort)Species.MAX_VALUE && candidateEVs.IsValid();
         }
 
-        public override Pokemon Parse(ReadOnlySpan<byte> pkmnData)
+        public override Pkmn? Parse(ReadOnlySpan<byte> pkmnData)
         {
             uint pId = pkmnData.Read<uint>();
+            if (pId == 0) return null;
             ushort checksum = pkmnData.Read<ushort>(0x6);
             // copy over the ABCD blocks to decrypt in-place
             byte[] blocks = pkmnData.Slice(0x8, _encryptedSize).ToArray();
@@ -101,7 +95,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             IVs ivs = ParseIVs(blockB);
 
             // BLOCK C
-            return new Pokemon(
+            return new Pkmn(
                 (Species)species,
                 exp,
                 GetLevel(species, exp),
@@ -109,7 +103,9 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 (Ability)ability,
                 evs,
                 ivs,
-                moveSet
+                moveSet,
+                false,
+                ""
                 );
         }
 

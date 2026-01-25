@@ -28,7 +28,7 @@ namespace SilphScope.ViewModels
         private int _LevelToNext;
         public int ExpBarLength => LevelProgress + LevelToNext;
 
-        public void UpdateGameState(Pokemon? pokemon)
+        public void UpdateGameState(Pkmn? pokemon)
         {
             if (pokemon == null)
             {

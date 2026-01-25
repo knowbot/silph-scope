@@ -13,7 +13,7 @@ namespace SilphScope.ViewModels
 
         }
 
-        public void UpdateGameState(Pokemon[] team)
+        public void UpdateGameState(Pkmn[] team)
         {
             Team.UpdateGameState(team);
         }

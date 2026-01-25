@@ -1,16 +1,13 @@
-﻿using SilphScope.Models.Core;
-using SilphScope.Models.Games.State.Common;
+﻿using SilphScope.Models.Games.State.Common;
 using SilphScope.Models.Games.State.Common.PkmnInfo;
 using SilphScope.Models.Games.StaticData.Enums;
 using System;
-using System.Collections.Generic;
 
 namespace SilphScope.Models.Games.Parsers.Common
 {
     public abstract class APkmnParser
     {
-        public abstract List<Pokemon> ParseBoxes(SilphContext context);
-        public abstract Pokemon Parse(ReadOnlySpan<byte> pkmnData);
+        public abstract Pkmn? Parse(ReadOnlySpan<byte> pkmnData);
         protected abstract Move[] ParseMoves(ReadOnlySpan<byte> blockB);
         protected abstract EVs ParseEVs(ReadOnlySpan<byte> block);
         protected abstract IVs ParseIVs(ReadOnlySpan<byte> block);
