@@ -94,7 +94,10 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             MoveSet moveSet = new(moves[0], moves[1], moves[2], moves[3]);
             IVs ivs = ParseIVs(blockB);
 
+
             // BLOCK C
+            Level level = GetLevel(species, exp);
+            Stats stats = StatCalc.GetStats((Species)species, ivs, evs, level.Current, Nature.Hardy);
             return new Pkmn(
                 (Species)species,
                 exp,
@@ -103,6 +106,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
                 (Ability)ability,
                 evs,
                 ivs,
+                stats,
                 moveSet,
                 false,
                 ""

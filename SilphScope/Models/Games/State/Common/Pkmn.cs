@@ -12,6 +12,7 @@ namespace SilphScope.Models.Games.State.Common
         Ability Ability,
         EVs EVs,
         IVs IVs,
+        Stats Stats,
         MoveSet MoveSet,
         bool IsEgg,
         string Nickname
