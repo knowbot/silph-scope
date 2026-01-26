@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SilphScope.Models.Core.Sprites
 {
@@ -67,15 +66,15 @@ namespace SilphScope.Models.Core.Sprites
 				}
 
 				// Push the result to the task.
-				request!.Result.Fill(sprite);
+				request!.Task.Complete(new(sprite, null));
 			}
 		}
 
-		public Task<SpriteLoadResult> Load(Species species, SpriteFlags flags)
+		public SpriteLoadTask Load(Species species, SpriteFlags flags)
 		{
-			SpriteLoadResult result = new SpriteLoadResult();
-			_requests.Enqueue(new SpriteLoadRequest(result, species, flags));
-			return Task.Run(() => { result.Wait(); return result; });
+			SpriteLoadTask task = new SpriteLoadTask();
+			_requests.Enqueue(new SpriteLoadRequest(task, species, flags));
+			return task;
 		}
 
 		protected override void Dispose(bool disposing)

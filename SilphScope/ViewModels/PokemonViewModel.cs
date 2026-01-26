@@ -3,7 +3,6 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models.Core.Sprites;
 using SilphScope.Models.Games.State.Common;
-using System.Threading.Tasks;
 
 namespace SilphScope.ViewModels
 {
@@ -55,8 +54,8 @@ namespace SilphScope.ViewModels
 
 			// Ask for asynchronous sprite loading.
 			// When sprite has been loaded, go back to UI thread to update UI.
-			Task<SpriteLoadResult> task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
-			task.ContinueWith(task => Dispatcher.UIThread.Post(() => Sprite = task.Result.Result));
+			SpriteLoadTask task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
+			task.OnCompleted(() => Dispatcher.UIThread.Post(() => Sprite = task.Result.Sprite));
 		}
 	}
 }
