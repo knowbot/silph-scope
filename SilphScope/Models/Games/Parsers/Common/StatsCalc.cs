@@ -8,8 +8,8 @@ namespace SilphScope.Models.Games.Parsers.Common
     {
         public static Stats GetStats(Species species, IVs ivs, EVs evs, int level, Nature nature)
         {
-            int[] stats = new int[6];
-            stats[0] = species == Species.Shedinja ? 1 : HPFormula(StaticData.SpeciesData.BaseStats[(int)species * 6], ivs[0], evs[0], level);
+            ushort[] stats = new ushort[6];
+            stats[0] = species == Species.Shedinja ? (ushort)1 : HPFormula(StaticData.SpeciesData.BaseStats[(int)species * 6], ivs[0], evs[0], level);
             int incStat = (int)nature / 5;
             int decStat = (int)nature % 5;
             Span<float> natMults = [1.0f, 1.0f, 1.0f, 1.0f, 1.0f];
@@ -25,14 +25,14 @@ namespace SilphScope.Models.Games.Parsers.Common
             return new Stats(stats);
         }
 
-        public static int HPFormula(int baseHP, int iv, int ev, int level)
+        public static ushort HPFormula(int baseHP, int iv, int ev, int level)
         {
-            return (((2 * baseHP) + iv + (ev / 4)) * level / 100) + level + 10;
+            return (ushort)((((2 * baseHP) + iv + (ev / 4)) * level / 100) + level + 10);
         }
 
-        public static int StatFormula(int baseStat, int iv, int ev, int level, float natMult)
+        public static ushort StatFormula(int baseStat, int iv, int ev, int level, float natMult)
         {
-            return (int)(((((2 * baseStat) + iv + (ev / 4)) * level / 100) + 5) * natMult);
+            return (ushort)(((((2 * baseStat) + iv + (ev / 4)) * level / 100) + 5) * natMult);
         }
     }
 }

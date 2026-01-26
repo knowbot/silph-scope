@@ -1,15 +1,17 @@
 ﻿using SilphScope.Models.Games.StaticData.Enums;
+using System;
 
 namespace SilphScope.Models.Games.State.Common.PkmnInfo
 {
-    public record Stats
+    public readonly record struct Stats
     {
-        private readonly int[] _stats = new int[6];
-        public int this[int index] => _stats[index];
-        public int this[Stat stat] => _stats[(int)stat];
+        private readonly ushort[] _stats = new ushort[6];
+        public ushort this[int index] => _stats[index];
+        public ushort this[Stat stat] => _stats[(int)stat];
 
-        public Stats(params int[] stats)
+        public Stats(params ushort[] stats)
         {
+            if (stats.Length != 6) throw new ArgumentException("Incorrect amount of stats");
             _stats = [.. stats];
         }
     }
