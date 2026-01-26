@@ -2,7 +2,7 @@
 
 namespace SilphScope.Models.Games.State.Common.PkmnInfo
 {
-    public record BattleInfo(int CurrHP, Status Status, int SleepTurns)
+    public readonly record struct BattleInfo(ushort CurrHP, Status Status, byte SleepTurns)
     {
         public bool HasFainted => CurrHP == 0;
     }

@@ -17,48 +17,46 @@ namespace SilphScope.Models.Games.Parsers.Gen4
         private const int _battleStatsSize = 100;
         private const int _blockSize = 32;
 
-        private static ReadOnlySpan<byte> BlockUnshuffle =>
+        private static ReadOnlySpan<byte> BlockOffsets =>
             [
-                0, 1, 2, 3, //00 ABCD
-                0, 1, 3, 2, //01 ABDC
-                0, 2, 1, 3, //02 ACBD
-                0, 3, 1, 2, //03 ADBC
-                0, 2, 3, 1, //04 ACDB
-                0, 3, 2, 1, //05 ADCB
-                1, 0, 2, 3, //06 BACD
-                1, 0, 3, 2, //07 BADC
-                2, 0, 1, 3, //08 CABD
-                3, 0, 1, 2, //09 DABC
-                2, 0, 3, 1, //10 CADB
-                3, 0, 2, 1, //11 DACB
-                1, 2, 0, 3, //12 BCAD
-                1, 3, 0, 2, //13 BDAC
-                2, 1, 0, 3, //14 CBAD
-                3, 1, 0, 2, //15 DBAC
-                2, 3, 0, 1, //16 CDAB
-                3, 2, 0, 1, //17 DCAB
-                1, 2, 3, 0, //18 BCDA
-                1, 3, 2, 0, //19 BDCA
-                2, 1, 3, 0, //20 CBDA
-                3, 1, 2, 0, //21 DBCA
-                2, 3, 1, 0, //22 CDBA
-                3, 2, 1, 0  //23 DCBA
+                0, 32, 64, 96, // ABCD
+                0, 32, 96, 64, // ABDC
+                0, 64, 32, 96, // ACBD
+                0, 96, 32, 64, // ADBC
+                0, 64, 96, 32, // ACDB
+                0, 96, 64, 32, // ADCB
+                32, 0, 64, 96, // BACD
+                32, 0, 96, 64, // BADC
+                64, 0, 32, 96, // CABD
+                96, 0, 32, 64, // DABC
+                64, 0, 96, 32, // CADB
+                96, 0, 64, 32, // DACB
+                32, 64, 0, 96, // BCAD
+                32, 96, 0, 64, // BDAC
+                64, 32, 0, 96, // CBAD
+                96, 32, 0, 64, // DBAC
+                64, 96, 0, 32, // CDAB
+                96, 64, 0, 32, // DCAB
+                32, 64, 96, 0, // BCDA
+                32, 96, 64, 0, // BDCA
+                64, 32, 96, 0, // CBDA
+                96, 32, 64, 0, // DBCA
+                64, 96, 32, 0, // CDBA
+                96, 64, 32, 0  // DCBA
             ];
 
         public override Pkmn? Parse(ReadOnlySpan<byte> pkmnData, bool isParty)
         {
             uint pId = pkmnData.Read<uint>();
-            if (pId == 0) return null;
             ushort checksum = pkmnData.Read<ushort>(0x6);
 
             Span<byte> blocks = stackalloc byte[_encryptedSize];
             pkmnData.Slice(0x8, _encryptedSize).CopyTo(blocks);
 
-            uint shift = ((pId & 0x3E000) >> 0xD) % 24;
-            ReadOnlySpan<byte> order = BlockUnshuffle.Slice((int)shift * 4, 4);
-            ReadOnlySpan<byte> blockA = blocks.Slice(_blockSize * order[0], 32);
-            ReadOnlySpan<byte> blockB = blocks.Slice(_blockSize * order[1], 32);
-            ReadOnlySpan<byte> blockC = blocks.Slice(_blockSize * order[2], 32);
+            int shiftIndex = (int)((pId & 0x3E000) >> 0xD) % 24 * 4;
+            ReadOnlySpan<byte> blockA = blocks.Slice(BlockOffsets[shiftIndex], 32);
+            ReadOnlySpan<byte> blockB = blocks.Slice(BlockOffsets[shiftIndex + 1], 32);
+            ReadOnlySpan<byte> blockC = blocks.Slice(BlockOffsets[shiftIndex + 2], 32);
 
             bool isDecrypted = IsValidData(blockA);
             // if false, attempt decryption
@@ -68,6 +66,8 @@ namespace SilphScope.Models.Games.Parsers.Gen4
 
             // BLOCK A
             ushort species = blockA.Read<ushort>();
+            if (species == 0) return null;
+
             ushort heldItem = blockA.Read<ushort>(0x2);
             uint exp = blockA.Read<uint>(0x8);
             byte friendship = blockA.Read<byte>(0xC);
@@ -75,12 +75,11 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             EVs evs = ParseEVs(blockA);
 
             // BLOCK B
-            Move[] moves = ParseMoves(blockB);
-            MoveSet moveSet = new(moves[0], moves[1], moves[2], moves[3]);
+            MoveSet moveSet = new(ParseMoves(blockB));
             IVs ivs = ParseIVs(blockB);
-            byte bflags = blockB.Read<byte>(0x10);
-            bool isEgg = (bflags & 0x1) != 0;
-            bool hasNickname = (bflags & 0x2) != 0;
+            byte bflags = blockB.Read<byte>(0x13);
+            bool isEgg = ((bflags >> 6) & 0x1) != 0;
+            bool hasNickname = ((bflags >> 7) & 0x1) != 0;
             byte formFlags = blockB.Read<byte>(0x18);
             Gender gender = (formFlags & 0x4) != 0 ? Gender.None : (formFlags & 0x2) != 0 ? Gender.Female : Gender.Male;
             int altForm = (formFlags & 0xF8) >> 3;
@@ -89,17 +88,17 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             string nickname = hasNickname ? Gen4Decoder.Decode(blockC[..0x14]) : "";
             Level level = GetLevel(species, exp);
 
-            Stats stats = new();
+            Stats stats;
             BattleInfo? battleInfo = null;
             if (isParty)
             {
                 Span<byte> battleStats = stackalloc byte[_battleStatsSize];
                 pkmnData.Slice(0x88, _battleStatsSize).CopyTo(battleStats);
                 if (!isDecrypted) Decrypt(battleStats, pId);
+                stats = ParseStats(battleStats);
                 byte statusFlags = battleStats.Read<byte>();
                 ushort currHP = battleStats.Read<ushort>(0x6);
-                stats = ParseStats(battleStats);
-                int sleepTurns = statusFlags & 0x7;
+                byte sleepTurns = (byte)(statusFlags & 0x7);
                 if (sleepTurns > 0)
                 {
                     battleInfo = new(currHP, Status.Asleep, sleepTurns);
@@ -177,24 +176,24 @@ namespace SilphScope.Models.Games.Parsers.Gen4
         {
             uint ivs = data.Read<uint>(0x10);
             return new(
-                (int)((ivs >> 0) & 0x1F),
-                (int)((ivs >> 5) & 0x1F),
-                (int)((ivs >> 10) & 0x1F),
-                (int)((ivs >> 20) & 0x1F),
-                (int)((ivs >> 25) & 0x1F),
-                (int)((ivs >> 15) & 0x1F)
+                (byte)((ivs >> 0) & 0x1F),
+                (byte)((ivs >> 5) & 0x1F),
+                (byte)((ivs >> 10) & 0x1F),
+                (byte)((ivs >> 20) & 0x1F),
+                (byte)((ivs >> 25) & 0x1F),
+                (byte)((ivs >> 15) & 0x1F)
             );
         }
 
         protected override Stats ParseStats(ReadOnlySpan<byte> data)
         {
             return new(
-                data.Read<ushort>(0x8),
+                data.Read<ushort>(0x08),
+                data.Read<ushort>(0x0A),
+                data.Read<ushort>(0x0C),
                 data.Read<ushort>(0x10),
                 data.Read<ushort>(0x12),
-                data.Read<ushort>(0x16),
-                data.Read<ushort>(0x18),
-                data.Read<ushort>(0x14)
+                data.Read<ushort>(0x0E)
             );
         }
 
