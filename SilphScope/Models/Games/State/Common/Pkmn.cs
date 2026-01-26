@@ -6,16 +6,17 @@ namespace SilphScope.Models.Games.State.Common
     public record Pkmn(
         Species Species,
         ItemName HeldItem,
+        Ability Ability,
+        MoveSet MoveSet,
         uint Exp,
         Level Level,
         byte Friendship,
-        Ability Ability,
         EVs EVs,
         IVs IVs,
         Stats Stats,
-        MoveSet MoveSet,
-        bool IsEgg,
         string Nickname,
-        Gender Gender
+        Gender Gender,
+        bool IsEgg,
+        BattleInfo? BattleInfo
         );
 }

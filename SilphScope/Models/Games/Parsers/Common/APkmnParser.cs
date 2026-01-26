@@ -8,9 +8,10 @@ namespace SilphScope.Models.Games.Parsers.Common
     public abstract class APkmnParser
     {
         public abstract Pkmn? Parse(ReadOnlySpan<byte> pkmnData, bool isParty);
-        protected abstract Move[] ParseMoves(ReadOnlySpan<byte> blockB);
-        protected abstract EVs ParseEVs(ReadOnlySpan<byte> block);
-        protected abstract IVs ParseIVs(ReadOnlySpan<byte> block);
+        protected abstract Move[] ParseMoves(ReadOnlySpan<byte> data);
+        protected abstract EVs ParseEVs(ReadOnlySpan<byte> data);
+        protected abstract IVs ParseIVs(ReadOnlySpan<byte> data);
+        protected abstract Stats ParseStats(ReadOnlySpan<byte> data);
         public abstract int GetBoxPkmnSize();
         public abstract int GetPartyPkmnSize();
         public virtual Level GetLevel(ushort species, uint experience)
