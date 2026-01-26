@@ -10,5 +10,5 @@
     <Design.DataContext>
 		<vm:PokemonViewModel/>
 	</Design.DataContext>
-    <Image Source="{Binding Sprite}" RenderOptions.BitmapInterpolationMode="None"/>
+    <Image Source="{Binding Sprite}" RenderOptions.BitmapInterpolationMode="HighQuality"/>
 </UserControl>

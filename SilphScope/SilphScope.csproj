@@ -57,6 +57,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Compile Update="Views\ucBoxCarousel.axaml.cs">
+        <DependentUpon>ucBoxCarousel.axaml</DependentUpon>
+      </Compile>
       <Compile Update="Views\ucGame.axaml.cs">
         <DependentUpon>ucGame.axaml</DependentUpon>
       </Compile>

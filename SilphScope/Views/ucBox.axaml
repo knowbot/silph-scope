@@ -11,10 +11,10 @@
 		<vm:BoxViewModel/>
 	</Design.DataContext>
 
-	<ListBox ItemsSource="{Binding Contents}" SelectedItem="{Binding Selected}">
+	<ListBox ItemsSource="{Binding Contents}" SelectedItem="{Binding Selected}" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 		<ListBox.ItemsPanel>
 			<ItemsPanelTemplate>
-				<UniformGrid Rows="5" Columns="6"/>
+				<UniformGrid Rows="5" Columns="6" UseLayoutRounding="False"/>
 			</ItemsPanelTemplate>
 		</ListBox.ItemsPanel>
 		<ListBox.ItemTemplate>
@@ -23,5 +23,4 @@
 			</DataTemplate>
 		</ListBox.ItemTemplate>
 	</ListBox>
-
 </UserControl>

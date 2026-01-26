@@ -22,8 +22,8 @@
 				</DockPanel>
 
 				<StackPanel Margin="16 16 16 0" Spacing="8">
-					<ProgressBar Minimum="0" Maximum="100" Value="100" Height="4" Foreground="Green"/>
-					<ProgressBar Minimum="0" Maximum="{Binding ExpBarLength}" Value="{Binding LevelProgress}" Height="4" Foreground="CornflowerBlue"/>
+					<ProgressBar Minimum="0" Maximum="100" Value="100" Height="4" MinWidth="0" Foreground="Green"/>
+					<ProgressBar Minimum="0" Maximum="{Binding ExpBarLength}" Value="{Binding LevelProgress}" Height="4" MinWidth="0" Foreground="CornflowerBlue"/>
 				</StackPanel>
 			</StackPanel>
 		</DockPanel>

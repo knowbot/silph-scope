@@ -12,7 +12,7 @@
 	</Design.DataContext>
 	<Grid ColumnDefinitions="2* 1*">
 		<!-- Team in the first column -->
-		<local:ucBoxCarrousel Grid.Column="0" VerticalAlignment="Stretch" DataContext="{Binding Boxes}"/>
+		<local:ucBoxCarousel Grid.Column="0" VerticalAlignment="Stretch" DataContext="{Binding Boxes}"/>
 		
 		<!-- Details in the second column -->
 		<local:ucPokemonDetails Grid.Column="1" DataContext="{Binding Boxes.Selected.Selected}"/>
