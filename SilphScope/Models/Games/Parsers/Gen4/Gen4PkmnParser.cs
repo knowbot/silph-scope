@@ -62,7 +62,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             // if false, attempt decryption
             if (!isDecrypted) Decrypt(blocks, checksum);
             // TODO: decide what to do if check fails again
-            if (!IsValidData(blockA)) throw new ParserException($"Invalid Pokémon data.");
+            if (!IsValidData(blockA)) throw new ParserException($"Invalid Pokémon data, read species #{blockA.Read<ushort>()}.");
 
             // BLOCK A
             ushort species = blockA.Read<ushort>();

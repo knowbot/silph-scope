@@ -12,8 +12,10 @@
 	</Design.DataContext>
 	<Grid ColumnDefinitions="2* 1*">
 		<!-- Team in the first column -->
-		<local:ucTeam Grid.Column="0" VerticalAlignment="Center" DataContext="{Binding Team}"/>
-
+		<DockPanel>
+			<local:ucTeam Grid.Column="0" DockPanel.Dock="Top" DataContext="{Binding Team}"/>
+			<Panel></Panel>
+		</DockPanel>
 		<!-- Details in the second column -->
 		<local:ucPokemonDetails Grid.Column="1" DataContext="{Binding Team.Selected}"/>
 	</Grid>
