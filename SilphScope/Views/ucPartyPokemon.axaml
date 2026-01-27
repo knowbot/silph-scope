@@ -5,7 +5,7 @@
 			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
 			 xmlns:local="clr-namespace:SilphScope"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="SilphScope.ucTeamPokemon"
+			 x:Class="SilphScope.ucPartyPokemon"
 			 x:DataType="vm:PokemonViewModel"
 			 ClipToBounds="False">
 	<Border Background="White" Classes="CardClass" HorizontalAlignment="Stretch">

@@ -5,8 +5,8 @@
 			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
 			 xmlns:local="clr-namespace:SilphScope"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="SilphScope.ucTeam"
-			 x:DataType="vm:TeamViewModel">
+			 x:Class="SilphScope.ucParty"
+			 x:DataType="vm:PartyViewModel">
 	<ListBox ItemsSource="{Binding Members}" SelectedItem="{Binding Selected}" Background="Transparent">
 		<ListBox.ItemsPanel>
 			<ItemsPanelTemplate>
@@ -15,7 +15,7 @@
 		</ListBox.ItemsPanel>
 		<ListBox.ItemTemplate>
 			<DataTemplate x:DataType="vm:PokemonViewModel">
-				<local:ucTeamPokemon/>
+				<local:ucPartyPokemon/>
 			</DataTemplate>
 		</ListBox.ItemTemplate>
 	</ListBox>

@@ -5,18 +5,18 @@
 			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
 			 xmlns:local="clr-namespace:SilphScope"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="SilphScope.ucTeamTab"
-			 x:DataType="vm:TeamTabViewModel">
+			 x:Class="SilphScope.ucPartyTab"
+			 x:DataType="vm:PartyTabViewModel">
 	<Design.DataContext>
-		<vm:TeamTabViewModel/>
+		<vm:PartyTabViewModel/>
 	</Design.DataContext>
 	<Grid ColumnDefinitions="2* 1*">
-		<!-- Team in the first column -->
+		<!-- Party in the first column -->
 		<DockPanel>
-			<local:ucTeam Grid.Column="0" DockPanel.Dock="Top" DataContext="{Binding Team}"/>
+			<local:ucParty Grid.Column="0" DockPanel.Dock="Top" DataContext="{Binding Party}"/>
 			<Panel></Panel>
 		</DockPanel>
 		<!-- Details in the second column -->
-		<local:ucPokemonDetails Grid.Column="1" DataContext="{Binding Team.Selected}"/>
+		<local:ucPokemonDetails Grid.Column="1" DataContext="{Binding Party.Selected}"/>
 	</Grid>
 </UserControl>

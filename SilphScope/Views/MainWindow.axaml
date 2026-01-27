@@ -60,9 +60,9 @@
 				</TabItem>
 				<TabItem>
 					<TabItem.Header>
-						<Border Width="32" Height="32" Child="{DynamicResource TeamIcon}"/>
+						<Border Width="32" Height="32" Child="{DynamicResource PartyIcon}"/>
 					</TabItem.Header>
-					<local:ucTeamTab DataContext="{Binding TeamTab}"/>
+					<local:ucPartyTab DataContext="{Binding PartyTab}"/>
 				</TabItem>
 				<TabItem>
 					<TabItem.Header>

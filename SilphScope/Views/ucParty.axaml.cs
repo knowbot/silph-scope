@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace SilphScope;
 
-public partial class ucTeamTab : UserControl
+public partial class ucParty : UserControl
 {
-    public ucTeamTab()
+    public ucParty()
     {
         InitializeComponent();
     }

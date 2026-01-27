@@ -63,5 +63,14 @@
       <Compile Update="Views\ucGame.axaml.cs">
         <DependentUpon>ucGame.axaml</DependentUpon>
       </Compile>
+      <Compile Update="Views\ucParty.axaml.cs">
+        <DependentUpon>ucParty.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\ucPartyPokemon.axaml.cs">
+        <DependentUpon>ucPartyPokemon.axaml</DependentUpon>
+      </Compile>
+      <Compile Update="Views\ucPartyTab.axaml.cs">
+        <DependentUpon>ucPartyTab.axaml</DependentUpon>
+      </Compile>
     </ItemGroup>
 </Project>

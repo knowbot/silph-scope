@@ -5,51 +5,51 @@ namespace SilphScope.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-	public LogViewModel Log { get; }
+    public LogViewModel Log { get; }
 
-	public TeamTabViewModel TeamTab { get; }
+    public PartyTabViewModel PartyTab { get; }
 
-	public BoxTabViewModel BoxTab { get; }
+    public BoxTabViewModel BoxTab { get; }
 
-	public SettingsTabViewModel SettingsTab { get; }
+    public SettingsTabViewModel SettingsTab { get; }
 
-	public SilphServiceViewModel Service { get; }
+    public SilphServiceViewModel Service { get; }
 
-	public MainWindowViewModel()
-	{
-		Log = new();
-		TeamTab = new();
-		BoxTab = new();
+    public MainWindowViewModel()
+    {
+        Log = new();
+        PartyTab = new();
+        BoxTab = new();
 
-		// Initialize service and settings tab (which references service).
-		Service = new SilphServiceViewModel();
-		Service.GameStateUpdated += Service_GameStateUpdated;
-		SettingsTab = new(Service);
-	}
+        // Initialize service and settings tab (which references service).
+        Service = new SilphServiceViewModel();
+        Service.GameStateUpdated += Service_GameStateUpdated;
+        SettingsTab = new(Service);
+    }
 
-	private void Service_GameStateUpdated(SilphServiceViewModel sender, FrameData state)
-	{
-		Dispatcher.UIThread.Post(() => UpdateGameState(state));
-	}
+    private void Service_GameStateUpdated(SilphServiceViewModel sender, FrameData state)
+    {
+        Dispatcher.UIThread.Post(() => UpdateGameState(state));
+    }
 
-	private void UpdateGameState(FrameData state)
-	{
-		// Update (each tab will optimize its own operations).
-		TeamTab.UpdateGameState(state.Team);
-		BoxTab.UpdateGameState(state.Boxes);
-	}
+    private void UpdateGameState(FrameData state)
+    {
+        // Update (each tab will optimize its own operations).
+        PartyTab.UpdateGameState(state.Party);
+        BoxTab.UpdateGameState(state.Boxes);
+    }
 
-	private bool isDisposed;
+    private bool isDisposed;
 
-	public void Dispose()
-	{
-		if (isDisposed)
-		{
-			return;
-		}
+    public void Dispose()
+    {
+        if (isDisposed)
+        {
+            return;
+        }
 
-		Log.Dispose();
+        Log.Dispose();
 
-		isDisposed = true;
-	}
+        isDisposed = true;
+    }
 }

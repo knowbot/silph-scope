@@ -11,7 +11,7 @@
 		<vm:BoxTabViewModel/>
 	</Design.DataContext>
 	<Grid ColumnDefinitions="2* 1*">
-		<!-- Team in the first column -->
+		<!-- Party in the first column -->
 		<local:ucBoxCarousel Grid.Column="0" VerticalAlignment="Stretch" DataContext="{Binding Boxes}"/>
 		
 		<!-- Details in the second column -->

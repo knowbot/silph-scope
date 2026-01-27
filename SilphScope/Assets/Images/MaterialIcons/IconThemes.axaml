@@ -4,13 +4,13 @@
 	<ResourceDictionary.ThemeDictionaries>
 		<ResourceDictionary x:Key="Light">
 			<Svg x:Key="TrainerIcon" Path="/Assets/Images/MaterialIcons/article_black.svg"/>
-			<Svg x:Key="TeamIcon" Path="/Assets/Images/MaterialIcons/groups_black.svg"/>
+			<Svg x:Key="PartyIcon" Path="/Assets/Images/MaterialIcons/groups_black.svg"/>
 			<Svg x:Key="BoxIcon" Path="/Assets/Images/MaterialIcons/box_black.svg"/>
 			<Svg x:Key="SettingsIcon" Path="/Assets/Images/MaterialIcons/settings_black.svg"/>
 		</ResourceDictionary>
 		<ResourceDictionary x:Key="Dark">
 			<Svg x:Key="TrainerIcon" Path="/Assets/Images/MaterialIcons/article_white.svg"/>
-			<Svg x:Key="TeamIcon" Path="/Assets/Images/MaterialIcons/groups_white.svg"/>
+			<Svg x:Key="PartyIcon" Path="/Assets/Images/MaterialIcons/groups_white.svg"/>
 			<Svg x:Key="BoxIcon" Path="/Assets/Images/MaterialIcons/box_white.svg"/>
 			<Svg x:Key="SettingsIcon" Path="/Assets/Images/MaterialIcons/settings_white.svg"/>
 		</ResourceDictionary>

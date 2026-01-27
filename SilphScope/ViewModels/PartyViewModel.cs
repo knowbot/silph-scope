@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace SilphScope.ViewModels
 {
-    public partial class TeamViewModel : ViewModelBase
+    public partial class PartyViewModel : ViewModelBase
     {
         [ObservableProperty]
         private ObservableCollection<PokemonViewModel> _Members = [];
@@ -12,10 +12,10 @@ namespace SilphScope.ViewModels
         [ObservableProperty]
         private PokemonViewModel? _Selected;
 
-        public TeamViewModel()
+        public PartyViewModel()
         { }
 
-        internal void UpdateGameState(Pkmn[] team)
+        internal void UpdateGameState(Pkmn[] party)
         {
             // First ever update. Insert 6 empty party slots.
             if (Members.Count == 0)
@@ -26,14 +26,14 @@ namespace SilphScope.ViewModels
                 }
             }
 
-            // Update the team members.
-            for (int i = 0; i < team.Length && i < Members.Count; i++)
+            // Update the party members.
+            for (int i = 0; i < party.Length && i < Members.Count; i++)
             {
-                Members[i].UpdateGameState(team[i]);
+                Members[i].UpdateGameState(party[i]);
             }
 
             // Extra empty members.
-            for (int i = team.Length; i < Members.Count; i++)
+            for (int i = party.Length; i < Members.Count; i++)
             {
                 Members[i].UpdateGameState(null);
             }
