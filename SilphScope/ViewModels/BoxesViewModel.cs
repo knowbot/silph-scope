@@ -7,10 +7,10 @@ namespace SilphScope.ViewModels
     public partial class BoxesViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private ObservableCollection<BoxViewModel> _Boxes = new();
+        private readonly ObservableCollection<BoxViewModel> _boxes = [];
 
         [ObservableProperty]
-        private BoxViewModel? _Selected;
+        private readonly BoxViewModel? _selected;
 
         public BoxesViewModel()
         {

@@ -18,7 +18,7 @@ namespace SilphScope.Models.Core.Sprites
 
         private readonly object _locker = new();
         private bool _completed;
-        private List<Action> _onCompletedActions = new();
+        private readonly List<Action> _onCompletedActions = [];
 
         public SpriteLoadTask() { }
 

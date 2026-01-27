@@ -9,8 +9,8 @@ namespace SilphScope.Models.Core
     /// <typeparam name="T"></typeparam>
     public class CloseableWaitingQueue<T> : TracingDisposable
     {
-        private object locker = new();
-        private Queue<T> queue = new();
+        private readonly object locker = new();
+        private readonly Queue<T> queue = new();
         private bool isClosed;
 
         public void Enqueue(T item)

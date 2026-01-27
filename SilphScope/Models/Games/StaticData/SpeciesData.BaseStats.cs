@@ -5,12 +5,36 @@ namespace SilphScope.Models.Games.StaticData
 {
     public static partial class SpeciesData
     {
-        public static int BaseHP(Species species) => BaseStats[(int)species * 6];
-        public static int BaseAtk(Species species) => BaseStats[((int)species * 6) + 1];
-        public static int BaseDef(Species species) => BaseStats[((int)species * 6) + 2];
-        public static int BaseSpAtk(Species species) => BaseStats[((int)species * 6) + 3];
-        public static int BaseSpDef(Species species) => BaseStats[((int)species * 6) + 4];
-        public static int BaseSpeed(Species species) => BaseStats[((int)species * 6) + 5];
+        public static int BaseHP(Species species)
+        {
+            return BaseStats[(int)species * 6];
+        }
+
+        public static int BaseAtk(Species species)
+        {
+            return BaseStats[((int)species * 6) + 1];
+        }
+
+        public static int BaseDef(Species species)
+        {
+            return BaseStats[((int)species * 6) + 2];
+        }
+
+        public static int BaseSpAtk(Species species)
+        {
+            return BaseStats[((int)species * 6) + 3];
+        }
+
+        public static int BaseSpDef(Species species)
+        {
+            return BaseStats[((int)species * 6) + 4];
+        }
+
+        public static int BaseSpeed(Species species)
+        {
+            return BaseStats[((int)species * 6) + 5];
+        }
+
         public static ReadOnlySpan<int> BaseStats =>
         [
             0, 0, 0, 0, 0, 0, // Unused 

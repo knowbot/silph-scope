@@ -15,8 +15,8 @@ namespace SilphScope.Models.Core.Sprites
     {
         public static SpriteAsyncPool Current { get; } = new();
 
-        private CloseableWaitingQueue<SpriteLoadRequest> _requests = new();
-        private Thread _thread;
+        private readonly CloseableWaitingQueue<SpriteLoadRequest> _requests = new();
+        private readonly Thread _thread;
 
         private SpriteAsyncPool()
         {

@@ -9,6 +9,6 @@ namespace SilphScope.Models.Games.Parsers.Common.Text
         /// </summary>
         /// <param name="encoded">Encoded data</param>
         /// <returns>Decoded UTF-16 string</returns>
-        public abstract static string Decode(ReadOnlySpan<byte> encoded);
+        public static abstract string Decode(ReadOnlySpan<byte> encoded);
     }
 }

@@ -9,30 +9,30 @@ namespace SilphScope.ViewModels
     public partial class PokemonViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private string? _Name;
+        private readonly string? _name;
 
         [ObservableProperty]
-        private string? _Gender;
+        private readonly string? _gender;
 
         [ObservableProperty]
-        private Bitmap? _Sprite;
+        private readonly Bitmap? _sprite;
 
         [ObservableProperty]
-        private int _Exp;
+        private readonly int _exp;
 
         [ObservableProperty]
-        private int _Level;
+        private readonly int _level;
 
         [ObservableProperty]
-        private int _LevelProgress;
+        private readonly int _levelProgress;
 
         [ObservableProperty]
-        private int _LevelToNext;
+        private readonly int _levelToNext;
 
         public int ExpBarLength => LevelProgress + LevelToNext;
 
         [ObservableProperty]
-        private PokeballViewModel? _Pokeball;
+        private readonly PokeballViewModel? _pokeball;
 
         public HeldItemViewModel HeldItem { get; } = new();
 

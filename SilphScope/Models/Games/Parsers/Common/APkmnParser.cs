@@ -16,7 +16,7 @@ namespace SilphScope.Models.Games.Parsers.Common
         public abstract int GetPartyPkmnSize();
         public virtual Level GetLevel(ushort species, uint experience)
         {
-            GrowthRate growRate = (GrowthRate)StaticData.SpeciesData.GrowRate[(int)species];
+            GrowthRate growRate = (GrowthRate)StaticData.SpeciesData.GrowRate[species];
 
             ReadOnlySpan<uint> expTable = growRate switch
             {

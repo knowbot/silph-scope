@@ -20,6 +20,9 @@
         int Skip { get; }
         int BoxPokemon { get; }
 
-        public nint GetSaveAddr(nint baseAddr, nint localSaveAddr) => localSaveAddr - RamStart + baseAddr + Skip;
+        public nint GetSaveAddr(nint baseAddr, nint localSaveAddr)
+        {
+            return localSaveAddr - RamStart + baseAddr + Skip;
+        }
     }
 }

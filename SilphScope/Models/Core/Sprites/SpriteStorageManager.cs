@@ -10,7 +10,7 @@ namespace SilphScope.Models.Core.Sprites
         public static SpriteStorageManager Current { get; } = new();
 
         private const string CacheDir = ".cache";
-        private string _fullCacheDirPath;
+        private readonly string _fullCacheDirPath;
 
         private SpriteStorageManager()
         {

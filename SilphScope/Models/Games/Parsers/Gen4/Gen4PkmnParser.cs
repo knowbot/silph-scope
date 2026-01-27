@@ -211,7 +211,14 @@ namespace SilphScope.Models.Games.Parsers.Gen4
             return moves;
         }
 
-        public override int GetPartyPkmnSize() => _unencryptedSize + _encryptedSize + _battleStatsSize;
-        public override int GetBoxPkmnSize() => _unencryptedSize + _encryptedSize;
+        public override int GetPartyPkmnSize()
+        {
+            return _unencryptedSize + _encryptedSize + _battleStatsSize;
+        }
+
+        public override int GetBoxPkmnSize()
+        {
+            return _unencryptedSize + _encryptedSize;
+        }
     }
 }

@@ -9,19 +9,16 @@ namespace SilphScope.Models.Core.Sprites
     /// </summary>
     public class SpriteCache
     {
-        private Dictionary<SpriteFlags, Dictionary<Species, Bitmap>> _map = new();
+        private readonly Dictionary<SpriteFlags, Dictionary<Species, Bitmap>> _map = [];
 
         public Bitmap this[Species species, SpriteFlags flags]
         {
-            get
-            {
-                return _map[flags][species];
-            }
+            get => _map[flags][species];
             set
             {
                 if (!_map.TryGetValue(flags, out Dictionary<Species, Bitmap>? submap))
                 {
-                    submap = new Dictionary<Species, Bitmap>();
+                    submap = [];
                     _map[flags] = submap;
                 }
                 submap[species] = value;
