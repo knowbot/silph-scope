@@ -3,14 +3,14 @@ using SilphScope.Models.Games.State.Common;
 
 namespace SilphScope.ViewModels
 {
-	public partial class BoxTabViewModel : ViewModelBase
-	{
-		[ObservableProperty]
-		private BoxesViewModel _Boxes = new();
+    public partial class BoxTabViewModel : ViewModelBase
+    {
+        [ObservableProperty]
+        private BoxesViewModel _Boxes = new();
 
-		internal void UpdateGameState(Box[] boxes)
-		{
-			Boxes.UpdateGameState(boxes);
-		}
-	}
+        internal void UpdateGameState(Box[] boxes)
+        {
+            Boxes.UpdateGameState(boxes);
+        }
+    }
 }

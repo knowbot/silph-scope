@@ -4,35 +4,35 @@ using System.Collections.ObjectModel;
 
 namespace SilphScope.ViewModels
 {
-	public partial class BoxesViewModel : ViewModelBase
-	{
-		[ObservableProperty]
-		private ObservableCollection<BoxViewModel> _Boxes = new();
+    public partial class BoxesViewModel : ViewModelBase
+    {
+        [ObservableProperty]
+        private ObservableCollection<BoxViewModel> _Boxes = new();
 
-		[ObservableProperty]
-		private BoxViewModel? _Selected;
+        [ObservableProperty]
+        private BoxViewModel? _Selected;
 
-		public BoxesViewModel()
-		{
-		}
+        public BoxesViewModel()
+        {
+        }
 
-		internal void UpdateGameState(Box[] boxes)
-		{
-			// Keep the appropriate number of boxes.
-			while (Boxes.Count < boxes.Length)
-			{
-				Boxes.Add(new());
-			}
-			while (Boxes.Count > boxes.Length)
-			{
-				Boxes.RemoveAt(Boxes.Count - 1);
-			}
+        internal void UpdateGameState(Box[] boxes)
+        {
+            // Keep the appropriate number of boxes.
+            while (Boxes.Count < boxes.Length)
+            {
+                Boxes.Add(new());
+            }
+            while (Boxes.Count > boxes.Length)
+            {
+                Boxes.RemoveAt(Boxes.Count - 1);
+            }
 
-			// Update each box.
-			for (int i = 0; i < boxes.Length; i++)
-			{
-				Boxes[i].UpdateGameState(boxes[i]);
-			}
-		}
-	}
+            // Update each box.
+            for (int i = 0; i < boxes.Length; i++)
+            {
+                Boxes[i].UpdateGameState(boxes[i]);
+            }
+        }
+    }
 }

@@ -7,7 +7,7 @@ namespace SilphScope.Models.Core.Sprites
     {
         public void Foo()
         {
-            HttpClient client = new HttpClient();
+            HttpClient client = new();
             client.BaseAddress = new Uri("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png");
 
             // Add an Accept header for JSON format.

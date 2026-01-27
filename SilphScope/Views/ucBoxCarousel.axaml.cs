@@ -4,8 +4,8 @@ namespace SilphScope;
 
 public partial class ucBoxCarousel : UserControl
 {
-	public ucBoxCarousel()
-	{
-		InitializeComponent();
-	}
+    public ucBoxCarousel()
+    {
+        InitializeComponent();
+    }
 }

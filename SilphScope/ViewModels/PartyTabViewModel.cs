@@ -6,16 +6,16 @@ namespace SilphScope.ViewModels
     public partial class PartyTabViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private PartyViewModel _Party = new();
+        private TrainerViewModel _Party = new();
 
         public PartyTabViewModel()
         {
 
         }
 
-        public void UpdateGameState(Pkmn[] team)
+        public void UpdateGameState(Pkmn[] party)
         {
-            Party.UpdateGameState(team);
+            Party.UpdateGameState(party);
         }
     }
 }

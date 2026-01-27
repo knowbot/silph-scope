@@ -1,5 +1,4 @@
-﻿using SilphScope.Models.Core;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace SilphScope.Models.Core.WinNative
 {
