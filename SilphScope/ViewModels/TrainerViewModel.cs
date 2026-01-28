@@ -1,41 +1,39 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models.Games.State.Common;
-using System.Collections.ObjectModel;
 
 namespace SilphScope.ViewModels
 {
     public partial class TrainerViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private ObservableCollection<PokemonViewModel> _members = [];
-
+        private string _name = "???";
         [ObservableProperty]
-        private PokemonViewModel? _selected;
+        private ushort _id;
+        [ObservableProperty]
+        private uint _money;
+        [ObservableProperty]
+        private bool _gender;
+        [ObservableProperty]
+        private bool[] _badges = new bool[8];
+        [ObservableProperty]
+        private bool _hasBadges2 = false;
+        [ObservableProperty]
+        private bool[] _badges2 = new bool[8];
 
         public TrainerViewModel()
         { }
 
-        internal void UpdateGameState(Pkmn[] party)
+        internal void UpdateGameState(Trainer trainer)
         {
-            // First ever update. Insert 6 empty party slots.
-            if (Members.Count == 0)
+            Name = trainer.Name;
+            Id = trainer.Id;
+            Money = trainer.Money;
+            Gender = trainer.Gender;
+            HasBadges2 = trainer.Badges2 != null;
+            for (int i = 0; i < trainer.Badges; i++)
             {
-                for (int i = 0; i < 6; i++)
-                {
-                    Members.Add(new PokemonViewModel());
-                }
-            }
-
-            // Update the party members.
-            for (int i = 0; i < party.Length && i < Members.Count; i++)
-            {
-                Members[i].UpdateGameState(party[i]);
-            }
-
-            // Extra empty members.
-            for (int i = party.Length; i < Members.Count; i++)
-            {
-                Members[i].UpdateGameState(null);
+                Badges[i] = (trainer.Badges & (1 << i)) != 0;
+                if (HasBadges2) Badges2[i] = (trainer.Badges2 & (1 << i)) != 0;
             }
         }
     }
