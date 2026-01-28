@@ -9,10 +9,11 @@ namespace SilphScope.ViewModels
 {
     public partial class LogViewModel : ViewModelBase, IDisposable
     {
-        private const int MessageDurationMs = 5000;
+        private bool _isDisposed;
+        private const int _messageDurationMs = 5000;
 
         [ObservableProperty]
-        private ObservableCollection<string> _Messages = [];
+        private ObservableCollection<string> _messages = [];
 
         public LogViewModel()
         {
@@ -24,7 +25,7 @@ namespace SilphScope.ViewModels
             Messages.Add(message);
 
             // Delay and then come back to main thread to remove message.
-            Task.Delay(MessageDurationMs).ContinueWith(_ => Dispatcher.UIThread.Post(() => RemoveMessage(message)));
+            Task.Delay(_messageDurationMs).ContinueWith(_ => Dispatcher.UIThread.Post(() => RemoveMessage(message)));
         }
 
         private void RemoveMessage(string message)
@@ -32,18 +33,16 @@ namespace SilphScope.ViewModels
             Messages.RemoveAt(Messages.IndexOf(message));
         }
 
-        private bool isDisposed;
-
         public void Dispose()
         {
-            if (isDisposed)
+            if (_isDisposed)
             {
                 return;
             }
 
             SilphLogger.Message -= SilphScopeLogger_Message;
 
-            isDisposed = true;
+            _isDisposed = true;
         }
     }
 }

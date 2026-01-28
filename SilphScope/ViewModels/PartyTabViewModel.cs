@@ -6,7 +6,7 @@ namespace SilphScope.ViewModels
     public partial class PartyTabViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private TrainerViewModel _Party = new();
+        private PartyViewModel _party = new();
 
         public PartyTabViewModel()
         {

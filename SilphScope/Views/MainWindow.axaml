@@ -34,7 +34,7 @@
                         <Run Foreground="#54FF54" Text="CONNECTED"/>
                         <Run Text="|" Foreground="#D5D3D9"/>
                         <Run Text="{Binding Service.TargetProcess.Name}" Foreground="#D5D3D9"/>
-                        <Run Text="{Binding Service.TargetProcess.Pid, StringFormat='[PID: {0}]'}" Foreground="#D5D3D9"/>
+                        <Run Text="{Binding Service.TargetProcess.PId, StringFormat='[PID: {0}]'}" Foreground="#D5D3D9"/>
                     </TextBlock>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" IsVisible="{Binding Service.ShouldStart}">

@@ -9,15 +9,15 @@ namespace SilphScope.ViewModels
     public partial class ProcessViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private readonly string _name;
+        private string _name;
 
         [ObservableProperty]
-        private readonly int _pId;
+        private int _pId;
 
         [ObservableProperty]
-        private readonly string _mainWindowTitle;
+        private string _mainWindowTitle;
 
-        public readonly Process Process;
+        public Process Process;
 
         public ProcessViewModel(Process process)
         {

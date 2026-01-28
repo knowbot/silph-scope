@@ -6,7 +6,7 @@ namespace SilphScope.ViewModels
     public partial class BoxTabViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private BoxesViewModel _Boxes = new();
+        private BoxesViewModel _boxes = new();
 
         internal void UpdateGameState(Box[] boxes)
         {

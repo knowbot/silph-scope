@@ -7,13 +7,13 @@ namespace SilphScope.ViewModels
     public partial class BoxViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private ObservableCollection<PokemonViewModel> _Contents = [];
+        private ObservableCollection<PokemonViewModel> _contents = [];
 
         [ObservableProperty]
-        private PokemonViewModel? _Selected;
+        private PokemonViewModel? _selected;
 
         [ObservableProperty]
-        private string? _Name;
+        private string? _name;
 
         public BoxViewModel()
         { }

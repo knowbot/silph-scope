@@ -9,13 +9,13 @@ namespace SilphScope.ViewModels
 {
     public partial class SettingsTabViewModel : ViewModelBase
     {
-        public SilphServiceViewModel Service { get; set; }
-        [ObservableProperty]
-        private ObservableCollection<ProcessViewModel> _Processes = [];
-        public List<GameViewModel> SupportedGames { get; private set; }
-
         [ObservableProperty]
         private bool _isSelectingProcess = false;
+        [ObservableProperty]
+        private ObservableCollection<ProcessViewModel> _processes = [];
+        public SilphServiceViewModel Service { get; set; }
+        public List<GameViewModel> SupportedGames { get; private set; }
+
         partial void OnIsSelectingProcessChanged(bool value)
         {
             if (value)
@@ -29,12 +29,12 @@ namespace SilphScope.ViewModels
             List<Process> newProcesses = Process.GetProcesses()
                 .Where(x => !string.IsNullOrEmpty(x.MainWindowTitle))
                 .ToList();
-            HashSet<int> newPids = newProcesses.Select(p => p.Id).ToHashSet();
-            HashSet<int> currPids = Processes.Select(p => p.Pid).ToHashSet();
+            HashSet<int> newPIds = newProcesses.Select(p => p.Id).ToHashSet();
+            HashSet<int> currPIds = Processes.Select(p => p.PId).ToHashSet();
 
             for (int i = Processes.Count - 1; i >= 0; i--)
             {
-                if (!newPids.Contains(Processes[i].Pid))
+                if (!newPIds.Contains(Processes[i].PId))
                 {
                     Processes.RemoveAt(i);
                 }
@@ -42,7 +42,7 @@ namespace SilphScope.ViewModels
 
             foreach (Process process in newProcesses)
             {
-                if (!currPids.Contains(process.Id) && process.ProcessName.Contains("desmume", System.StringComparison.OrdinalIgnoreCase))
+                if (!currPIds.Contains(process.Id) && process.ProcessName.Contains("desmume", System.StringComparison.OrdinalIgnoreCase))
                 {
                     Processes.Add(new ProcessViewModel(process));
                 }
@@ -53,7 +53,6 @@ namespace SilphScope.ViewModels
                 Service.TargetProcess = Processes.FirstOrDefault();
             }
         }
-
         public SettingsTabViewModel(SilphServiceViewModel silphService)
         {
             Service = silphService;

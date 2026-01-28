@@ -7,10 +7,10 @@ namespace SilphScope.ViewModels
     public partial class TrainerViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private ObservableCollection<PokemonViewModel> _Members = [];
+        private ObservableCollection<PokemonViewModel> _members = [];
 
         [ObservableProperty]
-        private PokemonViewModel? _Selected;
+        private PokemonViewModel? _selected;
 
         public TrainerViewModel()
         { }

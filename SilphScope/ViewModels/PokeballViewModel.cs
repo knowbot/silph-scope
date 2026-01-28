@@ -6,6 +6,6 @@ namespace SilphScope.ViewModels
     public partial class PokeballViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private Bitmap? _Sprite;
+        private Bitmap? _sprite;
     }
 }

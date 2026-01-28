@@ -8,12 +8,12 @@ namespace SilphScope.ViewModels
     public partial class GameViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private string _Name;
+        private string _name;
         [ObservableProperty]
-        private string _ProductId;
+        private string _productId;
         [ObservableProperty]
-        private Bitmap _Icon;
-        public readonly Game Game;
+        private Bitmap _icon;
+        public Game Game;
 
         public GameViewModel(Game game)
         {

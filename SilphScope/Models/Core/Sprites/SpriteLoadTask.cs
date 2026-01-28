@@ -6,13 +6,13 @@ namespace SilphScope.Models.Core.Sprites
 {
     public class SpriteLoadTask
     {
-        private SpriteLoadResult? _Result;
+        private SpriteLoadResult? _result;
         public SpriteLoadResult Result
         {
             get
             {
                 Wait();
-                return _Result!;
+                return _result!;
             }
         }
 
@@ -38,7 +38,7 @@ namespace SilphScope.Models.Core.Sprites
             lock (_locker)
             {
                 _completed = true;
-                _Result = result;
+                _result = result;
             }
 
             foreach (Action action in _onCompletedActions)

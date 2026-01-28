@@ -8,10 +8,10 @@ namespace SilphScope.ViewModels
     public partial class HeldItemViewModel : ViewModelBase
     {
         [ObservableProperty]
-        private readonly string? _name;
+        private string? _name;
 
         [ObservableProperty]
-        private readonly Bitmap? _sprite;
+        private Bitmap? _sprite;
 
         public HeldItemViewModel() { }
 

@@ -7,7 +7,7 @@
              x:Class="SilphScope.ucProcess"
              x:DataType="vm:ProcessViewModel">
     <StackPanel Orientation="Horizontal">
-	    <TextBlock Text="{Binding Pid, StringFormat={}[{0}]}"/>
+	    <TextBlock Text="{Binding PId, StringFormat={}[{0}]}"/>
         <TextBlock Text=" "/>
         <TextBlock Text="{Binding Name}"/>
     </StackPanel>
