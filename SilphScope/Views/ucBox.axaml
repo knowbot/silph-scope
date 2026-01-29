@@ -4,8 +4,9 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:SilphScope.ViewModels"
 			 xmlns:local="using:SilphScope"
+			 xmlns:views="using:SilphScope.Views"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="SilphScope.ucBox"
+			 x:Class="SilphScope.Views.ucBox"
 			 x:DataType="vm:BoxViewModel">
 	<Design.DataContext>
 		<vm:BoxViewModel/>
@@ -19,7 +20,7 @@
 		</ListBox.ItemsPanel>
 		<ListBox.ItemTemplate>
 			<DataTemplate x:DataType="vm:PokemonViewModel">
-				<local:ucBoxedPokemon/>
+				<views:ucBoxedPokemon/>
 			</DataTemplate>
 		</ListBox.ItemTemplate>
 	</ListBox>

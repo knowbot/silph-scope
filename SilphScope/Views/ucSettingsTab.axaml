@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:SilphScope.ViewModels"
 			 xmlns:local="using:SilphScope"
+			 xmlns:views="using:SilphScope.Views"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SilphScope.ucSettingsTab"
+             x:Class="SilphScope.Views.ucSettingsTab"
              x:DataType="vm:SettingsTabViewModel"
              >
 	<DockPanel Margin="20">
@@ -16,7 +17,7 @@
 			<ComboBox SelectedItem="{Binding Service.TargetGame}" ItemsSource="{Binding SupportedGames}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
 			<ComboBox.ItemTemplate>
 				<DataTemplate DataType="vm:GameViewModel">
-					<local:ucGame/>
+					<views:ucGame/>
 				</DataTemplate>
 			</ComboBox.ItemTemplate>
 			</ComboBox>
@@ -33,7 +34,7 @@
 			<ComboBox SelectedItem="{Binding Service.TargetProcess}" ItemsSource="{Binding Processes}" IsDropDownOpen="{Binding IsSelectingProcess, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
 				<ComboBox.ItemTemplate>
 					<DataTemplate DataType="vm:ProcessViewModel">
-						<local:ucProcess/>
+						<views:ucProcess/>
 					</DataTemplate>
 				</ComboBox.ItemTemplate>
 			</ComboBox>

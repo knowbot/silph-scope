@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Extensions;
 using SilphScope.Models.Games;
 
 namespace SilphScope.ViewModels
@@ -20,7 +21,7 @@ namespace SilphScope.ViewModels
             Game = game;
             Name = game.Name;
             ProductId = game.ProductId;
-            Icon = new Bitmap(AssetLoader.Open(game.Icon));
+            Icon = new Bitmap(AssetLoader.Open(game.IconPath.ToAvaresUri()));
         }
     }
 }

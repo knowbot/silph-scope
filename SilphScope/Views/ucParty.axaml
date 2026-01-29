@@ -3,9 +3,10 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
-			 xmlns:local="clr-namespace:SilphScope"
+			 xmlns:local="using:SilphScope"
+			 xmlns:views="using:SilphScope.Views"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="SilphScope.ucParty"
+			 x:Class="SilphScope.Views.ucParty"
 			 x:DataType="vm:PartyViewModel">
 	<ListBox ItemsSource="{Binding Members}" SelectedItem="{Binding Selected}" Background="Transparent">
 		<ListBox.ItemsPanel>
@@ -15,7 +16,7 @@
 		</ListBox.ItemsPanel>
 		<ListBox.ItemTemplate>
 			<DataTemplate x:DataType="vm:PokemonViewModel">
-				<local:ucPartyPokemon/>
+				<views:ucPartyPokemon/>
 			</DataTemplate>
 		</ListBox.ItemTemplate>
 	</ListBox>

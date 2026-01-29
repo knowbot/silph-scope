@@ -17,7 +17,14 @@ namespace SilphScope.Models.Games.Parsers.Common
             ushort trainerId = data.Read<ushort>(layout.TrainerID);
             uint money = data.Read<uint>(layout.Money);
             bool gender = data.Read<byte>(layout.Gender) != 0;
-            byte badges = data.Read<byte>(layout.Badges);
+            byte badgeFlags = data.Read<byte>(layout.Badges);
+            bool[] badges = new bool[8];
+            for (int i = 0; i < badges.Length; i++)
+            {
+                badges[i] = (badgeFlags & (1 << i)) != 0;
+                //if (HasExtraBadges) ExtraBadges[i] = (trainer.ExtraBadges & (1 << i)) != 0;
+            }
+
             return new Trainer(name, trainerId, money, gender, badges);
         }
     }

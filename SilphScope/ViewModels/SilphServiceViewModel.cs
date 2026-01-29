@@ -1,19 +1,28 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models.Core;
 using SilphScope.Models.Core.Messages;
+using SilphScope.Models.Games;
 using SilphScope.Models.Games.State;
 
 namespace SilphScope.ViewModels
 {
     public partial class SilphServiceViewModel : ViewModelBase
     {
-        public delegate void GameStateUpdateHandler(SilphServiceViewModel sender, FrameData state);
-        public event GameStateUpdateHandler? GameStateUpdated;
+        public delegate void GameStateUpdatedHandler(SilphServiceViewModel sender, FrameData state);
+        public event GameStateUpdatedHandler? GameStateUpdated;
         public delegate void SilphStateChangedHandler(SilphServiceViewModel sender, SilphState state);
         public event SilphStateChangedHandler? SilphStateChanged;
+        public delegate void GameDetectedHandler(SilphServiceViewModel sender, Game game);
+        public event GameDetectedHandler? GameDetected;
 
         [ObservableProperty]
         private bool _shouldStart = false;
+        [ObservableProperty]
+        private ProcessViewModel? _targetProcess;
+        [ObservableProperty]
+        private GameViewModel? _targetGame;
+        [ObservableProperty]
+        private SilphService? _service;
 
         public void Start()
         {
@@ -25,7 +34,7 @@ namespace SilphScope.ViewModels
             if (Service == null)
             {
                 Service = new SilphService(TargetProcess.Process, TargetGame.Game);
-                Service.OnMessage += Watch_OnMessage;
+                Service.OnMessage += OnMessage;
                 Service.Start();
             }
             else if (Service.State == SilphState.Stopped)
@@ -59,33 +68,26 @@ namespace SilphScope.ViewModels
                 Stop();
             }
         }
-        [ObservableProperty]
-        private ProcessViewModel? _targetProcess;
 
-        [ObservableProperty]
-        private GameViewModel? _targetGame;
-
-        [ObservableProperty]
-        private SilphService? _service;
-
-        private void Watch_OnMessage(SilphService sender, SilphServiceMessage message)
+        private void OnMessage(SilphService sender, SilphServiceMessage message)
         {
-            if (message is DebugMessage dmessage)
+            switch (message)
             {
-                SilphLogger.Log(dmessage.Message);
-            }
-            else if (message is GameStateUpdate gmessage)
-            {
-                GameStateUpdated?.Invoke(this, gmessage.NewGameState);
-            }
-            else if (message is SilphStateChangedMessage smessage)
-            {
-                SilphLogger.Log($"Service is now: {smessage.NewState}");
-            }
-            else
-            {
-                //Debugger.Break();
-                SilphLogger.Log($"Message type not implemented: {message}");
+                case DebugMessage dMessage:
+                    SilphLogger.Log(dMessage.Message);
+                    break;
+                case SilphStateChangedMessage scMessage:
+                    SilphLogger.Log($"Service is now: {scMessage.NewState}");
+                    break;
+                case GameStateUpdateMessage guMessage:
+                    GameStateUpdated?.Invoke(this, guMessage.NewGameState);
+                    break;
+                case GameDetectedMessage gdMessage:
+                    GameDetected?.Invoke(this, gdMessage.TargetGame);
+                    break;
+                default:
+                    SilphLogger.Log($"Message type not implemented: {message}");
+                    break;
             }
         }
 

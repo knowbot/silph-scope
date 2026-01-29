@@ -2,7 +2,7 @@
 
 namespace SilphScope.Models.Core.Messages
 {
-    public class GameStateUpdate(FrameData newGameState) : SilphServiceMessage
+    public class GameStateUpdateMessage(FrameData newGameState) : SilphServiceMessage
     {
         public readonly FrameData NewGameState = newGameState;
     }

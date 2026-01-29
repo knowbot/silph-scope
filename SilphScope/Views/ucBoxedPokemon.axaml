@@ -5,7 +5,7 @@
              xmlns:vm="using:SilphScope.ViewModels"
 			 xmlns:local="using:SilphScope"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SilphScope.ucBoxedPokemon"
+             x:Class="SilphScope.Views.ucBoxedPokemon"
              x:DataType="vm:PokemonViewModel">
     <Design.DataContext>
 		<vm:PokemonViewModel/>

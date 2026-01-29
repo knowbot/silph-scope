@@ -3,9 +3,10 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
-			 xmlns:local="clr-namespace:SilphScope"
+			 xmlns:local="using:SilphScope"
+			 xmlns:views="using:SilphScope.Views"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="SilphScope.ucPartyTab"
+			 x:Class="SilphScope.Views.ucPartyTab"
 			 x:DataType="vm:PartyTabViewModel">
 	<Design.DataContext>
 		<vm:PartyTabViewModel/>
@@ -13,10 +14,11 @@
 	<Grid ColumnDefinitions="2* 1*">
 		<!-- Party in the first column -->
 		<DockPanel>
-			<local:ucParty Grid.Column="0" DockPanel.Dock="Top" DataContext="{Binding Party}"/>
+			<views:ucParty Grid.Column="0" DockPanel.Dock="Top" DataContext="{Binding Party}"/>
+			<views:ucTrainer DockPanel.Dock="Bottom" DataContext="{Binding Trainer}"/>
 			<Panel></Panel>
 		</DockPanel>
 		<!-- Details in the second column -->
-		<local:ucPokemonDetails Grid.Column="1" DataContext="{Binding Party.Selected}"/>
+		<views:ucPokemonDetails Grid.Column="1" DataContext="{Binding Party.Selected}"/>
 	</Grid>
 </UserControl>

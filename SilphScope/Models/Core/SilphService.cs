@@ -109,6 +109,7 @@ namespace SilphScope.Models.Core
                         ScanForAnchor();
                         break;
                     case SilphState.Started:
+                        OnMessage?.Invoke(this, new GameDetectedMessage(_targetGame));
                         UpdateGameData();
                         break;
                 }
@@ -132,7 +133,7 @@ namespace SilphScope.Models.Core
             Pkmn[] party = _partyParser.Parse(context);
             Box[] boxes = _boxParser.Parse(context);
             FrameData gameState = new(trainer, [.. party], boxes);
-            OnMessage?.Invoke(this, new GameStateUpdate(gameState));
+            OnMessage?.Invoke(this, new GameStateUpdateMessage(gameState));
             //}
             //catch (ParserException ex)
             //{

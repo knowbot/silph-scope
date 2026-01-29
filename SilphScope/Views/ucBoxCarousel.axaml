@@ -4,8 +4,9 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="using:SilphScope.ViewModels"
 			 xmlns:local="using:SilphScope"
+			 xmlns:views="using:SilphScope.Views"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="SilphScope.ucBoxCarousel"
+			 x:Class="SilphScope.Views.ucBoxCarousel"
 			 x:DataType="vm:BoxesViewModel">
 	<Design.DataContext>
 		<vm:BoxesViewModel/>
@@ -22,7 +23,7 @@
 		<Carousel ItemsSource="{Binding Boxes}" SelectedItem="{Binding Selected}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 			<Carousel.ItemTemplate>
 				<DataTemplate x:DataType="vm:BoxViewModel">
-					<local:ucBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+					<views:ucBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 				</DataTemplate>
 			</Carousel.ItemTemplate>
 		</Carousel>

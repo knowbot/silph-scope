@@ -1,4 +1,4 @@
 ﻿namespace SilphScope.Models.Games.State.Common
 {
-    public record Trainer(string Name, ushort Id, uint Money, bool Gender, byte Badges, byte? Badges2 = null);
+    public record Trainer(string Name, ushort Id, uint Money, bool Gender, bool[] Badges, bool[]? ExtraBadges = null);
 }

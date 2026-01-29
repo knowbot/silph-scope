@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Games;
 using SilphScope.Models.Games.State.Common;
 
 namespace SilphScope.ViewModels
@@ -7,15 +8,22 @@ namespace SilphScope.ViewModels
     {
         [ObservableProperty]
         private PartyViewModel _party = new();
+        [ObservableProperty]
+        private TrainerViewModel _trainer = new();
 
         public PartyTabViewModel()
         {
-
         }
 
-        public void UpdateGameState(Pkmn[] party)
+        public void UpdateGameState(Pkmn[] party, Trainer trainer)
         {
             Party.UpdateGameState(party);
+            Trainer.UpdateGameState(trainer);
+        }
+
+        public void SetCurrentGame(Game game)
+        {
+            Trainer.SetCurrentGame(game);
         }
     }
 }

@@ -1,20 +1,20 @@
 ﻿using SilphScope.Models.Games.MemoryLayouts;
 using SilphScope.Models.Games.MemoryLayouts.Gen4;
-using System;
 using System.Collections.Generic;
 
 namespace SilphScope.Models.Games
 {
-    public record Game(string Name, string ProductId, string IconPath, byte Generation, IMemoryLayout Layout)
+    public record Game(string Name, string ProductId, byte Generation, IMemoryLayout Layout, string IconPath, string BadgesPath, bool HasExtraBadges = false)
     {
         public string Name = Name;
         public string ProductId = ProductId;
-        public Uri Icon = new(IconPath);
         public byte Generation = Generation;
         public IMemoryLayout Layout = Layout;
+        public string IconPath = new(IconPath);
+        public string BadgesPath = new(BadgesPath);
 
         public static readonly IReadOnlyList<Game> Supported = [
-            new Game("Pokémon Platinum (U)", "CPUE", "avares://SilphScope/Assets/Images/GameIcons/NDS/Platinum_icon.png", 4, new PtLayout()),
+            new Game("Pokémon Platinum (U)", "CPUE", 4, new PtLayout(), "Assets/Images/GameIcons/NDS/Platinum_icon.png", "Assets/Images/Badges/DPPt"),
         ];
     }
 }

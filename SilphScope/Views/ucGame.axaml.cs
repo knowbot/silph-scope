@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace SilphScope;
+namespace SilphScope.Views;
 
 public partial class ucGame : UserControl
 {

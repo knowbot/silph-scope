@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Games;
 using SilphScope.Models.Games.State.Common;
+using System.Collections.ObjectModel;
 
 namespace SilphScope.ViewModels
 {
@@ -13,28 +15,38 @@ namespace SilphScope.ViewModels
         private uint _money;
         [ObservableProperty]
         private bool _gender;
-        [ObservableProperty]
-        private bool[] _badges = new bool[8];
-        [ObservableProperty]
-        private bool _hasBadges2 = false;
-        [ObservableProperty]
-        private bool[] _badges2 = new bool[8];
+
+        private bool[] _badgeSet = new bool[8];
+        private bool[]? _extraBadgeSet;
+        private Game? _game;
+
+        public bool HasExtraBadgeSet => _extraBadgeSet != null;
+
+        public ObservableCollection<BadgeViewModel> Badges { get; private set; } = [];
+        public bool IsGameDetected => _game != null;
 
         public TrainerViewModel()
         { }
 
-        internal void UpdateGameState(Trainer trainer)
+        public void UpdateGameState(Trainer trainer)
         {
             Name = trainer.Name;
             Id = trainer.Id;
             Money = trainer.Money;
             Gender = trainer.Gender;
-            HasBadges2 = trainer.Badges2 != null;
-            for (int i = 0; i < trainer.Badges; i++)
+            _badgeSet = trainer.Badges;
+            _extraBadgeSet = trainer.ExtraBadges;
+        }
+
+        public void SetCurrentGame(Game game)
+        {
+            _game = game;
+            Badges.Clear();
+            for (int i = 0; i < _badgeSet.Length; i++)
             {
-                Badges[i] = (trainer.Badges & (1 << i)) != 0;
-                if (HasBadges2) Badges2[i] = (trainer.Badges2 & (1 << i)) != 0;
+                Badges.Add(new(i + 1, game.BadgesPath, _badgeSet[i]));
             }
         }
+
     }
 }

@@ -4,11 +4,13 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:vm="using:SilphScope.ViewModels"
 		xmlns:local="using:SilphScope"
+		xmlns:views="using:SilphScope.Views"
 		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 		x:Class="SilphScope.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
 		Icon="/Assets/silph-logo.ico"
-		Title="SilphScope">
+		Title="SilphScope"
+		>
 	<Design.DataContext>
 		<!-- This only sets the DataContext for the previewer in an IDE,
 		to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
@@ -30,7 +32,7 @@
                                 Margin="10 0 0 0"
                                 Width="8" Height="8"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <TextBlock  FontFamily="{StaticResource SpaceMono}" Margin="10,5">
+                    <TextBlock FontFamily="{StaticResource SpaceMono}" Margin="10,5">
                         <Run Foreground="#54FF54" Text="CONNECTED"/>
                         <Run Text="|" Foreground="#D5D3D9"/>
                         <Run Text="{Binding Service.TargetProcess.Name}" Foreground="#D5D3D9"/>
@@ -51,7 +53,7 @@
 					<TabItem.Header>
 						<Border Width="32" Height="32" Child="{DynamicResource SettingsIcon}"/>
 					</TabItem.Header>
-					<local:ucSettingsTab DataContext="{Binding SettingsTab}"/>
+					<views:ucSettingsTab DataContext="{Binding SettingsTab}"/>
 				</TabItem>
 				<TabItem>
 					<TabItem.Header>
@@ -62,18 +64,18 @@
 					<TabItem.Header>
 						<Border Width="32" Height="32" Child="{DynamicResource PartyIcon}"/>
 					</TabItem.Header>
-					<local:ucPartyTab DataContext="{Binding PartyTab}"/>
+					<views:ucPartyTab DataContext="{Binding PartyTab}"/>
 				</TabItem>
 				<TabItem>
 					<TabItem.Header>
 						<Border Width="32" Height="32" Child="{DynamicResource BoxIcon}"/>
 					</TabItem.Header>
-					<local:ucBoxTab DataContext="{Binding BoxTab}"/>
+					<views:ucBoxTab DataContext="{Binding BoxTab}"/>
 				</TabItem>
 			</TabControl>
 
 			<!-- Log -->
-			<local:ucLog DockPanel.Dock="Bottom" DataContext="{Binding Log}"/>
+			<views:ucLog DockPanel.Dock="Bottom" DataContext="{Binding Log}"/>
 		</Panel>
 	</DockPanel>
 

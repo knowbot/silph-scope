@@ -3,9 +3,10 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
-			 xmlns:local="clr-namespace:SilphScope"
+			 xmlns:local="using:SilphScope"
+			 xmlns:views="using:SilphScope.Views"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-			 x:Class="SilphScope.ucPokemonDetails"
+			 x:Class="SilphScope.Views.ucPokemonDetails"
 			 x:DataType="vm:PokemonViewModel">
 	<Design.DataContext>
 		<vm:PokemonViewModel/>
