@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Core;
 using SilphScope.Models.Games;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,15 +27,13 @@ namespace SilphScope.ViewModels
 
         public void RefreshProcesses()
         {
-            List<Process> newProcesses = Process.GetProcesses()
-                .Where(x => !string.IsNullOrEmpty(x.MainWindowTitle))
-                .ToList();
-            HashSet<int> newPIds = newProcesses.Select(p => p.Id).ToHashSet();
-            HashSet<int> currPIds = Processes.Select(p => p.PId).ToHashSet();
+            List<Process> newProcesses = Process.GetProcesses().ToList();
+            HashSet<int> newPids = newProcesses.Select(p => p.Id).ToHashSet();
+            HashSet<int> currPids = Processes.Select(p => p.PId).ToHashSet();
 
             for (int i = Processes.Count - 1; i >= 0; i--)
             {
-                if (!newPIds.Contains(Processes[i].PId))
+                if (!newPids.Contains(Processes[i].PId))
                 {
                     Processes.RemoveAt(i);
                 }
@@ -42,7 +41,7 @@ namespace SilphScope.ViewModels
 
             foreach (Process process in newProcesses)
             {
-                if (!currPIds.Contains(process.Id) && process.ProcessName.Contains("desmume", System.StringComparison.OrdinalIgnoreCase))
+                if (!currPids.Contains(process.Id) && process.ProcessName.Contains("desmume", System.StringComparison.OrdinalIgnoreCase))
                 {
                     Processes.Add(new ProcessViewModel(process));
                 }
