@@ -17,7 +17,7 @@ namespace SilphScope.ViewModels
 
         public void UpdateGameState(ItemName item)
         {
-            Name = item.GetName();
+            Name = item.GetDescription();
         }
     }
 }

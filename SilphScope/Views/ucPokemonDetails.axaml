@@ -12,26 +12,24 @@
 		<vm:PokemonViewModel/>
 	</Design.DataContext>
 
-	<StackPanel>
-		<!-- Name, gender, level -->
-		<DockPanel>
-			<TextBlock DockPanel.Dock="Left" Text="{Binding Name}" Margin="16 16 8 16"/>
-			<TextBlock DockPanel.Dock="Left" Text="{Binding Gender}" Margin="0 16 0 16"/>
-			<TextBlock DockPanel.Dock="Right" Text="{Binding Level, StringFormat={}Lv. {0}}" Margin="0 16 16 16"/>
-			<Rectangle/>
+	<StackPanel Orientation="Vertical">
+		<!-- General details -->
+		<DockPanel HorizontalAlignment="Stretch">
+			<Image DockPanel.Dock="Left" Stretch="None" Source="{Binding Sprite}"/>
+			<UniformGrid Columns="1">
+				<!-- Name, gender, levels -->
+				<StackPanel Orientation="Horizontal" Spacing="8">
+					<TextBlock Text="{Binding Name}"/>
+					<TextBlock Text="{Binding Gender}"/>
+					<TextBlock Text="{Binding Level, StringFormat={}Lv. {0}}"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="{Binding Type1}"/>
+					<TextBlock Text="/"/>
+					<TextBlock Text="{Binding Type2}"/>
+				</StackPanel>
+				<TextBlock Text="{Binding Nature}"/>
+			</UniformGrid>
 		</DockPanel>
-
-		<Panel HorizontalAlignment="Stretch">
-			<!-- Main sprite -->
-			<Image Source="{Binding Sprite}" HorizontalAlignment="Stretch" RenderOptions.BitmapInterpolationMode="None"/>
-			
-			<!-- Pokeball -->
-			<Image Source="{Binding Pokeball.Sprite}" HorizontalAlignment="Left" VerticalAlignment="Bottom" RenderOptions.BitmapInterpolationMode="None"/>
-			
-			<!-- Held item -->
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-				<TextBlock Text="{Binding HeldItem.Name}"/>
-			</StackPanel>
-		</Panel>
 	</StackPanel>
 </UserControl>

@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models.Core.Sprites;
+using SilphScope.Models.Extensions;
 using SilphScope.Models.Games.State.Common;
 
 namespace SilphScope.ViewModels
@@ -13,6 +14,15 @@ namespace SilphScope.ViewModels
 
         [ObservableProperty]
         private string? _gender;
+
+        [ObservableProperty]
+        private string? _type1;
+
+        [ObservableProperty]
+        private string? _type2;
+
+        [ObservableProperty]
+        private string? _nature;
 
         [ObservableProperty]
         private Bitmap? _sprite;
@@ -45,7 +55,7 @@ namespace SilphScope.ViewModels
             }
 
             Name = string.IsNullOrEmpty(pokemon.Nickname) ? pokemon.Species.ToString() : pokemon.Nickname;
-            Gender = "???";
+            Gender = pokemon.Gender.GetDescription();
             Level = pokemon.Level.Current;
             LevelProgress = (int)pokemon.Level.Progress;
             LevelToNext = (int)pokemon.Level.ToNext;
