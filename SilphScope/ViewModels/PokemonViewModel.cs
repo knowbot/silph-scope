@@ -7,65 +7,66 @@ using SilphScope.Models.Games.State.Common;
 
 namespace SilphScope.ViewModels
 {
-    public partial class PokemonViewModel : ViewModelBase
-    {
-        [ObservableProperty]
-        private string? _name;
+	public partial class PokemonViewModel : ViewModelBase
+	{
+		[ObservableProperty]
+		private string? _name;
 
-        [ObservableProperty]
-        private string? _gender;
+		[ObservableProperty]
+		private string? _gender;
 
-        [ObservableProperty]
-        private string? _type1;
+		[ObservableProperty]
+		private string? _type1;
 
-        [ObservableProperty]
-        private string? _type2;
+		[ObservableProperty]
+		private string? _type2;
 
-        [ObservableProperty]
-        private string? _nature;
+		[ObservableProperty]
+		private string? _nature;
 
-        [ObservableProperty]
-        private Bitmap? _sprite;
+		[ObservableProperty]
+		private Bitmap? _sprite;
 
-        [ObservableProperty]
-        private int _exp;
+		[ObservableProperty]
+		private int _exp;
 
-        [ObservableProperty]
-        private int _level;
+		[ObservableProperty]
+		private int _level;
 
-        [ObservableProperty]
-        private int _levelProgress;
+		[ObservableProperty]
+		private int _levelProgress;
 
-        [ObservableProperty]
-        private int _levelToNext;
+		[ObservableProperty]
+		private int _levelToNext;
 
-        public int ExpBarLength => LevelProgress + LevelToNext;
+		public int ExpBarLength => LevelProgress + LevelToNext;
 
-        [ObservableProperty]
-        private PokeballViewModel? _pokeball;
+		[ObservableProperty]
+		private PokeballViewModel? _pokeball;
 
-        public HeldItemViewModel HeldItem { get; } = new();
+		public HeldItemViewModel HeldItem { get; } = new();
 
-        public void UpdateGameState(Pkmn? pokemon)
-        {
-            if (pokemon == null)
-            {
-                Name = string.Empty;
-                return;
-            }
+		public void UpdateGameState(Pkmn? pokemon)
+		{
+			if (pokemon == null)
+			{
+				Name = string.Empty;
+				return;
+			}
 
-            Name = string.IsNullOrEmpty(pokemon.Nickname) ? pokemon.Species.ToString() : pokemon.Nickname;
-            Gender = pokemon.Gender.GetDescription();
-            Level = pokemon.Level.Current;
-            LevelProgress = (int)pokemon.Level.Progress;
-            LevelToNext = (int)pokemon.Level.ToNext;
-            Exp = (int)pokemon.Exp;
-            HeldItem.UpdateGameState(pokemon.HeldItem);
+			Name = string.IsNullOrEmpty(pokemon.Nickname) ? pokemon.Species.ToString() : pokemon.Nickname;
+			Gender = pokemon.Gender.GetDescription();
+			Level = pokemon.Level.Current;
+			LevelProgress = (int)pokemon.Level.Progress;
+			LevelToNext = (int)pokemon.Level.ToNext;
+			Exp = (int)pokemon.Exp;
+			HeldItem.UpdateGameState(pokemon.HeldItem);
+			Nature = pokemon.Nature.ToString();
 
-            // Ask for asynchronous sprite loading.
-            // When sprite has been loaded, go back to UI thread to update UI.
-            SpriteLoadTask task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
-            task.OnCompleted(() => Dispatcher.UIThread.Post(() => Sprite = task.Result.Sprite));
-        }
-    }
+			// Ask for asynchronous sprite loading.
+			// When sprite has been loaded, go back to UI thread to update UI.
+			SpriteLoadTask task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
+			task.OnCompleted(() => Dispatcher.UIThread.Post(() => Sprite = task.Result.Sprite));
+		}
+	}
 }

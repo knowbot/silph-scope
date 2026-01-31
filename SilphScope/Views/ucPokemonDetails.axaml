@@ -15,20 +15,22 @@
 	<StackPanel Orientation="Vertical">
 		<!-- General details -->
 		<DockPanel HorizontalAlignment="Stretch">
-			<Image DockPanel.Dock="Left" Stretch="None" Source="{Binding Sprite}"/>
+			<Border Background="Red">
+				<Image DockPanel.Dock="Left" Stretch="None" Source="{Binding Sprite}"/>
+			</Border>
 			<UniformGrid Columns="1">
 				<!-- Name, gender, levels -->
-				<StackPanel Orientation="Horizontal" Spacing="8">
+				<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
 					<TextBlock Text="{Binding Name}"/>
 					<TextBlock Text="{Binding Gender}"/>
 					<TextBlock Text="{Binding Level, StringFormat={}Lv. {0}}"/>
 				</StackPanel>
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
 					<TextBlock Text="{Binding Type1}"/>
 					<TextBlock Text="/"/>
 					<TextBlock Text="{Binding Type2}"/>
 				</StackPanel>
-				<TextBlock Text="{Binding Nature}"/>
+				<TextBlock Text="{Binding Nature}" VerticalAlignment="Center"/>
 			</UniformGrid>
 		</DockPanel>
 	</StackPanel>
