@@ -4,6 +4,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models.Core.Sprites;
 using SilphScope.Models.Extensions;
 using SilphScope.Models.Games.State.Common;
+using SilphScope.Models.Games.StaticData;
+using SilphScope.Models.Games.StaticData.Enums;
 
 namespace SilphScope.ViewModels
 {
@@ -62,6 +64,10 @@ namespace SilphScope.ViewModels
 			Exp = (int)pokemon.Exp;
 			HeldItem.UpdateGameState(pokemon.HeldItem);
 			Nature = pokemon.Nature.ToString();
+
+			(Types, Types?) typeData = TypeTables.Gen3to5[(int)pokemon.Species];
+			Type1 = typeData.Item1.GetDescription();
+			Type2 = typeData.Item2?.GetDescription();
 
 			// Ask for asynchronous sprite loading.
 			// When sprite has been loaded, go back to UI thread to update UI.
