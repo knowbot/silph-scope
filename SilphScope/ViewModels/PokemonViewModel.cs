@@ -18,12 +18,6 @@ namespace SilphScope.ViewModels
 		private string? _gender;
 
 		[ObservableProperty]
-		private string? _type1;
-
-		[ObservableProperty]
-		private string? _type2;
-
-		[ObservableProperty]
 		private string? _nature;
 
 		[ObservableProperty]
@@ -43,10 +37,11 @@ namespace SilphScope.ViewModels
 
 		public int ExpBarLength => LevelProgress + LevelToNext;
 
-		[ObservableProperty]
-		private PokeballViewModel? _pokeball;
+		private PokeballViewModel Pokeball { get; } = new();
 
 		public HeldItemViewModel HeldItem { get; } = new();
+
+		public TypesViewModel Types { get; } = new();
 
 		public void UpdateGameState(Pkmn? pokemon)
 		{
@@ -66,8 +61,7 @@ namespace SilphScope.ViewModels
 			Nature = pokemon.Nature.ToString();
 
 			(Types, Types?) typeData = TypeTables.Gen3to5[(int)pokemon.Species];
-			Type1 = typeData.Item1.GetDescription();
-			Type2 = typeData.Item2?.GetDescription();
+			Types.UpdateGameState(typeData.Item1, typeData.Item2);
 
 			// Ask for asynchronous sprite loading.
 			// When sprite has been loaded, go back to UI thread to update UI.

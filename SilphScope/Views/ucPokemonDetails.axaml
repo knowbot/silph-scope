@@ -15,7 +15,7 @@
 	<StackPanel Orientation="Vertical">
 		<!-- General details -->
 		<DockPanel HorizontalAlignment="Stretch">
-			<Border Background="Red">
+			<Border>
 				<Image DockPanel.Dock="Left" Stretch="None" Source="{Binding Sprite}"/>
 			</Border>
 			<UniformGrid Columns="1">
@@ -25,11 +25,7 @@
 					<TextBlock Text="{Binding Gender}"/>
 					<TextBlock Text="{Binding Level, StringFormat={}Lv. {0}}"/>
 				</StackPanel>
-				<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-					<TextBlock Text="{Binding Type1}"/>
-					<TextBlock Text="/"/>
-					<TextBlock Text="{Binding Type2}"/>
-				</StackPanel>
+				<local:ucTypes DataContext="{Binding Types}" VerticalAlignment="Center"/>
 				<TextBlock Text="{Binding Nature}" VerticalAlignment="Center"/>
 			</UniformGrid>
 		</DockPanel>

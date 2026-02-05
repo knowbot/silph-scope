@@ -4,27 +4,48 @@ namespace SilphScope.Models.Games.StaticData.Enums
 {
 	public enum Types
 	{
+		[Color("#9FA19F")]
 		Normal,
+		[Color("#FF8000")]
 		Fighting,
+		[Color("#81B9EF")]
 		Flying,
+		[Color("#9141CB")]
 		Poison,
+		[Color("#915121")]
 		Ground,
+		[Color("#AFA981")]
 		Rock,
+		[Color("#689F90")]
 		Bird,
+		[Color("#91A119")]
 		Bug,
+		[Color("#704170")]
 		Ghost,
+		[Color("#60A1B8")]
 		Steel,
+		[Color("#689F90")]
 		[Description("???")]
 		Unknown,
+		[Color("#E62829")]
 		Fire,
+		[Color("#2980EF")]
 		Water,
+		[Color("#3FA129")]
 		Grass,
+		[Color("#FAC000")]
 		Electric,
+		[Color("#EF4179")]
 		Psychic,
+		[Color("#3DCEF3")]
 		Ice,
+		[Color("#5060E1")]
 		Dragon,
+		[Color("#624D4E")]
 		Dark,
+		[Color("#EF70EF")]
 		Fairy,
+		[Color("#40B5A5")]
 		Stellar
 	}
 }
