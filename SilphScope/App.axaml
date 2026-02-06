@@ -25,9 +25,15 @@
 
             <x:Double x:Key="TitleBarHeight">40</x:Double>
             <x:Double x:Key="TabIconSize">32</x:Double>
+            <x:Double x:Key="SpriteSize">96</x:Double>
+
             <x:Double x:Key="BaseSpacing">8</x:Double>
             <Thickness x:Key="BaseSpacingFull">8 8 8 8</Thickness>
             <Thickness x:Key="BaseSpacingLeftRight">8 0 8 0</Thickness>
+
+            <x:Double x:Key="DoubleSpacing">16</x:Double>
+            <Thickness x:Key="DoubleSpacingFull">16 16 16 16</Thickness>
+            <Thickness x:Key="DoubleSpacingLeftRight">16 0 16 0</Thickness>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

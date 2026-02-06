@@ -17,8 +17,17 @@ namespace SilphScope.ViewModels
 
 		public StatsViewModel() { }
 
-		public void UpdateGameState(Pkmn pokemon)
+		public void UpdateGameState(Pkmn? pokemon)
 		{
+			if (pokemon == null)
+			{
+				foreach (StatViewModel value in Values)
+				{
+					value.UpdateGameState(0, 0, 0);
+				}
+				return;
+			}
+
 			UpdateGameState(Values[0], pokemon, Stat.HP);
 			UpdateGameState(Values[1], pokemon, Stat.Attack);
 			UpdateGameState(Values[2], pokemon, Stat.Defense);

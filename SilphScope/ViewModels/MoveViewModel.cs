@@ -19,11 +19,19 @@ namespace SilphScope.ViewModels
 
 		public MoveViewModel() { }
 
-		public void UpdateGameState(Move move)
+		public void UpdateGameState(Move? move)
 		{
-			Name = move.Name.GetDescription();
-			CurrentPP = move.CurrPP;
-			TotPP = move.TotPP;
+			if (move == null)
+			{
+				Name = default;
+				CurrentPP = default;
+				TotPP = default;
+				return;
+			}
+
+			Name = move.Value.Name.GetDescription();
+			CurrentPP = move.Value.CurrPP;
+			TotPP = move.Value.TotPP;
 
 			// TODO: temporary. Remove.
 			MoveType.UpdateGameState(Models.Games.StaticData.Enums.Types.Fire, null);

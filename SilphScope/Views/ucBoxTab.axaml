@@ -1,21 +1,28 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:SilphScope.ViewModels"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:SilphScope.ViewModels"
 			 xmlns:local="using:SilphScope"
 			 xmlns:views="using:SilphScope.Views"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SilphScope.Views.ucBoxTab"
-             x:DataType="vm:BoxTabViewModel">
-  <Design.DataContext>
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="SilphScope.Views.ucBoxTab"
+			 x:DataType="vm:BoxTabViewModel">
+	<Design.DataContext>
 		<vm:BoxTabViewModel/>
 	</Design.DataContext>
 	<Grid ColumnDefinitions="2* 1*">
 		<!-- Party in the first column -->
 		<views:ucBoxCarousel Grid.Column="0" VerticalAlignment="Stretch" DataContext="{Binding Boxes}"/>
-		
+
 		<!-- Details in the second column -->
-		<views:ucPokemonDetails Grid.Column="1" DataContext="{Binding Boxes.Selected.Selected}"  IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}"/>
+		<views:ucPokemonDetails Grid.Column="1" DataContext="{Binding Boxes.Selected.Selected}">
+			<views:ucPokemonDetails.IsVisible>
+				<MultiBinding Converter="{x:Static BoolConverters.And}">
+					<Binding Path="" Converter="{x:Static ObjectConverters.IsNotNull}"/>
+					<Binding Path="IsNotNullPokemon"/>
+				</MultiBinding>
+			</views:ucPokemonDetails.IsVisible>
+		</views:ucPokemonDetails>
 	</Grid>
 </UserControl>

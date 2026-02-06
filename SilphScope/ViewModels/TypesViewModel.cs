@@ -27,8 +27,17 @@ namespace SilphScope.ViewModels
 
 		}
 
-		public void UpdateGameState(Types type1, Types? type2)
+		public void UpdateGameState(Types? type1, Types? type2)
 		{
+			if (type1 == null)
+			{
+				Type1 = default;
+				Type2 = default;
+				Brush1 = default;
+				Brush2 = default;
+				return;
+			}
+
 			Type1 = type1.GetDescription();
 			Type2 = type2?.GetDescription();
 

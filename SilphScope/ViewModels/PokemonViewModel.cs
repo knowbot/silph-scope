@@ -12,6 +12,9 @@ namespace SilphScope.ViewModels
 	public partial class PokemonViewModel : ViewModelBase
 	{
 		[ObservableProperty]
+		private bool _isNotNullPokemon = false;
+
+		[ObservableProperty]
 		private string? _name;
 
 		[ObservableProperty]
@@ -49,9 +52,26 @@ namespace SilphScope.ViewModels
 
 		public void UpdateGameState(Pkmn? pokemon)
 		{
+			IsNotNullPokemon = pokemon != null;
+
 			if (pokemon == null)
 			{
-				Name = string.Empty;
+				Name = default;
+				Gender = default;
+				Level = default;
+				LevelProgress = default;
+				LevelToNext = default;
+				Exp = default;
+				Nature = default;
+
+				HeldItem.UpdateGameState(null);
+				Types.UpdateGameState(null, null);
+				Stats.UpdateGameState(null);
+				MoveSet.UpdateGameState(null);
+
+				// TODO: it is possible for the loaded sprite to be loaded AFTER we cleared this pokemon.
+				// We should run this on a dummy task in the SpriteAsyncPool, to ensure proper order.
+				Sprite = default;
 				return;
 			}
 
@@ -61,8 +81,9 @@ namespace SilphScope.ViewModels
 			LevelProgress = (int)pokemon.Level.Progress;
 			LevelToNext = (int)pokemon.Level.ToNext;
 			Exp = (int)pokemon.Exp;
-			HeldItem.UpdateGameState(pokemon.HeldItem);
 			Nature = pokemon.Nature.ToString();
+
+			HeldItem.UpdateGameState(pokemon.HeldItem);
 
 			(Types, Types?) typeData = TypeTables.Gen3to5[(int)pokemon.Species];
 			Types.UpdateGameState(typeData.Item1, typeData.Item2);
@@ -72,6 +93,7 @@ namespace SilphScope.ViewModels
 
 			// Ask for asynchronous sprite loading.
 			// When sprite has been loaded, go back to UI thread to update UI.
+			// TODO: check that sprite data is equal to loaded sprite or we risk wrong sprites flickering before the correct one is loaded.
 			SpriteLoadTask task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
 			task.OnCompleted(() => Dispatcher.UIThread.Post(() => Sprite = task.Result.Sprite));
 		}

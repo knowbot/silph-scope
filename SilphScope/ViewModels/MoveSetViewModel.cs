@@ -9,8 +9,17 @@ namespace SilphScope.ViewModels
 
 		public MoveSetViewModel() { }
 
-		public void UpdateGameState(MoveSet moves)
+		public void UpdateGameState(MoveSet? moves)
 		{
+			if (moves == null)
+			{
+				foreach (MoveViewModel move in Moves)
+				{
+					move.UpdateGameState(null);
+				}
+				return;
+			}
+
 			// Keep the appropriate number of moves.
 			while (Moves.Count < moves.Count)
 			{
