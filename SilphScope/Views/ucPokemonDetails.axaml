@@ -4,7 +4,6 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
 			 xmlns:local="using:SilphScope"
-			 xmlns:views="using:SilphScope.Views"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 			 x:Class="SilphScope.Views.ucPokemonDetails"
 			 x:DataType="vm:PokemonViewModel">
@@ -29,5 +28,11 @@
 				<TextBlock Text="{Binding Nature}" VerticalAlignment="Center"/>
 			</UniformGrid>
 		</DockPanel>
+
+		<!-- Stats -->
+		<local:ucStats DataContext="{Binding Stats}"/>
+
+		<!-- Moves -->
+		<local:ucMoveSet DataContext="{Binding MoveSet}"/>
 	</StackPanel>
 </UserControl>

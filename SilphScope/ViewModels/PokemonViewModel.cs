@@ -43,6 +43,10 @@ namespace SilphScope.ViewModels
 
 		public TypesViewModel Types { get; } = new();
 
+		public StatsViewModel Stats { get; } = new();
+
+		public MoveSetViewModel MoveSet { get; } = new();
+
 		public void UpdateGameState(Pkmn? pokemon)
 		{
 			if (pokemon == null)
@@ -62,6 +66,9 @@ namespace SilphScope.ViewModels
 
 			(Types, Types?) typeData = TypeTables.Gen3to5[(int)pokemon.Species];
 			Types.UpdateGameState(typeData.Item1, typeData.Item2);
+
+			Stats.UpdateGameState(pokemon);
+			MoveSet.UpdateGameState(pokemon.MoveSet);
 
 			// Ask for asynchronous sprite loading.
 			// When sprite has been loaded, go back to UI thread to update UI.

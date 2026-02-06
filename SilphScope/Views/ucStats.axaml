@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
+			 xmlns:local="using:SilphScope"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="SilphScope.ucStats"
+			 x:DataType="vm:StatsViewModel"
+			 x:Name="root">
+	<!-- TODO: DataGrid? -->
+	<StackPanel Grid.IsSharedSizeScope="True" Orientation="Vertical">
+		<!-- Header row -->
+		<Grid ColumnSpacing="8">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto" SharedSizeGroup="StatTotal"/>
+				<ColumnDefinition Width="Auto" SharedSizeGroup="StatIvs"/>
+				<ColumnDefinition Width="Auto" SharedSizeGroup="StatEvs"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock Grid.Column="0" Text="Stat" FontWeight="Bold" HorizontalAlignment="Left"/>
+			<TextBlock Grid.Column="1" Text="Total" FontWeight="Bold" HorizontalAlignment="Center"/>
+			<TextBlock Grid.Column="2" Text="Ivs" FontWeight="Bold" HorizontalAlignment="Center"/>
+			<TextBlock Grid.Column="3" Text="Evs" FontWeight="Bold" HorizontalAlignment="Center"/>
+		</Grid>
+
+		<!-- Separator -->
+		<Rectangle Height="1" HorizontalAlignment="Stretch" Fill="{Binding #root.Foreground}"/>
+
+		<!-- Values -->
+		<ItemsControl ItemsSource="{Binding Values}">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate x:DataType="vm:StatViewModel">
+					<Grid ColumnSpacing="8">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="StatTotal"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="StatIvs"/>
+							<ColumnDefinition Width="Auto" SharedSizeGroup="StatEvs"/>
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" Text="{Binding Name}" HorizontalAlignment="Left"/>
+						<TextBlock Grid.Column="1" Text="{Binding Total}" HorizontalAlignment="Center"/>
+						<TextBlock Grid.Column="2" Text="{Binding Ivs}" HorizontalAlignment="Center"/>
+						<TextBlock Grid.Column="3" Text="{Binding Evs}" HorizontalAlignment="Center"/>
+					</Grid>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+	</StackPanel>
+</UserControl>
