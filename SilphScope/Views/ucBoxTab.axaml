@@ -16,6 +16,6 @@
 		<views:ucBoxCarousel Grid.Column="0" VerticalAlignment="Stretch" DataContext="{Binding Boxes}"/>
 		
 		<!-- Details in the second column -->
-		<views:ucPokemonDetails Grid.Column="1" DataContext="{Binding Boxes.Selected.Selected}"/>
+		<views:ucPokemonDetails Grid.Column="1" DataContext="{Binding Boxes.Selected.Selected}"  IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}"/>
 	</Grid>
 </UserControl>

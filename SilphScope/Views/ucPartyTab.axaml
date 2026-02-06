@@ -18,7 +18,8 @@
 			<views:ucTrainer DockPanel.Dock="Bottom" DataContext="{Binding Trainer}"/>
 			<Panel></Panel>
 		</DockPanel>
+
 		<!-- Details in the second column -->
-		<views:ucPokemonDetails Grid.Column="1" DataContext="{Binding Party.Selected}"/>
+		<views:ucPokemonDetails Grid.Column="1" DataContext="{Binding Party.Selected}" IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}"/>
 	</Grid>
 </UserControl>

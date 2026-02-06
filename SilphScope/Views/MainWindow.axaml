@@ -26,7 +26,7 @@
 					<TextBlock FontFamily="{StaticResource SpaceMono}" Margin="{StaticResource BaseSpacingLeftRight}" Foreground="#FF5454" IsVisible="{Binding !Service.ShouldStart}">DISCONNECTED</TextBlock>
 
 					<!-- Process attached -->
-					<StackPanel Orientation="Horizontal" Background="Red" VerticalAlignment="Center" HorizontalAlignment="Left" IsVisible="{Binding Service.ShouldStart}">
+					<StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" IsVisible="{Binding Service.ShouldStart}">
 						<Border Classes="Pulse"
 								Background="#54FF54"
 								CornerRadius="8"
