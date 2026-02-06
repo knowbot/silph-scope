@@ -1,43 +1,46 @@
 <UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:vm="using:SilphScope.ViewModels"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="using:SilphScope.ViewModels"
 			 xmlns:local="using:SilphScope"
 			 xmlns:views="using:SilphScope.Views"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SilphScope.Views.ucSettingsTab"
-             x:DataType="vm:SettingsTabViewModel"
-             >
-	<DockPanel Margin="20">
-		<!-- Game selection -->
-		<DockPanel DockPanel.Dock="Top">
-			<TextBlock DockPanel.Dock="Left" Text="Game: " VerticalAlignment="Center"/>
-			<!-- Game list -->
-			<ComboBox SelectedItem="{Binding Service.TargetGame}" ItemsSource="{Binding SupportedGames}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-			<ComboBox.ItemTemplate>
-				<DataTemplate DataType="vm:GameViewModel">
-					<views:ucGame/>
-				</DataTemplate>
-			</ComboBox.ItemTemplate>
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="SilphScope.Views.ucSettingsTab"
+			 x:DataType="vm:SettingsTabViewModel">
+	<DockPanel Margin="{StaticResource BaseSpacingFull}">
+		<Grid DockPanel.Dock="Top" Grid.IsSharedSizeScope="True" RowSpacing="{StaticResource BaseSpacing}" ColumnSpacing="{StaticResource BaseSpacing}">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" SharedSizeGroup="LabelColumn"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
+
+			<!-- Game selection drop down -->
+			<TextBlock Grid.Row="0" Grid.Column="0" Text="Game:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+			<ComboBox Grid.Row="0" Grid.Column="1" SelectedItem="{Binding Service.TargetGame}" ItemsSource="{Binding SupportedGames}" VerticalAlignment="Center" HorizontalAlignment="Stretch">
+				<ComboBox.ItemTemplate>
+					<DataTemplate DataType="vm:GameViewModel">
+						<views:ucGame/>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
 			</ComboBox>
-		</DockPanel>
-		<!-- Process selection -->
-		<DockPanel DockPanel.Dock="Top">
-			<!-- Label -->
-			<TextBlock DockPanel.Dock="Left" Text="Process: " VerticalAlignment="Center"/>
 
-			<!-- Attach/Detach process -->
-			<ToggleButton DockPanel.Dock="Right" Classes="IsStartStop" Height="32" Width="32" Margin="4" IsChecked="{Binding Service.ShouldStart}"/>
-
-			<!-- Process list -->
-			<ComboBox SelectedItem="{Binding Service.TargetProcess}" ItemsSource="{Binding Processes}" IsDropDownOpen="{Binding IsSelectingProcess, Mode=TwoWay}" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+			<!-- Process selection -->
+			<TextBlock Grid.Row="1" Grid.Column="0" Text="Process:" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+			<ComboBox Grid.Row="1" Grid.Column="1" SelectedItem="{Binding Service.TargetProcess}" ItemsSource="{Binding Processes}" IsDropDownOpen="{Binding IsSelectingProcess, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Stretch">
 				<ComboBox.ItemTemplate>
 					<DataTemplate DataType="vm:ProcessViewModel">
 						<views:ucProcess/>
 					</DataTemplate>
 				</ComboBox.ItemTemplate>
 			</ComboBox>
-		</DockPanel>
+		</Grid>
+
+		<!-- Attach/Detach process -->
+		<ToggleButton Classes="IsStartStop" Height="32" Width="32" Margin="4" IsChecked="{Binding Service.ShouldStart}" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 	</DockPanel>
 </UserControl>
