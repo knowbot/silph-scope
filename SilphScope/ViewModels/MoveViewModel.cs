@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SilphScope.Models.Extensions;
 using SilphScope.Models.Games.State.Common.PkmnInfo;
+using SilphScope.Models.Games.StaticData;
 
 namespace SilphScope.ViewModels
 {
@@ -26,15 +27,14 @@ namespace SilphScope.ViewModels
 				Name = default;
 				CurrentPP = default;
 				TotPP = default;
+				MoveType.UpdateGameState(null, null);
 				return;
 			}
 
 			Name = move.Value.Name.GetDescription();
 			CurrentPP = move.Value.CurrPP;
 			TotPP = move.Value.TotPP;
-
-			// TODO: temporary. Remove.
-			MoveType.UpdateGameState(Models.Games.StaticData.Enums.Types.Fire, null);
+			MoveType.UpdateGameState(MoveData.MoveTypes[(int)move.Value.Name], null);
 		}
 	}
 }
