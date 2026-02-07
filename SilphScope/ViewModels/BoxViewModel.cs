@@ -8,7 +8,7 @@ namespace SilphScope.ViewModels
 	public partial class BoxViewModel : ViewModelBase
 	{
 		[ObservableProperty]
-		private ObservableCollection<PokemonViewModel> _contents = [];
+		private ObservableCollection<PokemonViewModel> _contents = [new()];
 
 		[ObservableProperty]
 		private PokemonViewModel? _selected;
@@ -17,7 +17,9 @@ namespace SilphScope.ViewModels
 		private string? _name;
 
 		public BoxViewModel()
-		{ }
+		{
+			Selected = Contents.First();
+		}
 
 		internal void UpdateGameState(Box box)
 		{

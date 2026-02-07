@@ -25,7 +25,9 @@
 		</Grid>
 
 		<!-- Separator -->
-		<Rectangle Height="1" HorizontalAlignment="Stretch" Fill="{Binding #root.Foreground}"/>
+		<Border Height="{StaticResource BaseSpacing}" HorizontalAlignment="Stretch">
+			<Rectangle Height="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Fill="{Binding #root.Foreground}"/>
+		</Border>
 
 		<!-- Values -->
 		<ItemsControl ItemsSource="{Binding Values}">

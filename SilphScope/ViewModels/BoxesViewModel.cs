@@ -8,13 +8,14 @@ namespace SilphScope.ViewModels;
 public partial class BoxesViewModel : ViewModelBase
 {
 	[ObservableProperty]
-	private ObservableCollection<BoxViewModel> _boxes = [];
+	private ObservableCollection<BoxViewModel> _boxes = [new()];
 
 	[ObservableProperty]
 	private BoxViewModel? _selected;
 
 	public BoxesViewModel()
 	{
+		Selected = Boxes.First();
 	}
 
 	internal void UpdateGameState(Box[] boxes)

@@ -7,20 +7,20 @@
 			 xmlns:local="using:SilphScope"
 			 x:Class="SilphScope.ucMove"
 			 x:DataType="vm:MoveViewModel">
-	<Border Background="White" HorizontalAlignment="Stretch">
+	<Border Background="White" HorizontalAlignment="Stretch" Classes="CardClass">
 		<DockPanel>
 			<!-- Type brush -->
-			<Rectangle DockPanel.Dock="Left" Width="3" VerticalAlignment="Stretch" Fill="{Binding MoveType.Brush1}"/>
+			<Rectangle DockPanel.Dock="Left" Width="6" VerticalAlignment="Stretch" Fill="{Binding MoveType.Brush1}"/>
 
 			<!-- PP -->
-			<StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+			<StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="{StaticResource BaseSpacingRight}">
 				<TextBlock Text="{Binding CurrentPP}"/>
 				<TextBlock Text="/"/>
 				<TextBlock Text="{Binding TotPP}"/>
 			</StackPanel>
 
 			<!-- Name -->
-			<TextBlock Text="{Binding Name}"/>
+			<TextBlock Text="{Binding Name}" Margin="{StaticResource BaseSpacingFull}"/>
 		</DockPanel>
 	</Border>
 </UserControl>
