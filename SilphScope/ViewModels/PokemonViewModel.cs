@@ -94,7 +94,7 @@ namespace SilphScope.ViewModels
 			// Ask for asynchronous sprite loading.
 			// When sprite has been loaded, go back to UI thread to update UI.
 			// TODO: check that sprite data is equal to loaded sprite or we risk wrong sprites flickering before the correct one is loaded.
-			SpriteLoadTask task = SpriteAsyncPool.Current.Load(pokemon.Species, SpriteFlags.None);
+			SpriteLoadTask task = SpriteAsyncPool.Current.Load(pokemon);
 			task.OnCompleted(() => Dispatcher.UIThread.Post(() => Sprite = task.Result.Sprite));
 		}
 	}

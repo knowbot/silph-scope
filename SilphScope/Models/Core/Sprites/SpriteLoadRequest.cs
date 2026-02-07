@@ -5,14 +5,12 @@ namespace SilphScope.Models.Core.Sprites
     public class SpriteLoadRequest
     {
         public readonly SpriteLoadTask Task;
-        public readonly Species Species;
-        public readonly SpriteFlags Flags;
+        public readonly SpriteIdentifier Identifier;
 
-        public SpriteLoadRequest(SpriteLoadTask task, Species species, SpriteFlags flags)
+        public SpriteLoadRequest(SpriteLoadTask task, SpriteIdentifier identifier)
         {
             Task = task;
-            Species = species;
-            Flags = flags;
+            Identifier = identifier;
         }
     }
 }

@@ -37,6 +37,11 @@ namespace SilphScope.Models.Core.Sprites
         {
             lock (_locker)
             {
+                if (_completed)
+                {
+                    throw new InvalidOperationException("Cannot complete a task twice.");
+                }
+
                 _completed = true;
                 _result = result;
             }

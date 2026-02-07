@@ -5,6 +5,7 @@ namespace SilphScope.Models.Games.State.Common
 {
 	public record Pkmn(
 		Species Species,
+		int Form,
 		ItemName HeldItem,
 		Ability Ability,
 		MoveSet MoveSet,
@@ -19,5 +20,9 @@ namespace SilphScope.Models.Games.State.Common
 		bool IsEgg,
 		Nature Nature,
 		BattleInfo? BattleInfo
-		);
+		)
+	{
+		// TODO.
+		public bool IsShiny { get { return false; } }
+	}
 }

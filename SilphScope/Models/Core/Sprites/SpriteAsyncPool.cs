@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Media.Imaging;
+using SilphScope.Models.Games.State.Common;
 using SilphScope.Models.Games.StaticData.Enums;
 using System;
 using System.IO;
@@ -17,6 +18,7 @@ namespace SilphScope.Models.Core.Sprites
 
         private readonly CloseableWaitingQueue<SpriteLoadRequest> _requests = new();
         private readonly Thread _thread;
+        private readonly SpriteCloudManager _cloud = new();
 
         private SpriteAsyncPool()
         {
@@ -28,48 +30,60 @@ namespace SilphScope.Models.Core.Sprites
         {
             while (_requests.Wait(out SpriteLoadRequest? request))
             {
-                // Try loading from disk.
-                if (!SpriteStorageManager.Current.Load(request!.Species, out Bitmap? sprite))
+                try
                 {
+                    SpriteIdentifier identifier = request!.Identifier;
+
+                    // TODO: try local cache.
+
+                    // Try loading from disk.
+                    if (SpriteStorageManager.Current.Load(identifier.Species, out Bitmap? sprite))
+                    {
+                        // Found the sprite.
+                        request!.Task.Complete(new(sprite, null));
+                        continue;
+                    }
+
                     // Not on disk. Download.
-                    // TODO: delegate to dedicated class.
-                    try
+                    if (_cloud.Download(ref identifier, out sprite))
                     {
-                        using HttpClient client = new();
-                        string url = $"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{(int)request!.Species}.png";
-                        using HttpResponseMessage response = client.GetAsync(url).Result;
-                        using Stream stream = response.Content.ReadAsStreamAsync().Result;
-                        sprite = new Bitmap(stream);
-                    }
-                    catch (Exception)
-                    {
-                        // There was some issue.
-                        sprite = default;
+                        // Save it to disk for later use.
+                        SpriteStorageManager.Current.Save(request!.Identifier.Species, sprite!);
+
+                        // Found the sprite.
+                        request!.Task.Complete(new(sprite, null));
+                        continue;
                     }
 
-                    // Save it to disk for later use.
-                    if (sprite != null)
+                    // No sprite found? Return default sprite.
+                    // TODO: proper default sprite.
+                    if (sprite == null)
                     {
-                        SpriteStorageManager.Current.Save(request!.Species, sprite);
+                        // NOTE: this crashes.
+                        // sprite = new WriteableBitmap(new PixelSize(1, 1), Vector.Zero);
                     }
-                }
-
-                // Set default sprite.
-                // TODO: proper default sprite.
-                if (sprite == null)
+                    request!.Task.Complete(new(sprite, null));
+                } catch (Exception e)
                 {
-                    sprite = new WriteableBitmap(new PixelSize(1, 1), Vector.Zero);
+                    request!.Task.Complete(new(null, e));
                 }
-
-                // Push the result to the task.
-                request!.Task.Complete(new(sprite, null));
             }
         }
 
-        public SpriteLoadTask Load(Species species, SpriteFlags flags)
+        public SpriteLoadTask Load(Pkmn pokemon)
+        {
+            return Load(new SpriteIdentifier(pokemon.Species, pokemon.Form, pokemon.Gender, pokemon.IsShiny));
+        }
+
+        /// <summary>
+        /// Load a sprite asynchronously.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
+        public SpriteLoadTask Load(SpriteIdentifier identifier)
         {
             SpriteLoadTask task = new();
-            _requests.Enqueue(new SpriteLoadRequest(task, species, flags));
+            _requests.Enqueue(new SpriteLoadRequest(task, identifier));
             return task;
         }
 

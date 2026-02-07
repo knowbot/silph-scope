@@ -128,6 +128,7 @@ namespace SilphScope.Models.Games.Parsers.Gen4
 
 			return new Pkmn(
 				(Species)species,
+				formFlags,
 				ItemTables.Gen4Plus[heldItem],
 				(Ability)ability,
 				moveSet,
