@@ -23,9 +23,9 @@ namespace SilphScope.Models.Core.Sprites
             _ = Directory.CreateDirectory(_fullCacheDirPath);
         }
 
-        public bool Load(Species species, out Bitmap? sprite)
+        public bool Load(SpriteIdentifier identifier, out Bitmap? sprite)
         {
-            string path = GetPathForSprite(species);
+            string path = GetPathForSprite(identifier);
 
             if (!File.Exists(path))
             {
@@ -37,15 +37,15 @@ namespace SilphScope.Models.Core.Sprites
             return true;
         }
 
-        public void Save(Species species, Bitmap sprite)
+        public void Save(SpriteIdentifier identifier, Bitmap sprite)
         {
-            string path = GetPathForSprite(species);
+            string path = GetPathForSprite(identifier);
             sprite.Save(path);
         }
 
-        private string GetPathForSprite(Species species)
+        private string GetPathForSprite(SpriteIdentifier identifier)
         {
-            return Path.Combine(_fullCacheDirPath, $"{(int)species}.png");
+            return Path.Combine(_fullCacheDirPath, $"{(int)identifier.Species}_{identifier.Form}_{identifier.Gender}_{identifier.Shiny}.png");
         }
     }
 }

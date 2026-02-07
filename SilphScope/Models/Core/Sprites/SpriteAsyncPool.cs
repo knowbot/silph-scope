@@ -3,6 +3,7 @@ using Avalonia.Media.Imaging;
 using SilphScope.Models.Games.State.Common;
 using SilphScope.Models.Games.StaticData.Enums;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading;
@@ -16,6 +17,7 @@ namespace SilphScope.Models.Core.Sprites
     {
         public static SpriteAsyncPool Current { get; } = new();
 
+        private readonly Dictionary<SpriteIdentifier, Bitmap> _spriteCache = new();
         private readonly CloseableWaitingQueue<SpriteLoadRequest> _requests = new();
         private readonly Thread _thread;
         private readonly SpriteCloudManager _cloud = new();
@@ -34,12 +36,19 @@ namespace SilphScope.Models.Core.Sprites
                 {
                     SpriteIdentifier identifier = request!.Identifier;
 
-                    // TODO: try local cache.
-
-                    // Try loading from disk.
-                    if (SpriteStorageManager.Current.Load(identifier.Species, out Bitmap? sprite))
+                    // Try local cache.
+                    if (_spriteCache.TryGetValue(identifier, out Bitmap? sprite))
                     {
                         // Found the sprite.
+                        request!.Task.Complete(new(sprite, null));
+                        continue;
+                    }
+
+                    // Try loading from disk.
+                    if (SpriteStorageManager.Current.Load(identifier, out sprite))
+                    {
+                        // Found the sprite. Cache it locally and return it.
+                        _spriteCache[identifier] = sprite!;
                         request!.Task.Complete(new(sprite, null));
                         continue;
                     }
@@ -47,10 +56,9 @@ namespace SilphScope.Models.Core.Sprites
                     // Not on disk. Download.
                     if (_cloud.Download(ref identifier, out sprite))
                     {
-                        // Save it to disk for later use.
-                        SpriteStorageManager.Current.Save(request!.Identifier.Species, sprite!);
-
-                        // Found the sprite.
+                        // Save it to disk and locally.
+                        SpriteStorageManager.Current.Save(identifier, sprite!);
+                        _spriteCache[identifier] = sprite!;
                         request!.Task.Complete(new(sprite, null));
                         continue;
                     }
