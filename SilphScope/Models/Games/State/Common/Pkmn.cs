@@ -4,9 +4,12 @@ using SilphScope.Models.Games.StaticData.Enums;
 namespace SilphScope.Models.Games.State.Common
 {
 	public record Pkmn(
+		uint PID,
 		Species Species,
 		int Form,
 		ItemName HeldItem,
+		ushort OT,
+		ushort OTSecret,
 		Ability Ability,
 		MoveSet MoveSet,
 		uint Exp,
@@ -22,7 +25,7 @@ namespace SilphScope.Models.Games.State.Common
 		BattleInfo? BattleInfo
 		)
 	{
-		// TODO.
-		public bool IsShiny { get { return false; } }
+		// TODO: shiny odds based on game of origin? Or based on current game.
+		public bool IsShiny { get { return (OT ^ OTSecret ^ (ushort)(PID >> 16) ^ (ushort)(PID & 0xFFFF)) < 8; } }
 	}
 }

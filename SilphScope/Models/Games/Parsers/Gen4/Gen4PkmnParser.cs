@@ -69,6 +69,8 @@ namespace SilphScope.Models.Games.Parsers.Gen4
 			if (species == 0) return null;
 
 			ushort heldItem = blockA.Read<ushort>(0x2);
+			ushort originalTrainerID = blockA.Read<ushort>(0x4);
+			ushort originalTrainerSecredID = blockA.Read<ushort>(0x6);
 			uint exp = blockA.Read<uint>(0x8);
 			byte friendship = blockA.Read<byte>(0xC);
 			byte ability = blockA.Read<byte>(0xD);
@@ -127,9 +129,12 @@ namespace SilphScope.Models.Games.Parsers.Gen4
 			}
 
 			return new Pkmn(
+				pId,
 				(Species)species,
 				formFlags,
 				ItemTables.Gen4Plus[heldItem],
+				originalTrainerID,
+				originalTrainerSecredID,
 				(Ability)ability,
 				moveSet,
 				exp,
