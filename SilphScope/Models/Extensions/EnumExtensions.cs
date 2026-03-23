@@ -1,19 +1,18 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace SilphScope.Models.Extensions
+namespace SilphScope.Models.Extensions;
+
+public static class EnumExtensions
 {
-    public static class EnumExtensions
+    public static string GetDescription(this Enum value)
     {
-        public static string GetDescription(this Enum value)
+        FieldInfo? fi = value.GetType().GetField(value.ToString());
+        if (fi != null && Attribute.GetCustomAttribute(fi, typeof(DescriptionAttribute)) is DescriptionAttribute attr)
         {
-            FieldInfo? fi = value.GetType().GetField(value.ToString());
-            if (fi != null && Attribute.GetCustomAttribute(fi, typeof(DescriptionAttribute)) is DescriptionAttribute attr)
-            {
-                return attr.Description;
-            }
-            return value.ToString();
+            return attr.Description;
         }
+        return value.ToString();
     }
 }

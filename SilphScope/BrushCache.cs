@@ -1,22 +1,21 @@
-﻿using Avalonia.Media;
 using System.Collections.Generic;
+using Avalonia.Media;
 
-namespace SilphScope
+namespace SilphScope;
+
+public class BrushCache
 {
-	public class BrushCache
-	{
-		private Dictionary<Color, IBrush> brushes = new();
+    private readonly Dictionary<Color, IBrush> _brushes = new();
 
-		public BrushCache() { }
+    public BrushCache() { }
 
-		public IBrush Get(Color color)
-		{
-			if (!brushes.TryGetValue(color, out IBrush? brush))
-			{
-				brush = new SolidColorBrush(color);
-				brushes[color] = brush;
-			}
-			return brush;
-		}
-	}
+    public IBrush Get(Color color)
+    {
+        if (!_brushes.TryGetValue(color, out IBrush? brush))
+        {
+            brush = new SolidColorBrush(color);
+            _brushes[color] = brush;
+        }
+        return brush;
+    }
 }

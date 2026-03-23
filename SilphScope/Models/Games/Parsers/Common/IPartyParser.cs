@@ -1,10 +1,9 @@
-﻿using SilphScope.Models.Core;
+using SilphScope.Models.Core;
 using SilphScope.Models.Games.State.Common;
 
-namespace SilphScope.Models.Games.Parsers.Common
+namespace SilphScope.Models.Games.Parsers.Common;
+
+public interface IPartyParser
 {
-    public interface IPartyParser
-    {
-        public Pkmn[] Parse(SilphContext context);
-    }
+    Pkmn[] Parse(SilphContext context);
 }

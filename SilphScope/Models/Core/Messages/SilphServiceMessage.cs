@@ -1,6 +1,5 @@
-﻿namespace SilphScope.Models.Core.Messages
+namespace SilphScope.Models.Core.Messages;
+
+public class SilphServiceMessage
 {
-    public class SilphServiceMessage
-    {
-    }
 }

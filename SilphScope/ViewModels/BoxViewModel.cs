@@ -1,49 +1,48 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SilphScope.Models.Games.State.Common;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using SilphScope.Models.Games.State.Common;
 
-namespace SilphScope.ViewModels
+namespace SilphScope.ViewModels;
+
+public partial class BoxViewModel : ViewModelBase
 {
-	public partial class BoxViewModel : ViewModelBase
-	{
-		[ObservableProperty]
-		private ObservableCollection<PokemonViewModel> _contents = [new()];
+    [ObservableProperty]
+    private ObservableCollection<PokemonViewModel> _contents = [new()];
 
-		[ObservableProperty]
-		private PokemonViewModel? _selected;
+    [ObservableProperty]
+    private PokemonViewModel? _selected;
 
-		[ObservableProperty]
-		private string? _name;
+    [ObservableProperty]
+    private string? _name;
 
-		public BoxViewModel()
-		{
-			Selected = Contents.First();
-		}
+    public BoxViewModel()
+    {
+        Selected = Contents.First();
+    }
 
-		internal void UpdateGameState(Box box)
-		{
-			// Keep the appropriate number of pokemon.
-			while (Contents.Count < box.Slots.Length)
-			{
-				Contents.Add(new());
-			}
-			while (Contents.Count > box.Slots.Length)
-			{
-				Contents.RemoveAt(Contents.Count - 1);
-			}
+    internal void UpdateGameState(Box box)
+    {
+        // Keep the appropriate number of pokemon.
+        while (Contents.Count < box.Slots.Length)
+        {
+            Contents.Add(new());
+        }
+        while (Contents.Count > box.Slots.Length)
+        {
+            Contents.RemoveAt(Contents.Count - 1);
+        }
 
-			// Update each pokemon.
-			for (int i = 0; i < box.Slots.Length; i++)
-			{
-				Contents[i].UpdateGameState(box.Slots[i]);
-			}
+        // Update each pokemon.
+        for (int i = 0; i < box.Slots.Length; i++)
+        {
+            Contents[i].UpdateGameState(box.Slots[i]);
+        }
 
-			// Ensure first pokemon is automatically selected.
-			if (Selected == null && Contents.Count > 0)
-			{
-				Selected = Contents.First();
-			}
-		}
-	}
+        // Ensure first pokemon is automatically selected.
+        if (Selected == null && Contents.Count > 0)
+        {
+            Selected = Contents.First();
+        }
+    }
 }

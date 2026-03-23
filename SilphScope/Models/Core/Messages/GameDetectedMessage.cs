@@ -1,9 +1,8 @@
-﻿using SilphScope.Models.Games;
+using SilphScope.Models.Games;
 
-namespace SilphScope.Models.Core.Messages
+namespace SilphScope.Models.Core.Messages;
+
+public class GameDetectedMessage(Game game) : SilphServiceMessage
 {
-    public class GameDetectedMessage(Game game) : SilphServiceMessage
-    {
-        public readonly Game TargetGame = game;
-    }
+    public readonly Game TargetGame = game;
 }

@@ -1,9 +1,8 @@
-﻿using SilphScope.Models.Games.State;
+using SilphScope.Models.Games.State;
 
-namespace SilphScope.Models.Core.Messages
+namespace SilphScope.Models.Core.Messages;
+
+public class GameStateUpdateMessage(FrameData newGameState) : SilphServiceMessage
 {
-    public class GameStateUpdateMessage(FrameData newGameState) : SilphServiceMessage
-    {
-        public readonly FrameData NewGameState = newGameState;
-    }
+    public readonly FrameData NewGameState = newGameState;
 }

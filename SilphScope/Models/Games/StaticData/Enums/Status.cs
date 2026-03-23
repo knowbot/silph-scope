@@ -1,13 +1,12 @@
-﻿namespace SilphScope.Models.Games.StaticData.Enums
+namespace SilphScope.Models.Games.StaticData.Enums;
+
+public enum Status
 {
-    public enum Status
-    {
-        Healthy,
-        Asleep,
-        Poisoned,
-        Burned,
-        Frozen,
-        Paralyzed,
-        BadlyPoisoned
-    }
+    Healthy,
+    Asleep,
+    Poisoned,
+    Burned,
+    Frozen,
+    Paralyzed,
+    BadlyPoisoned
 }

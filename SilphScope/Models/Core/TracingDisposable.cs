@@ -1,41 +1,40 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 
-namespace SilphScope.Models.Core
+namespace SilphScope.Models.Core;
+
+/// <summary>
+/// Quick and dirty class to help track missing Dispose statements.
+/// </summary>
+public class TracingDisposable : IDisposable
 {
-    /// <summary>
-    /// Quick and dirty class to help track missing Dispose statements.
-    /// </summary>
-    public class TracingDisposable : IDisposable
+    public bool IsDisposed { get; private set; }
+
+    protected virtual void Dispose(bool disposing)
     {
-        public bool IsDisposed { get; private set; }
 
-        protected virtual void Dispose(bool disposing)
+    }
+
+    public void Dispose()
+    {
+        if (IsDisposed)
         {
-
+            return;
         }
+        GC.SuppressFinalize(this);
+        Dispose(true);
+        IsDisposed = true;
+    }
 
-        public void Dispose()
+    ~TracingDisposable()
+    {
+        if (!IsDisposed)
         {
-            if (IsDisposed)
+            // Missing dispose statement!
+            Dispose(false);
+            if (Debugger.IsAttached)
             {
-                return;
-            }
-            GC.SuppressFinalize(this);
-            Dispose(true);
-            IsDisposed = true;
-        }
-
-        ~TracingDisposable()
-        {
-            if (!IsDisposed)
-            {
-                // Missing dispose statement!
-                Dispose(false);
-                if (Debugger.IsAttached)
-                {
-                    Debugger.Break();
-                }
+                Debugger.Break();
             }
         }
     }

@@ -1,30 +1,29 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Diagnostics;
+using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace SilphScope.ViewModels
+namespace SilphScope.ViewModels;
+
+/// <summary>
+/// ViewModel representing a summary of a process' info.
+/// </summary>
+public partial class ProcessViewModel : ViewModelBase
 {
-    /// <summary>
-    /// ViewModel representing a summary of a process' info.
-    /// </summary>
-    public partial class ProcessViewModel : ViewModelBase
+    [ObservableProperty]
+    private string _name;
+
+    [ObservableProperty]
+    private int _pId;
+
+    [ObservableProperty]
+    private string _mainWindowTitle;
+
+    public Process Process { get; }
+
+    public ProcessViewModel(Process process)
     {
-        [ObservableProperty]
-        private string _name;
-
-        [ObservableProperty]
-        private int _pId;
-
-        [ObservableProperty]
-        private string _mainWindowTitle;
-
-        public Process Process;
-
-        public ProcessViewModel(Process process)
-        {
-            Process = process;
-            Name = process.ProcessName;
-            PId = process.Id;
-            MainWindowTitle = process.MainWindowTitle;
-        }
+        Process = process;
+        Name = process.ProcessName;
+        PId = process.Id;
+        MainWindowTitle = process.MainWindowTitle;
     }
 }

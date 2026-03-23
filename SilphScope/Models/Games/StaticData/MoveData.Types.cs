@@ -1,12 +1,12 @@
-﻿using SilphScope.Models.Games.StaticData.Enums;
 using System.Collections.Generic;
+using SilphScope.Models.Games.StaticData.Enums;
 
-namespace SilphScope.Models.Games.StaticData
+namespace SilphScope.Models.Games.StaticData;
+
+public static partial class MoveData
 {
-	public static partial class MoveData
-	{
-		// TODO: these are only true for gen 6 and above.
-		public static readonly IReadOnlyList<Types> MoveTypes = new Types[] {
+    // TODO: these are only true for gen 6 and above.
+    public static readonly IReadOnlyList<Types> MoveTypes = new Types[] {
 default,
 Types.Normal,
 Types.Fighting,
@@ -927,5 +927,4 @@ Types.Electric,
 Types.Psychic,
 Types.Fighting,
 Types.Poison}.AsReadOnly();
-	}
 }

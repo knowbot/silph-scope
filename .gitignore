@@ -381,3 +381,8 @@ Directory.Build.Override.props
 SilphScope/Assets/SilphLogo.png
 SilphScope/Assets/SilphLogo.svg
 /SilphScope/Test
+
+# Claude Code & vexp
+.claude/
+.vexp/
+vexp.toml

@@ -5,12 +5,12 @@ namespace SilphScope.Views;
 
 public partial class MainWindow : Window
 {
-	public MainWindow()
-	{
-		InitializeComponent();
+    public MainWindow()
+    {
+        InitializeComponent();
 
 #if DEBUG
-		this.AttachDevTools();
+        this.AttachDevTools();
 #endif
-	}
+    }
 }

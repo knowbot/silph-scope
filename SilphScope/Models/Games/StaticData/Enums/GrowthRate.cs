@@ -1,12 +1,11 @@
-﻿namespace SilphScope.Models.Games.StaticData.Enums
+namespace SilphScope.Models.Games.StaticData.Enums;
+
+public enum GrowthRate : byte
 {
-    public enum GrowthRate : byte
-    {
-        MediumFast,
-        Erratic,
-        Fluctuating,
-        MediumSlow,
-        Fast,
-        Slow,
-    }
+    MediumFast,
+    Erratic,
+    Fluctuating,
+    MediumSlow,
+    Fast,
+    Slow,
 }

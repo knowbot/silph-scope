@@ -1,4 +1,4 @@
-﻿using Avalonia.Threading;
+using Avalonia.Threading;
 using SilphScope.Models.Games;
 using SilphScope.Models.Games.State;
 

@@ -1,11 +1,10 @@
-﻿using Avalonia.Media.Imaging;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace SilphScope.ViewModels
+namespace SilphScope.ViewModels;
+
+public partial class PokeballViewModel : ViewModelBase
 {
-    public partial class PokeballViewModel : ViewModelBase
-    {
-        [ObservableProperty]
-        private Bitmap? _sprite;
-    }
+    [ObservableProperty]
+    private Bitmap? _sprite;
 }

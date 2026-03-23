@@ -1,9 +1,8 @@
-﻿using SilphScope.Models.Games.StaticData.Enums;
+using SilphScope.Models.Games.StaticData.Enums;
 
-namespace SilphScope.Models.Games.State.Common.PkmnInfo
+namespace SilphScope.Models.Games.State.Common.PkmnInfo;
+
+public readonly record struct BattleInfo(ushort CurrHP, Status Status, byte SleepTurns)
 {
-    public readonly record struct BattleInfo(ushort CurrHP, Status Status, byte SleepTurns)
-    {
-        public bool HasFainted => CurrHP == 0;
-    }
+    public bool HasFainted => CurrHP == 0;
 }

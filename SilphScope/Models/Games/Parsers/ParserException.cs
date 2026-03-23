@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 
-namespace SilphScope.Models.Games.Parsers
+namespace SilphScope.Models.Games.Parsers;
+
+[Serializable]
+public class ParserException(string message) : Exception(message)
 {
-    [Serializable]
-    public class ParserException(string message) : Exception(message)
-    {
-    }
 }

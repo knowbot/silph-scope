@@ -1,30 +1,29 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
-namespace SilphScope.Models.Core.WinNative
+namespace SilphScope.Models.Core.WinNative;
+
+public class DisposableProcessHandle : TracingDisposable
 {
-    public class DisposableProcessHandle : TracingDisposable
+    private readonly nint _handle;
+
+    public DisposableProcessHandle(Process process, ProcessAccessFlags flags)
     {
-        private readonly nint handle;
+        _handle = WindowsInterop.OpenProcess(process, flags);
+    }
 
-        public DisposableProcessHandle(Process process, ProcessAccessFlags flags)
-        {
-            handle = WindowsInterop.OpenProcess(process, flags);
-        }
+    public MemoryBasicInformation? VirtualQuery(nint address)
+    {
+        return WindowsInterop.VirtualQueryEx(_handle, address);
+    }
 
-        public MemoryBasicInformation? VirtualQuery(nint address)
-        {
-            return WindowsInterop.VirtualQueryEx(handle, address);
-        }
+    public void ReadMemory(nint address, int size, byte[] buffer)
+    {
+        WindowsInterop.ReadProcessMemory(_handle, address, buffer, size, out _);
+    }
 
-        public void ReadMemory(nint address, int size, byte[] buffer)
-        {
-            WindowsInterop.ReadProcessMemory(handle, address, buffer, size, out _);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            WindowsInterop.CloseProcess(handle);
-            base.Dispose(disposing);
-        }
+    protected override void Dispose(bool disposing)
+    {
+        WindowsInterop.CloseProcess(_handle);
+        base.Dispose(disposing);
     }
 }

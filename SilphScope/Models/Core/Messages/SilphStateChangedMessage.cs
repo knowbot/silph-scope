@@ -1,7 +1,6 @@
-﻿namespace SilphScope.Models.Core.Messages
+namespace SilphScope.Models.Core.Messages;
+
+public class SilphStateChangedMessage(SilphState newState) : SilphServiceMessage
 {
-    public class SilphStateChangedMessage(SilphState newState) : SilphServiceMessage
-    {
-        public readonly SilphState NewState = newState;
-    }
+    public readonly SilphState NewState = newState;
 }

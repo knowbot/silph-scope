@@ -1,8 +1,7 @@
-﻿namespace SilphScope.Models.Core.Memory
+namespace SilphScope.Models.Core.Memory;
+
+public readonly record struct ReadableMemoryRegion(nint baseAddress, int size)
 {
-    public readonly record struct ReadableMemoryRegion(nint baseAddress, int size)
-    {
-        public readonly nint BaseAddress = baseAddress;
-        public readonly int Size = size;
-    }
+    public readonly nint BaseAddress = baseAddress;
+    public readonly int Size = size;
 }

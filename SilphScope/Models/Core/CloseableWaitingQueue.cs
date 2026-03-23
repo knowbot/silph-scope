@@ -1,58 +1,57 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Threading;
 
-namespace SilphScope.Models.Core
+namespace SilphScope.Models.Core;
+
+/// <summary>
+/// Thread-safe queue meant for 1 producer - N consumers scenario.
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public class CloseableWaitingQueue<T> : TracingDisposable
 {
-    /// <summary>
-    /// Thread-safe queue meant for 1 producer - N consumers scenario.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class CloseableWaitingQueue<T> : TracingDisposable
+    private readonly object _locker = new();
+    private readonly Queue<T> _queue = new();
+    private bool _isClosed;
+
+    public void Enqueue(T item)
     {
-        private readonly object locker = new();
-        private readonly Queue<T> queue = new();
-        private bool isClosed;
-
-        public void Enqueue(T item)
+        lock (_locker)
         {
-            lock (locker)
-            {
-                queue.Enqueue(item);
-                Monitor.PulseAll(locker);
-            }
+            _queue.Enqueue(item);
+            Monitor.PulseAll(_locker);
         }
+    }
 
-        public bool Wait(out T? item)
+    public bool Wait(out T? item)
+    {
+        lock (_locker)
         {
-            lock (locker)
+            // Wait for an element to arrive.
+            while (_queue.Count == 0 && !_isClosed)
             {
-                // Wait for an element to arrive.
-                while (queue.Count == 0 && !isClosed)
-                {
-                    Monitor.Wait(locker);
-                }
-
-                // No more elements will arrive.
-                if (isClosed)
-                {
-                    item = default;
-                    return false;
-                }
-
-                // An element has arrived.
-                item = queue.Dequeue();
-                return true;
+                Monitor.Wait(_locker);
             }
-        }
 
-        protected override void Dispose(bool disposing)
+            // No more elements will arrive.
+            if (_isClosed)
+            {
+                item = default;
+                return false;
+            }
+
+            // An element has arrived.
+            item = _queue.Dequeue();
+            return true;
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        lock (_locker)
         {
-            lock (locker)
-            {
-                isClosed = true;
-                Monitor.PulseAll(locker);
-            }
-            base.Dispose(disposing);
+            _isClosed = true;
+            Monitor.PulseAll(_locker);
         }
+        base.Dispose(disposing);
     }
 }

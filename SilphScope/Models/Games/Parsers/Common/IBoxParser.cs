@@ -1,10 +1,9 @@
-﻿using SilphScope.Models.Core;
+using SilphScope.Models.Core;
 using SilphScope.Models.Games.State.Common;
 
-namespace SilphScope.Models.Games.Parsers.Common
+namespace SilphScope.Models.Games.Parsers.Common;
+
+public interface IBoxParser
 {
-    public interface IBoxParser
-    {
-        public Box[] Parse(SilphContext context);
-    }
+    Box[] Parse(SilphContext context);
 }
