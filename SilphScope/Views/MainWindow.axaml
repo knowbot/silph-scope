@@ -62,18 +62,18 @@
 					</TabItem.Header>
 					<views:ucSettingsTab DataContext="{Binding SettingsTab}"/>
 				</TabItem>
-				<TabItem>
+				<TabItem IsVisible="{Binding Service.ShouldStart}">
 					<TabItem.Header>
 						<Border Width="{StaticResource TabIconSize}" Height="{StaticResource TabIconSize}" Child="{DynamicResource TrainerIcon}"/>
 					</TabItem.Header>
 				</TabItem>
-				<TabItem>
+				<TabItem IsVisible="{Binding Service.ShouldStart}">
 					<TabItem.Header>
 						<Border Width="{StaticResource TabIconSize}" Height="{StaticResource TabIconSize}" Child="{DynamicResource PartyIcon}"/>
 					</TabItem.Header>
 					<views:ucPartyTab DataContext="{Binding PartyTab}"/>
 				</TabItem>
-				<TabItem>
+				<TabItem IsVisible="{Binding Service.ShouldStart}">
 					<TabItem.Header>
 						<Border Width="{StaticResource TabIconSize}" Height="{StaticResource TabIconSize}" Child="{DynamicResource BoxIcon}"/>
 					</TabItem.Header>

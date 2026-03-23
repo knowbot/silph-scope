@@ -2,9 +2,16 @@ using SilphScope.Models.Games;
 
 namespace SilphScope.Models.Core;
 
-public class SilphContext(Game game, nint saveAddr, byte[] data)
+public class SilphContext
 {
-    public Game Game = game;
-    public nint saveAddr = saveAddr;
-    public byte[] Data = data;
+    public Game Game { get; }
+    public nint SaveAddr { get; }
+    public byte[] Data { get; }
+
+    public SilphContext(Game game, nint saveAddr, byte[] data)
+    {
+        Game = game;
+        SaveAddr = saveAddr;
+        Data = data;
+    }
 }

@@ -5,7 +5,7 @@ using SilphScope.Models.Games.StaticData.Enums;
 
 namespace SilphScope.Models.Games.Parsers.Common;
 
-public abstract class APkmnParser
+public abstract class PkmnParserBase
 {
     public abstract Pkmn? Parse(ReadOnlySpan<byte> pkmnData, bool isParty);
     protected abstract Move[] ParseMoves(ReadOnlySpan<byte> data);

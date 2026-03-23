@@ -10,7 +10,7 @@ using SilphScope.Models.Games.StaticData.Enums;
 
 namespace SilphScope.Models.Games.Parsers.Gen4;
 
-public class Gen4PkmnParser : APkmnParser
+public class Gen4PkmnParser : PkmnParserBase
 {
     private const int UnencryptedSize = 8;
     private const int EncryptedSize = 128;
