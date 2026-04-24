@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
+			 xmlns:views="using:SilphScope.Views"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="SilphScope.Views.PokemonDetailsView"
+			 x:DataType="vm:PokemonViewModel">
+	<Design.DataContext>
+		<vm:PokemonViewModel/>
+	</Design.DataContext>
+
+	<Border Padding="{StaticResource BaseSpacingFull}">
+		<StackPanel Orientation="Vertical" Spacing="{StaticResource DoubleSpacing}">
+			<!-- General details -->
+			<DockPanel HorizontalAlignment="Stretch">
+				<Border>
+					<Image DockPanel.Dock="Left" Stretch="None" Source="{Binding Sprite}"/>
+				</Border>
+				<UniformGrid Columns="1">
+					<!-- Name, gender, levels -->
+					<StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+						<TextBlock Text="{Binding Name}"/>
+						<TextBlock Text="{Binding Gender}"/>
+						<TextBlock Text="{Binding Level, StringFormat={}Lv. {0}}"/>
+					</StackPanel>
+					<views:TypesView DataContext="{Binding Types}" VerticalAlignment="Center"/>
+					<TextBlock Text="{Binding Nature}" VerticalAlignment="Center"/>
+				</UniformGrid>
+			</DockPanel>
+
+			<!-- Stats -->
+			<views:StatsView DataContext="{Binding Stats}"/>
+
+			<!-- Moves -->
+			<views:MoveSetView DataContext="{Binding MoveSet}" ClipToBounds="False"/>
+		</StackPanel>
+	</Border>
+</UserControl>

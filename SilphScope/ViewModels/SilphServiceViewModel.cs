@@ -70,7 +70,7 @@ public partial class SilphServiceViewModel : ViewModelBase
         }
     }
 
-    private void OnMessage(SilphService sender, SilphServiceMessage message)
+    private void OnMessage(object? sender, SilphServiceMessage message)
     {
         switch (message)
         {

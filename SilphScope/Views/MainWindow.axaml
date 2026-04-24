@@ -60,7 +60,7 @@
 					<TabItem.Header>
 						<Border Width="{StaticResource TabIconSize}" Height="{StaticResource TabIconSize}" Child="{DynamicResource SettingsIcon}"/>
 					</TabItem.Header>
-					<views:ucSettingsTab DataContext="{Binding SettingsTab}"/>
+					<views:SettingsTabView DataContext="{Binding SettingsTab}"/>
 				</TabItem>
 				<TabItem IsVisible="{Binding Service.ShouldStart}">
 					<TabItem.Header>
@@ -71,18 +71,18 @@
 					<TabItem.Header>
 						<Border Width="{StaticResource TabIconSize}" Height="{StaticResource TabIconSize}" Child="{DynamicResource PartyIcon}"/>
 					</TabItem.Header>
-					<views:ucPartyTab DataContext="{Binding PartyTab}"/>
+					<views:PartyTabView DataContext="{Binding PartyTab}"/>
 				</TabItem>
 				<TabItem IsVisible="{Binding Service.ShouldStart}">
 					<TabItem.Header>
 						<Border Width="{StaticResource TabIconSize}" Height="{StaticResource TabIconSize}" Child="{DynamicResource BoxIcon}"/>
 					</TabItem.Header>
-					<views:ucBoxTab DataContext="{Binding BoxTab}"/>
+					<views:BoxTabView DataContext="{Binding BoxTab}"/>
 				</TabItem>
 			</TabControl>
 
 			<!-- Log -->
-			<views:ucLog DockPanel.Dock="Bottom" DataContext="{Binding Log}"/>
+			<views:LogView DockPanel.Dock="Bottom" DataContext="{Binding Log}"/>
 		</Panel>
 	</DockPanel>
 

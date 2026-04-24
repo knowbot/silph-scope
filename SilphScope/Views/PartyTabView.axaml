@@ -1,0 +1,25 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
+			 xmlns:local="using:SilphScope"
+			 xmlns:views="using:SilphScope.Views"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:Class="SilphScope.Views.PartyTabView"
+			 x:DataType="vm:PartyTabViewModel">
+	<Design.DataContext>
+		<vm:PartyTabViewModel/>
+	</Design.DataContext>
+	<Grid ColumnDefinitions="2* 1*">
+		<!-- Party in the first column -->
+		<DockPanel>
+			<views:PartyView Grid.Column="0" DockPanel.Dock="Top" DataContext="{Binding Party}"/>
+			<views:TrainerView DockPanel.Dock="Bottom" DataContext="{Binding Trainer}"/>
+			<Panel></Panel>
+		</DockPanel>
+
+		<!-- Details in the second column -->
+		<views:PokemonDetailsView Grid.Column="1" DataContext="{Binding Party.Selected}" IsVisible="{Binding Converter={x:Static ObjectConverters.IsNotNull}}"/>
+	</Grid>
+</UserControl>

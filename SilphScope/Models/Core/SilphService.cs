@@ -15,8 +15,7 @@ namespace SilphScope.Models.Core;
 
 public class SilphService : TracingDisposable
 {
-    public delegate void ProcessWatchMessageHandler(SilphService sender, SilphServiceMessage message);
-    public event ProcessWatchMessageHandler? OnMessage;
+    public event EventHandler<SilphServiceMessage>? OnMessage;
 
     public SilphState State => _state;
 
@@ -64,10 +63,7 @@ public class SilphService : TracingDisposable
         _thread = new Thread(ThreadLoop) { IsBackground = true };
     }
 
-    public void SetTickRate(int value)
-    {
-        _tickRate = value;
-    }
+    public void SetTickRate(int value) => _tickRate = value;
 
     private void SetState(SilphState value)
     {
@@ -88,10 +84,7 @@ public class SilphService : TracingDisposable
         _thread.Start();
     }
 
-    public void Stop()
-    {
-        SetState(SilphState.Stopped);
-    }
+    public void Stop() => SetState(SilphState.Stopped);
 
     private void ThreadLoop()
     {

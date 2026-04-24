@@ -59,23 +59,23 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Views\ucBoxCarousel.axaml.cs">
-        <DependentUpon>ucBoxCarousel.axaml</DependentUpon>
+      <Compile Update="Views\BoxCarouselView.axaml.cs">
+        <DependentUpon>BoxCarouselView.axaml</DependentUpon>
       </Compile>
-      <Compile Update="Views\ucGame.axaml.cs">
-        <DependentUpon>ucGame.axaml</DependentUpon>
+      <Compile Update="Views\GameView.axaml.cs">
+        <DependentUpon>GameView.axaml</DependentUpon>
       </Compile>
-      <Compile Update="Views\ucTrainer.axaml.cs">
-        <DependentUpon>ucTrainer.axaml</DependentUpon>
+      <Compile Update="Views\TrainerView.axaml.cs">
+        <DependentUpon>TrainerView.axaml</DependentUpon>
       </Compile>
-      <Compile Update="Views\ucParty.axaml.cs">
-        <DependentUpon>ucParty.axaml</DependentUpon>
+      <Compile Update="Views\PartyView.axaml.cs">
+        <DependentUpon>PartyView.axaml</DependentUpon>
       </Compile>
-      <Compile Update="Views\ucPartyPokemon.axaml.cs">
-        <DependentUpon>ucPartyPokemon.axaml</DependentUpon>
+      <Compile Update="Views\PartyPokemonView.axaml.cs">
+        <DependentUpon>PartyPokemonView.axaml</DependentUpon>
       </Compile>
-      <Compile Update="Views\ucPartyTab.axaml.cs">
-        <DependentUpon>ucPartyTab.axaml</DependentUpon>
+      <Compile Update="Views\PartyTabView.axaml.cs">
+        <DependentUpon>PartyTabView.axaml</DependentUpon>
       </Compile>
     </ItemGroup>
 </Project>

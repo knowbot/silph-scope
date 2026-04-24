@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:vm="clr-namespace:SilphScope.ViewModels"
+			 xmlns:local="using:SilphScope"
+			 x:Class="SilphScope.Views.MoveView"
+			 x:DataType="vm:MoveViewModel">
+	<Border Background="White" HorizontalAlignment="Stretch" Classes="CardClass">
+		<DockPanel>
+			<!-- Type brush -->
+			<Rectangle DockPanel.Dock="Left" Width="6" VerticalAlignment="Stretch" Fill="{Binding MoveType.Brush1}"/>
+
+			<!-- PP -->
+			<StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="{StaticResource BaseSpacingRight}">
+				<TextBlock Text="{Binding CurrentPP}"/>
+				<TextBlock Text="/"/>
+				<TextBlock Text="{Binding TotPP}"/>
+			</StackPanel>
+
+			<!-- Name -->
+			<TextBlock Text="{Binding Name}" Margin="{StaticResource BaseSpacingFull}"/>
+		</DockPanel>
+	</Border>
+</UserControl>
